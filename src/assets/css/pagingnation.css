@@ -1,0 +1,43 @@
+.pagination{
+    display: flex;
+    list-style: none;
+    align-items: center;
+    font-size: 1.2rem;
+    margin: 0;
+    gap:6px;
+}
+.pagination .page-num {
+    cursor: pointer;
+    border-radius: 50%;
+    font-weight: 400;
+    box-sizing: border-box;
+    height: 34px;
+    line-height: 1;
+    font-size: 16px;
+}
+.pagination .page-num:hover{
+    background-color: #5AB1BB;
+    color:#FFF;
+}
+  .pagination > li > a,
+  .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    line-height: 1.42857143;
+    text-decoration: none;
+    color: #2c689c;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin-left: -1px;
+  }
+.pagination .active{
+    background-color: #5AB1BB;
+
+}
+.pagination > li:last-child > a,
+.pagination > li:first-child > a  {
+  display: flex;
+  align-items: center;
+  width: 36px;
+}
