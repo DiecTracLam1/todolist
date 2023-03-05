@@ -103,7 +103,7 @@ const EditTable = ({setOpen , editTodo , todoList , handleSaveTodo}) => {
     const index = todoList.findIndex(todo => editTodo.id === todo.id)
     const [newIndex , setNewIndex] = useState(index);
     const handleSaveButton = ()=>{
-        handleSaveTodo(todo, newIndex);
+        handleSaveTodo(todo, index ,newIndex);
         setOpen(false);
     }
     const handleCloseTable = () =>{

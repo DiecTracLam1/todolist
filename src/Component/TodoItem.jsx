@@ -5,13 +5,15 @@ import { AiOutlineForm } from "react-icons/ai";
 
 const ContainerItem = styled.li`
   display: flex;
-  padding: 8px 0;
-  margin: 4px 0;
+  padding: 8px;
+  margin: 8px 0;
   border-bottom: 2px solid #a3b8f1;
+  background-color: aquamarine;
+  border-radius: 12px;
 `;
 const Content = styled.div`
   flex: 1;
-  font-size: 14px;
+  font-size: 16px;
   margin-left: 2px;
 `;
 
