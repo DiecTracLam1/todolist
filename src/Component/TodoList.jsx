@@ -116,27 +116,17 @@ const TodoList = () => {
   const [pageCount, setPageCount] = useState(searchParams._page - 1 || 0);
   const [pageTotal, setPageTotal] = useState(Math.ceil(todos.length / logItem));
 
-  // let itemCountList = useMemo(() => {
-  //   const initialList = [5,10,15,20]
-  //   const list = initialList.reduce((item , currenItem , index) => {
-  //     console.log(item)
-  //     if(index === 0){
-  //       if(todoStorage.length < currenItem)
-  //         item.push(todoStorage.length)
-  //     }
-  //     else if(item[index - 1] <  todoStorage.length && currenItem > todoStorage){
-  //       item.push(todoStorage.length);
-  //     }
-  //     // else if(initialList.length === index){
-  //     //   item.push(todoStorage.length)
-  //     //   return item.push(currenItem)
-  //     // }
-  //     console.log(item)
-  //     return item.push(currenItem)
-  //   } , [])
-  //   return list
-  // },[])
-  // console.log(itemCountList)
+  let itemCountList = useMemo(() => {
+    const initialList = [5,10,15,20]
+    const list = initialList.reduce((item , currenItem , index) => {      
+      if(initialList.length - 1 === index){
+        if(currenItem < todoStorage.length)
+          return item.concat([currenItem , todoStorage.length])
+      }
+      return item.concat(currenItem)
+    } , [])
+    return list
+  },[todoStorage.length])
 
   useEffect(() => {
     //Check search params exist ???/
@@ -176,7 +166,6 @@ const TodoList = () => {
 
 
   useEffect(() => {
-    console.log("dasd")
     const array = [];
     if (todoStorage.length <= logItem) {
       setTodos(todoStorage);
@@ -361,11 +350,7 @@ const TodoList = () => {
               searchParams={searchParams}
             />
             <Select value={logItem} onChange={handleChangeLogItem}>
-              {/* {itemCountList.map((item,index) => <option value={item}>{item} items</option>)} */}
-              <option value="10">10 items</option>
-              <option value="15">15 items</option>
-              <option value="20">20 items</option>
-              <option value={todoStorage.length}>{todoStorage.length} item</option>
+              {itemCountList.map((item,index) => <option key={index} value={item}>{item} items</option>)}
             </Select>
           </ContainerPagingnation>
         </TodoContainer>
