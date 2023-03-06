@@ -131,7 +131,7 @@ const TodoList = () => {
 
   useEffect(() => {
     changePageCountBySearch()
-  }, [logItem]);
+  }, [ logItem ]);
 
 
   useEffect(() => {

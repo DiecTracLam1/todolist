@@ -10,15 +10,35 @@ const ContainerItem = styled.li`
   border-bottom: 2px solid #a3b8f1;
   background-color: aquamarine;
   border-radius: 12px;
+  justify-content: space-between;
+  align-items: center;
 `;
+
+const WrapContent = styled.div`
+  flex:1;
+`
 const Content = styled.div`
   flex: 1;
   font-size: 16px;
   margin-left: 2px;
+  font-weight: 600;
 `;
+const Description = styled.p`
+    overflow: hidden;
+    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    margin:6px 0;
+    color: #a3a2a2;
+    font-size: 14px;
+    height: 15px;
+    width: 100px;
+`
 
 const ButtonContainer = styled.div`
   display: flex;
+  width: 70px;
 `;
 
 const Button = styled.button`
@@ -30,6 +50,7 @@ const Button = styled.button`
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
+  max-height: 26px;
 `;
 
 const EdditButton = styled(Button)`
@@ -51,7 +72,10 @@ const TodoItem = ({ todo, handleDelete , handleEdit , index}) => {
   };
   return (
     <ContainerItem>
-      <Content>{`${index + 1} - ${todo.content}`}</Content>
+      <WrapContent>
+        <Content Content>{` ${todo.content}`}</Content>
+        <Description>{todo.description}</Description>
+      </WrapContent>
       <ButtonContainer>
         <EdditButton onClick={()=>handleEditButton(todo.id)}>
           <AiOutlineForm />
