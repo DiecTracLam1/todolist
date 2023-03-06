@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useCustomSearchParams from "../useCustom/useCustomSearchParams";
 import styled from "styled-components";
 import TodoItem from "./TodoItem";
 import EditTable from "./EditTable";
 import PaginatedItems from "./Pagingnation";
+import {TiTimes} from 'react-icons/ti'
 
 const Container = styled.div`
   width: 700px;
@@ -15,17 +16,36 @@ const Title = styled.h1`
   background-color: #685e5e;
   color: white;
 `;
+const SearchContainer = styled.div`
+  display:flex;
 
+`
 const InputContainer = styled.div`
   display: flex;
+  flex: 1;
+  align-items: center;
+  background-color: white;
+  border-radius: 6px;
+  overflow: hidden;
 `;
 const Input = styled.input`
-  flex: 1;
+ 
   padding: 8px;
-  border: 1px solid #cdcccc;
+  border: none;
   outline: none;
-  border-radius: 6px;
+  flex: 1;
+
 `;
+
+const Times = styled.div`
+  cursor: pointer;
+  opacity : 0.4;
+  margin-right : 4px;
+
+  &:hover{
+    opacity : 1;
+  }
+`
 const Button = styled.button`
   padding: 6px 10px;
   text-transform: uppercase;
@@ -96,6 +116,28 @@ const TodoList = () => {
   const [pageCount, setPageCount] = useState(searchParams._page - 1 || 0);
   const [pageTotal, setPageTotal] = useState(Math.ceil(todos.length / logItem));
 
+  // let itemCountList = useMemo(() => {
+  //   const initialList = [5,10,15,20]
+  //   const list = initialList.reduce((item , currenItem , index) => {
+  //     console.log(item)
+  //     if(index === 0){
+  //       if(todoStorage.length < currenItem)
+  //         item.push(todoStorage.length)
+  //     }
+  //     else if(item[index - 1] <  todoStorage.length && currenItem > todoStorage){
+  //       item.push(todoStorage.length);
+  //     }
+  //     // else if(initialList.length === index){
+  //     //   item.push(todoStorage.length)
+  //     //   return item.push(currenItem)
+  //     // }
+  //     console.log(item)
+  //     return item.push(currenItem)
+  //   } , [])
+  //   return list
+  // },[])
+  // console.log(itemCountList)
+
   useEffect(() => {
     //Check search params exist ???/
     if (searchParams._searchText?.length > 0) {
@@ -109,12 +151,10 @@ const TodoList = () => {
     }
   }, []);
 
-  function changePageCountBySearch(searchList = [...todoStorage]) {
-    console.log(searchParams._searchText)
-    console.log(!!searchParams._searchText)
-    if(!!searchParams._searchText !== false){
+  function changePageCountByAction(searchList = [...todoStorage] ) {
+    if(!!searchText !== false){
       searchList = todoStorage.filter((todo) =>
-        todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
+        todo.content.toLowerCase().includes(searchText.toLowerCase())
       );
     }
     const array = [...searchList];
@@ -129,8 +169,9 @@ const TodoList = () => {
     setTodos(newArray);
   }
 
+  console.log(searchParams?._page - 1)
   useEffect(() => {
-    changePageCountBySearch()
+    changePageCountByAction()
   }, [ logItem ]);
 
 
@@ -152,7 +193,7 @@ const TodoList = () => {
       setTodos(array);
     }
     else {
-
+      console.log("avc")
       for (let start = pageCount * logItem ; start < Number(pageCount * logItem) + Number(logItem); start++) {
         if (start >= todoStorage.length) break;
         array.push(todoStorage[start]);
@@ -168,7 +209,7 @@ const TodoList = () => {
 
   function addListTodo() {
     const newTodo = [{ id: lastId + 1, content: addText },...todoStorage];
-    changePageCountBySearch(newTodo);
+    changePageCountByAction(newTodo);
     localStorage.setItem("todoList", JSON.stringify(newTodo));
     localStorage.setItem("lastID", JSON.stringify(lastId + 1));
     setLastId(lastId + 1);
@@ -196,7 +237,7 @@ const TodoList = () => {
   function changeEventSearch(){
     if (searchText === "") {
       setSearchParams({...searchParams , _searchText : ''})
-      changePageCountBySearch(JSON.parse(localStorage.getItem("todoList")));
+      changePageCountByAction(JSON.parse(localStorage.getItem("todoList")));
       return;
     }
     const newArray = todoStorage.filter((todo) =>
@@ -204,10 +245,10 @@ const TodoList = () => {
     );
     if (newArray.length <= 0) setTextError("Can't find todo list");
     else setTextError("");
-    setSearchText("");
+    // setSearchText("");
     setPageCount(0)
     setSearchParams({ ...searchParams, _page : 1 , _searchText : searchText})
-    changePageCountBySearch(newArray)
+    changePageCountByAction(newArray)
   }
 
   const handleEnterSearchInput = (e) => {
@@ -215,6 +256,15 @@ const TodoList = () => {
       changeEventSearch()
     }
   };
+
+  const handleDeleteSearchInput = () => {
+    setSearchText("")
+    // changePageCountByAction(todoStorage , "")
+  }
+
+  const handleDeleteAddInput = () => {
+    setAddText("")
+  }
 
   const handleSearchButton = () => {
     changeEventSearch()
@@ -227,8 +277,9 @@ const TodoList = () => {
   };
 
   const handleDelete = (id) => {
-    const newArray = todos.filter((todo) => todo.id !== id);
-    setTodos(newArray);
+    const newArray = todoStorage.filter((todo) => todo.id !== id);
+    setSearchParams({...searchParams , _page: 1})
+    changePageCountByAction(newArray);
     localStorage.setItem("todoList", JSON.stringify(newArray));
   };
 
@@ -252,7 +303,7 @@ const TodoList = () => {
     } )
     localStorage.setItem('todoList', JSON.stringify(newArray));
     setSearchParams({...searchParams , _page:1})
-    changePageCountBySearch(newArray)
+    changePageCountByAction(newArray)
   };
 
 
@@ -260,26 +311,32 @@ const TodoList = () => {
     <>
       <Container>
         <Title>Todo List</Title>
-        <InputContainer>
-          <Input
-            placeholder="Add Todo..."
-            value={addText}
-            onChange={handleChangeAddInput}
-            onKeyUp={handleEnterAddInput}
-          />
+        <SearchContainer>
+          <InputContainer style={{border:"1px solid black"}}>
+            <Input
+              placeholder="Add Todo..."
+              value={addText}
+              onChange={handleChangeAddInput}
+              onKeyUp={handleEnterAddInput}
+            />
+            {addText && <Times onClick={handleDeleteAddInput}><TiTimes/></Times>}
+          </InputContainer>
           <Button onClick={handleAddButton}>Add</Button>
-        </InputContainer>
+        </SearchContainer>
 
         <TodoContainer>
-          <InputContainer>
-            <Input
-              placeholder="Search"
-              value={searchText}
-              onChange={handleChangeSearchInput}
-              onKeyUp={handleEnterSearchInput}
-            />
+          <SearchContainer>
+            <InputContainer>
+              <Input
+                placeholder="Search"
+                value={searchText}
+                onChange={handleChangeSearchInput}
+                onKeyUp={handleEnterSearchInput}
+              />
+              {searchText && <Times onClick={handleDeleteSearchInput}><TiTimes/></Times>}
+            </InputContainer>
             <Button onClick={handleSearchButton}>Search</Button>
-          </InputContainer>
+          </SearchContainer>
 
           {todos.length > 0 || <TextError>{textError}</TextError>}
           <ContainerList>
@@ -304,10 +361,11 @@ const TodoList = () => {
               searchParams={searchParams}
             />
             <Select value={logItem} onChange={handleChangeLogItem}>
-              <option value="5">5 items</option>
+              {/* {itemCountList.map((item,index) => <option value={item}>{item} items</option>)} */}
               <option value="10">10 items</option>
               <option value="15">15 items</option>
               <option value="20">20 items</option>
+              <option value={todoStorage.length}>{todoStorage.length} item</option>
             </Select>
           </ContainerPagingnation>
         </TodoContainer>

@@ -32,7 +32,7 @@ const Description = styled.p`
     margin:6px 0;
     color: #a3a2a2;
     font-size: 14px;
-    height: 15px;
+    height: 20px;
     width: 100px;
 `
 
@@ -74,7 +74,7 @@ const TodoItem = ({ todo, handleDelete , handleEdit , index}) => {
     <ContainerItem>
       <WrapContent>
         <Content Content>{` ${todo.content}`}</Content>
-        <Description>{todo.description}</Description>
+        {todo.description && <Description>{todo.description}</Description>}
       </WrapContent>
       <ButtonContainer>
         <EdditButton onClick={()=>handleEditButton(todo.id)}>
