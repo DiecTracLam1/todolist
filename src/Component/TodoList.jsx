@@ -139,6 +139,7 @@ const TodoList = () => {
         )
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function changePageCountByAction(searchList = [...todoStorage] ) {
@@ -162,6 +163,7 @@ const TodoList = () => {
   console.log(searchParams?._page - 1)
   useEffect(() => {
     changePageCountByAction()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ logItem ]);
 
 
@@ -189,6 +191,7 @@ const TodoList = () => {
       }
       setTodos(array);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageCount]);
 
   const handleChangeAddInput = (e) => {
@@ -234,7 +237,6 @@ const TodoList = () => {
     );
     if (newArray.length <= 0) setTextError("Can't find todo list");
     else setTextError("");
-    // setSearchText("");
     setPageCount(0)
     setSearchParams({ ...searchParams, _page : 1 , _searchText : searchText})
     changePageCountByAction(newArray)
