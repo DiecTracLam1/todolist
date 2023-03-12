@@ -150,7 +150,6 @@ const TodoList = () => {
     }
     const array = [...searchList];
     const newArray = []
-    console.log("searchList: ", searchList);
     for (let i = 0; i < logItem; i++) {
       if (i === array.length) break;
       newArray.push(array[i]);
@@ -160,7 +159,7 @@ const TodoList = () => {
     setTodos(newArray);
   }
 
-  console.log(searchParams?._page - 1)
+  // console.log(searchParams?._page - 1)
   useEffect(() => {
     changePageCountByAction()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,6 +167,7 @@ const TodoList = () => {
 
 
   useEffect(() => {
+    console.log("Go to pagecount")
     const array = [];
     if (todoStorage.length <= logItem) {
       setTodos(todoStorage);
@@ -184,7 +184,7 @@ const TodoList = () => {
       setTodos(array);
     }
     else {
-      console.log("avc")
+
       for (let start = pageCount * logItem ; start < Number(pageCount * logItem) + Number(logItem); start++) {
         if (start >= todoStorage.length) break;
         array.push(todoStorage[start]);
