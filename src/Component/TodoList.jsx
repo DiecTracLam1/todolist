@@ -165,7 +165,6 @@ const TodoList = () => {
   }, [logItem , searchParams._searchText , todoStorage]);
 
   useEffect(() => {
-    console.log('Go to pagecount');
     const array = [];
     if (todoStorage.length <= logItem) {
       setTodos(todoStorage);
@@ -173,7 +172,6 @@ const TodoList = () => {
       const newArray = todoStorage.filter((todo) =>
         todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
       );
-      console.log(newArray);
       for (
         let start = pageCount * logItem;
         start < Number(pageCount * logItem) + Number(logItem);
@@ -203,7 +201,6 @@ const TodoList = () => {
 
   function addListTodo() {
     const checkAddText = todoStorage.findIndex((todo) => todo.content === addText);
-    console.log(checkAddText);
     if (checkAddText >= 0) {
       setOpenErrorLog(true);
       return;
@@ -211,7 +208,6 @@ const TodoList = () => {
     const newTodo = [{ id: lastId + 1, content: addText }, ...todoStorage];
     changePageCountByAction(newTodo);
     setTodoStorage(newTodo);
-    console.log(newTodo);
     localStorage.setItem('todoList', JSON.stringify(newTodo));
     localStorage.setItem('lastID', JSON.stringify(lastId + 1));
     setLastId(lastId + 1);
