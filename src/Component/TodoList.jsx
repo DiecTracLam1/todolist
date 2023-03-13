@@ -6,6 +6,8 @@ import EditTable from './EditTable';
 import PaginatedItems from './Pagingnation';
 import { TiTimes } from 'react-icons/ti';
 import ErrorLog from './ErrorLog';
+import { useDispatch, useSelector } from 'react-redux';
+import { add, edit, remove } from '../features/todo/todoSlice';
 
 const Container = styled.div`
   width: 700px;
@@ -96,9 +98,8 @@ const TodoList = () => {
   const [lastId, setLastId] = useState(
     localStorage.getItem('lastID') === null ? 0 : JSON.parse(localStorage.getItem('lastID'))
   );
-  const [todoStorage, setTodoStorage] = useState(
-    JSON.parse(localStorage?.getItem('todoList')) ?? []
-  );
+  const todoStorage = useSelector(state => state.todo.data);
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useCustomSearchParams();
   const [todos, setTodos] = useState([]);
   const [textError, setTextError] = useState('');
@@ -145,7 +146,7 @@ const TodoList = () => {
       }
       const array = [...searchList];
       setPageTotal(Math.ceil(array.length / logItem));
-      
+
       // const newArray = [];
       // for (let i = 0; i < logItem; i++) {
       //   if (i === array.length) break;
@@ -201,7 +202,7 @@ const TodoList = () => {
     }
     const newTodo = [{ id: lastId + 1, content: addText }, ...todoStorage];
     changePageCountByAction(newTodo);
-    setTodoStorage(newTodo);
+    dispatch(add(newTodo));
     localStorage.setItem('todoList', JSON.stringify(newTodo));
     localStorage.setItem('lastID', JSON.stringify(lastId + 1));
     setLastId(lastId + 1);
@@ -223,7 +224,6 @@ const TodoList = () => {
 
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
-    // setSearchParams({ ...searchParams, _searchText: e.target.value });
   };
 
   function changeEventSearch() {
@@ -250,7 +250,6 @@ const TodoList = () => {
 
   const handleDeleteSearchInput = () => {
     setSearchText('');
-    // changePageCountByAction(todoStorage , "")
   };
 
   const handleDeleteAddInput = () => {
@@ -271,7 +270,7 @@ const TodoList = () => {
     const newArray = todoStorage.filter((todo) => todo.id !== id);
     setSearchParams({ ...searchParams, _page: 1 });
     changePageCountByAction(newArray);
-    setTodoStorage(newArray);
+    dispatch(remove(newArray));
     localStorage.setItem('todoList', JSON.stringify(newArray));
   };
 
@@ -293,7 +292,7 @@ const TodoList = () => {
       }
       return todo;
     });
-    setTodoStorage(newArray);
+    dispatch(edit(newArray));
     localStorage.setItem('todoList', JSON.stringify(newArray));
     setSearchParams({ ...searchParams, _page: 1 });
     changePageCountByAction(newArray);
