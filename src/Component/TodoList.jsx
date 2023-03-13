@@ -132,43 +132,37 @@ const TodoList = () => {
       );
     }
     const array = [...searchList];
-
-    const newArray = [];
-    for (let i = 0; i < logItem; i++) {
-      if (i === array.length) break;
-      newArray.push(array[i]);
-    }
     setPageTotal(Math.ceil(array.length / logItem));
-    // setPageCount(searchParams?._page - 1 || 0);
-    // setTodos(newArray);
   }
 
   useEffect(() => {
-    function changePageCountByLogItem(){
-      let searchList = [...todoStorage]
+    function changePageCountByLogItem() {
+      let searchList = [...todoStorage];
       if (!!searchParams._searchText !== false) {
         searchList = todoStorage.filter((todo) =>
           todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
         );
       }
       const array = [...searchList];
-  
-      const newArray = [];
-      for (let i = 0; i < logItem; i++) {
-        if (i === array.length) break;
-        newArray.push(array[i]);
-      }
       setPageTotal(Math.ceil(array.length / logItem));
+      
+      // const newArray = [];
+      // for (let i = 0; i < logItem; i++) {
+      //   if (i === array.length) break;
+      //   newArray.push(array[i]);
+      // }
+
       // setTodos(newArray);
     }
     changePageCountByLogItem();
-  }, [logItem , searchParams._searchText , todoStorage]);
+  }, [logItem, searchParams._searchText, todoStorage]);
 
   useEffect(() => {
     const array = [];
-    if (todoStorage.length <= logItem) {
+    if (todoStorage.length <= logItem && !!searchParams._searchText === false) {
       setTodos(todoStorage);
     } else if (!!searchParams._searchText !== false) {
+
       const newArray = todoStorage.filter((todo) =>
         todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
       );
@@ -192,7 +186,7 @@ const TodoList = () => {
       }
       setTodos(array);
     }
-  }, [pageCount , searchParams._searchText , logItem , todoStorage]);
+  }, [pageCount, searchParams._searchText, logItem, todoStorage]);
 
   const handleChangeAddInput = (e) => {
     setAddText(e.target.value);
