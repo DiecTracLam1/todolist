@@ -99,6 +99,7 @@ const EditTable = ({setOpen , editTodo , todoList , handleSaveTodo}) => {
         id: editTodo.id,
         content: editTodo.content,
         description: editTodo.description,
+        done : editTodo.done
     })
     const index = todoList.findIndex(todo => editTodo.id === todo.id)
     const [newIndex , setNewIndex] = useState(index);

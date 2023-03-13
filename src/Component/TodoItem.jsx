@@ -1,7 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { BiTrash } from "react-icons/bi";
-import { AiOutlineForm } from "react-icons/ai";
+import React from 'react';
+import styled from 'styled-components';
+import { BiTrash } from 'react-icons/bi';
+import { AiOutlineForm } from 'react-icons/ai';
+import { MdOutlineDone } from 'react-icons/md';
 
 const ContainerItem = styled.li`
   display: flex;
@@ -15,8 +16,10 @@ const ContainerItem = styled.li`
 `;
 
 const WrapContent = styled.div`
-  flex:1;
-`
+  flex: 1;
+  text-decoration: ${props => props.doneTask && "line-through"};
+  opacity: ${props => props.doneTask && 0.6};;
+`;
 const Content = styled.div`
   flex: 1;
   font-size: 16px;
@@ -24,21 +27,20 @@ const Content = styled.div`
   font-weight: 600;
 `;
 const Description = styled.p`
-    overflow: hidden;
-    display: block;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    margin:6px 0;
-    color: #a3a2a2;
-    font-size: 14px;
-    height: 20px;
-    width: 100px;
-`
+  overflow: hidden;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  margin: 6px 0;
+  color: #a3a2a2;
+  font-size: 14px;
+  height: 20px;
+  width: 100px;
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
-  width: 70px;
 `;
 
 const Button = styled.button`
@@ -61,23 +63,35 @@ const DeleButton = styled(Button)`
   background-color: #f02906;
 `;
 
-const TodoItem = ({ todo, handleDelete , handleEdit , index}) => {
+const DoneButton = styled(Button)`
+  background-color: #0dbd0d;
+  color : white;
+  opacity: ${props => props.doneTask && 0.6};
+`;
+
+const TodoItem = ({ todo, handleDelete, handleEdit, handleDone }) => {
   const handleEditButton = (id) => {
     handleEdit(id);
   };
 
-
   const handleDeleteButton = (id) => {
     handleDelete(id);
   };
+
+  const handleDoneButton = (id)=>{
+    handleDone(id);
+  }
   return (
     <ContainerItem>
-      <WrapContent>
+      <WrapContent doneTask={todo.done}>
         <Content Content>{` ${todo.content}`}</Content>
         {todo.description && <Description>{todo.description}</Description>}
       </WrapContent>
       <ButtonContainer>
-        <EdditButton onClick={()=>handleEditButton(todo.id)}>
+        <DoneButton doneTask={todo.done} onClick={() => handleDoneButton(todo.id)}>
+          <MdOutlineDone />
+        </DoneButton>
+        <EdditButton onClick={() => handleEditButton(todo.id)}>
           <AiOutlineForm />
         </EdditButton>
         <DeleButton onClick={() => handleDeleteButton(todo.id)}>

@@ -7,7 +7,7 @@ import PaginatedItems from './Pagingnation';
 import { TiTimes } from 'react-icons/ti';
 import ErrorLog from './ErrorLog';
 import { useDispatch, useSelector } from 'react-redux';
-import { add, edit, remove } from '../features/todo/todoSlice';
+import { add, done, edit, remove } from '../features/todo/todoSlice';
 
 const Container = styled.div`
   width: 700px;
@@ -73,6 +73,35 @@ const TextError = styled.p`
   margin: 10px 0;
 `;
 
+const ContainerSelector = styled.div`
+display: block;
+  margin: 34px 0 0 0 ;
+  height: 20px;
+`;
+const ContainerButtonSelector = styled.div`
+  position: relative;
+  left: 0;
+  right: 0;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent transparent #ada9a9 transparent;
+  }
+`;
+
+const WrapperButtonSelector = styled.div`
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  text-align: center;
+`;
+const ButtonSelector = styled.button``;
+
 const ContainerList = styled.ul`
   list-style-type: none;
   padding: 0;
@@ -86,6 +115,7 @@ const ContainerPagingnation = styled.div`
   display: flex;
   justify-content: center;
   margin: 22px 0;
+  align-items: center;
 `;
 const Select = styled.select`
   margin-left: 12px;
@@ -94,11 +124,19 @@ const Select = styled.select`
   justify-items: right;
 `;
 
+const ItemCount = styled.p`
+  margin: 0 0 0 10px;
+  font-size: 14px;
+  color: #9b9898;
+  line-height: 14px;
+  height: 14px;
+`;
+
 const TodoList = () => {
   const [lastId, setLastId] = useState(
     localStorage.getItem('lastID') === null ? 0 : JSON.parse(localStorage.getItem('lastID'))
   );
-  const todoStorage = useSelector(state => state.todo.data);
+  const todoStorage = useSelector((state) => state.todo.data);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useCustomSearchParams();
   const [todos, setTodos] = useState([]);
@@ -163,7 +201,6 @@ const TodoList = () => {
     if (todoStorage.length <= logItem && !!searchParams._searchText === false) {
       setTodos(todoStorage);
     } else if (!!searchParams._searchText !== false) {
-
       const newArray = todoStorage.filter((todo) =>
         todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
       );
@@ -200,7 +237,7 @@ const TodoList = () => {
       setOpenErrorLog(true);
       return;
     }
-    dispatch(add({lastId , addText}));
+    dispatch(add({ lastId, addText }));
     setLastId(lastId + 1);
     setAddText('');
     delete searchParams._addText;
@@ -246,6 +283,7 @@ const TodoList = () => {
 
   const handleDeleteSearchInput = () => {
     setSearchText('');
+    setSearchParams({ ...searchParams, _searchText: '' });
   };
 
   const handleDeleteAddInput = () => {
@@ -254,6 +292,10 @@ const TodoList = () => {
 
   const handleSearchButton = () => {
     changeEventSearch();
+  };
+
+  const handleDone = (id) => {
+    dispatch(done(id));
   };
 
   const handleEdit = (id) => {
@@ -274,8 +316,8 @@ const TodoList = () => {
     setPageCount(0);
   };
 
-  const handleSaveTodo = (editTodo, oldIndex, newIndex) => { 
-    dispatch(edit({editTodo, oldIndex, newIndex}));
+  const handleSaveTodo = (editTodo, oldIndex, newIndex) => {
+    dispatch(edit({ editTodo, oldIndex, newIndex }));
     setSearchParams({ ...searchParams, _page: 1 });
   };
 
@@ -318,6 +360,16 @@ const TodoList = () => {
             <Button onClick={handleSearchButton}>Search</Button>
           </SearchContainer>
 
+          <ContainerSelector>
+            <ContainerButtonSelector>
+              <WrapperButtonSelector>
+                <ButtonSelector />
+                <ButtonSelector />
+                <ButtonSelector />
+              </WrapperButtonSelector>
+            </ContainerButtonSelector>
+          </ContainerSelector>
+
           {todos.length > 0 || <TextError>{textError}</TextError>}
           <ContainerList>
             {todos.map((todo, index) => {
@@ -327,6 +379,7 @@ const TodoList = () => {
                   todo={todo}
                   handleDelete={handleDelete}
                   handleEdit={handleEdit}
+                  handleDone={handleDone}
                   index={index}
                 />
               );
@@ -347,6 +400,7 @@ const TodoList = () => {
                 </option>
               ))}
             </Select>
+            <ItemCount>Have {todoStorage.length} items</ItemCount>
           </ContainerPagingnation>
         </TodoContainer>
       </Container>
