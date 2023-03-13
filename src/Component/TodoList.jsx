@@ -21,6 +21,7 @@ const Title = styled.h1`
 `;
 const SearchContainer = styled.div`
   display: flex;
+  margin: 8px 0;
 `;
 const InputContainer = styled.div`
   display: flex;
@@ -74,14 +75,15 @@ const TextError = styled.p`
 `;
 
 const ContainerSelector = styled.div`
-display: block;
-  margin: 34px 0 0 0 ;
-  height: 20px;
+  display: block;
+  margin-top: 34px; 
 `;
 const ContainerButtonSelector = styled.div`
   position: relative;
   left: 0;
   right: 0;
+  display: flex;
+  align-items: center;
   &::before {
     content: '';
     position: absolute;
@@ -95,12 +97,24 @@ const ContainerButtonSelector = styled.div`
 
 const WrapperButtonSelector = styled.div`
   position: absolute;
-  bottom: -5px;
   left: 0;
   right: 0;
   text-align: center;
 `;
-const ButtonSelector = styled.button``;
+const ButtonSelector = styled.button`
+  margin: 0 10px;
+  border: none;
+  outline: none;
+  background: lightgray;
+  color : #8d8d8d;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover{
+    text-decoration: underline #037ef1 2px; 
+    color : #037ef1;
+  }
+`;
 
 const ContainerList = styled.ul`
   list-style-type: none;
@@ -109,6 +123,7 @@ const ContainerList = styled.ul`
   overflow-y: scroll;
   max-height: 400px;
   padding-right: 8px;
+  margin-top: 18px;
 `;
 
 const ContainerPagingnation = styled.div`
@@ -130,6 +145,7 @@ const ItemCount = styled.p`
   color: #9b9898;
   line-height: 14px;
   height: 14px;
+  justify-items:right;
 `;
 
 const TodoList = () => {
@@ -363,9 +379,11 @@ const TodoList = () => {
           <ContainerSelector>
             <ContainerButtonSelector>
               <WrapperButtonSelector>
-                <ButtonSelector />
-                <ButtonSelector />
-                <ButtonSelector />
+                <div style={{ background: 'lightgray' , display:'inline-block' }}>
+                  <ButtonSelector >All</ButtonSelector>
+                  <ButtonSelector >Done</ButtonSelector>
+                  <ButtonSelector >Undone</ButtonSelector>
+                </div>
               </WrapperButtonSelector>
             </ContainerButtonSelector>
           </ContainerSelector>
