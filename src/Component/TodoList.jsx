@@ -200,11 +200,7 @@ const TodoList = () => {
       setOpenErrorLog(true);
       return;
     }
-    const newTodo = [{ id: lastId + 1, content: addText }, ...todoStorage];
-    changePageCountByAction(newTodo);
-    dispatch(add(newTodo));
-    localStorage.setItem('todoList', JSON.stringify(newTodo));
-    localStorage.setItem('lastID', JSON.stringify(lastId + 1));
+    dispatch(add({lastId , addText}));
     setLastId(lastId + 1);
     setAddText('');
     delete searchParams._addText;
@@ -229,7 +225,7 @@ const TodoList = () => {
   function changeEventSearch() {
     if (searchText === '') {
       setSearchParams({ ...searchParams, _searchText: '' });
-      changePageCountByAction(JSON.parse(localStorage.getItem('todoList')));
+      changePageCountByAction(todoStorage);
       return;
     }
     const newArray = todoStorage.filter((todo) =>
@@ -267,11 +263,8 @@ const TodoList = () => {
   };
 
   const handleDelete = (id) => {
-    const newArray = todoStorage.filter((todo) => todo.id !== id);
     setSearchParams({ ...searchParams, _page: 1 });
-    changePageCountByAction(newArray);
-    dispatch(remove(newArray));
-    localStorage.setItem('todoList', JSON.stringify(newArray));
+    dispatch(remove(id));
   };
 
   const handleChangeLogItem = (e) => {
@@ -281,21 +274,9 @@ const TodoList = () => {
     setPageCount(0);
   };
 
-  const handleSaveTodo = (editTodo, oldIndex, newIndex) => {
-    let tampTodo;
-    let newArray = todoStorage.map((todo, i) => {
-      tampTodo = { ...todoStorage[newIndex] };
-      if (i === Number(newIndex)) {
-        todo = { ...editTodo };
-      } else if (i === Number(oldIndex)) {
-        todo = { ...tampTodo };
-      }
-      return todo;
-    });
-    dispatch(edit(newArray));
-    localStorage.setItem('todoList', JSON.stringify(newArray));
+  const handleSaveTodo = (editTodo, oldIndex, newIndex) => { 
+    dispatch(edit({editTodo, oldIndex, newIndex}));
     setSearchParams({ ...searchParams, _page: 1 });
-    changePageCountByAction(newArray);
   };
 
   return (
