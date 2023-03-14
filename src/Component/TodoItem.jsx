@@ -70,31 +70,20 @@ const DoneButton = styled(Button)`
 `;
 
 const TodoItem = ({ todo, handleDelete, handleEdit, handleDone }) => {
-  const handleEditButton = (id) => {
-    handleEdit(id);
-  };
-
-  const handleDeleteButton = (id) => {
-    handleDelete(id);
-  };
-
-  const handleDoneButton = (id)=>{
-    handleDone(id);
-  }
   return (
     <ContainerItem>
-      <WrapContent doneTask={todo.done}>
-        <Content Content>{` ${todo.content}`}</Content>
-        {todo.description && <Description>{todo.description}</Description>}
+      <WrapContent doneTask={todo?.done}>
+        <Content Content>{` ${todo?.content}`}</Content>
+        {todo?.description && <Description>{todo?.description}</Description>}
       </WrapContent>
       <ButtonContainer>
-        <DoneButton doneTask={todo.done} onClick={() => handleDoneButton(todo.id)}>
+        <DoneButton doneTask={todo?.done} onClick={() => handleDone(todo?.id)}>
           <MdOutlineDone />
         </DoneButton>
-        <EdditButton onClick={() => handleEditButton(todo.id)}>
+        <EdditButton onClick={() => handleEdit(todo?.id)}>
           <AiOutlineForm />
         </EdditButton>
-        <DeleButton onClick={() => handleDeleteButton(todo.id)}>
+        <DeleButton onClick={() => handleDelete(todo?.id)}>
           <BiTrash />
         </DeleButton>
       </ButtonContainer>

@@ -168,7 +168,7 @@ const TodoList = () => {
     return searchParams._logItem > 20 ? 20 : searchParams._logItem;
   }, [searchParams._logItem]);
   const [logItem, setLogItem] = useState(searchLogItem || 5);
-  const [pageCount, setPageCount] = useState(searchParams._page - 1 || 0);
+  const [pageCount, setPageCount] = useState(searchParams._page - 1 < 0 ? 0 : searchParams._page);
   const [pageTotal, setPageTotal] = useState(Math.ceil(todos.length / logItem));
 
   let itemCountList = useMemo(() => {
@@ -183,12 +183,11 @@ const TodoList = () => {
   }, [todoStorage.length]);
 
   function changePageCountByAction(searchList = [...todoStorage]) {
-    if (!!searchText !== false) {
+    if (!!searchText) {
       searchList = todoStorage.filter((todo) =>
         todo.content.toLowerCase().includes(searchText.toLowerCase())
       );
     }
-    // if(!!searchParams)
     const array = [...searchList];
     setPageTotal(Math.ceil(array.length / logItem));
   }
@@ -196,17 +195,17 @@ const TodoList = () => {
   useEffect(() => {
     function changePageCountByLogItem() {
       let searchList = [...todoStorage];
-      if (!!searchParams._searchText !== false) {
+      if (!!searchParams._searchText) {
         searchList = todoStorage.filter((todo) =>
           todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
         );
       }
 
-      if (!!searchParams._actionLog !== false) {
+      if (!!searchParams._actionLog) {
         if (searchParams._actionLog === 'done') {
-          searchList = searchList.filter((todo) => todo.done === true);
+          searchList = searchList.filter((todo) => todo.done);
         } else if (searchParams._actionLog === 'undone') {
-          searchList = searchList.filter((todo) => todo.done === false);
+          searchList = searchList.filter((todo) => !todo.done);
         }
       }
       const array = [...searchList];
@@ -218,48 +217,36 @@ const TodoList = () => {
   useEffect(() => {
     const array = [];
     let newArray = [...todoStorage];
-    if (!!searchParams._actionLog !== false) {
+
+    // Check _actionLog is exist
+    if (!!searchParams._actionLog) {
       if (searchParams._actionLog === 'done') {
-        newArray = newArray.filter((todo) => todo.done === true);
+        newArray = newArray.filter((todo) => todo.done);
       } else if (searchParams._actionLog === 'undone') {
-        newArray = newArray.filter((todo) => todo.done === false);
+        newArray = newArray.filter((todo) => !todo.done);
       }
     }
-    if (newArray.length <= logItem && !!searchParams._searchText === false) {
+
+    if (newArray.length <= logItem && !!searchParams._searchText) {
       setTodos(newArray);
-    } else if (!!searchParams._searchText !== false) {
+      return;
+    } else if (!!searchParams._searchText) {
       newArray = newArray.filter((todo) =>
         todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
       );
-     
-      for (
-        let start = pageCount * logItem;
-        start < Number(pageCount * logItem) + Number(logItem);
-        start++
-      ) {
-        if (start >= newArray.length) break;
-        array.push(newArray[start]);
-      }
-      setTodos(array);
-    } else {
-      if (!!searchParams._actionLog !== false) {
-        if (searchParams._actionLog === 'done') {
-          newArray = newArray.filter((todo) => todo.done === true);
-        } else if (searchParams._actionLog === 'undone') {
-          newArray = newArray.filter((todo) => todo.done === false);
-        }
-      }
-      for (
-        let start = pageCount * logItem;
-        start < Number(pageCount * logItem) + Number(logItem);
-        start++
-      ) {
-        if (start >= newArray.length) break;
-        array.push(newArray[start]);
-      }
-      setTodos(array);
     }
-  }, [pageCount, searchParams._searchText, logItem, todoStorage , searchParams._actionLog]);
+
+    for (
+      let start = pageCount * logItem;
+      start < Number(pageCount * logItem) + Number(logItem);
+      start++
+    ) {
+      if (start >= newArray.length) break;
+      array.push(newArray[start]);
+    }
+    setTodos(array);
+
+  }, [pageCount, searchParams._searchText, logItem, todoStorage, searchParams._actionLog]);
 
   const handleChangeAddInput = (e) => {
     setAddText(e.target.value);
@@ -303,7 +290,7 @@ const TodoList = () => {
     const newArray = todoStorage.filter((todo) =>
       todo.content.toLowerCase().includes(searchText.toLowerCase())
     );
-    if (newArray.length <= 0 && !!searchParams._searchText === true) setTextError("Can't find todo list");
+    if (newArray.length <= 0 && !!searchParams._searchText) setTextError("Can't find todo list");
     else setTextError('');
     setPageCount(0);
     setSearchParams({ ...searchParams, _page: 1, _searchText: searchText });
@@ -330,7 +317,8 @@ const TodoList = () => {
   };
 
   const handleChangeActionLog = (e) => {
-    setSearchParams({ ...searchParams, _actionLog: e.target.name });
+    setSearchParams({ ...searchParams, _actionLog: e.target.name , _page : 1 });
+    setPageCount(0);
   };
 
   const handleDone = (id) => {
@@ -406,11 +394,10 @@ const TodoList = () => {
                   All ({todoStorage.length})
                 </ButtonSelector>
                 <ButtonSelector onClick={handleChangeActionLog} name="done">
-                  Done ({todoStorage.filter(todo => todo.done === true).length })
+                  Done ({todoStorage.filter((todo) => todo.done).length})
                 </ButtonSelector>
-
                 <ButtonSelector onClick={handleChangeActionLog} name="undone">
-                  Undone ({todoStorage.filter(todo => todo.done === false).length })
+                  Undone ({todoStorage.filter((todo) => !todo.done).length})
                 </ButtonSelector>
               </WrapperButtonSelector>
             </ContainerButtonSelector>
