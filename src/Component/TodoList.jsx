@@ -71,14 +71,12 @@ const TextError = styled.p`
   color: red;
   text-align: center;
   font-weight: 500;
-  margin: 10px 0;
+  margin: 20px 0;
 `;
 
 const ContainerSelector = styled.div`
   display: block;
-  margin-top: 34px; 
-`;
-const ContainerButtonSelector = styled.div`
+  margin-top: 34px;
   position: relative;
   left: 0;
   right: 0;
@@ -94,25 +92,29 @@ const ContainerButtonSelector = styled.div`
     border-color: transparent transparent #ada9a9 transparent;
   }
 `;
-
-const WrapperButtonSelector = styled.div`
+const ContainerButtonSelector = styled.div`
   position: absolute;
   left: 0;
   right: 0;
   text-align: center;
+`;
+
+const WrapperButtonSelector = styled.div`
+  background: lightgray;
+  display: inline-block;
 `;
 const ButtonSelector = styled.button`
   margin: 0 10px;
   border: none;
   outline: none;
   background: lightgray;
-  color : #8d8d8d;
+  color: #8d8d8d;
   cursor: pointer;
   font-size: 14px;
 
-  &:hover{
-    text-decoration: underline #037ef1 2px; 
-    color : #037ef1;
+  &:hover {
+    text-decoration: underline #037ef1 2px;
+    color: #037ef1;
   }
 `;
 
@@ -145,7 +147,7 @@ const ItemCount = styled.p`
   color: #9b9898;
   line-height: 14px;
   height: 14px;
-  justify-items:right;
+  justify-items: right;
 `;
 
 const TodoList = () => {
@@ -186,6 +188,7 @@ const TodoList = () => {
         todo.content.toLowerCase().includes(searchText.toLowerCase())
       );
     }
+    // if(!!searchParams)
     const array = [...searchList];
     setPageTotal(Math.ceil(array.length / logItem));
   }
@@ -198,28 +201,37 @@ const TodoList = () => {
           todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
         );
       }
+
+      if (!!searchParams._actionLog !== false) {
+        if (searchParams._actionLog === 'done') {
+          searchList = searchList.filter((todo) => todo.done === true);
+        } else if (searchParams._actionLog === 'undone') {
+          searchList = searchList.filter((todo) => todo.done === false);
+        }
+      }
       const array = [...searchList];
       setPageTotal(Math.ceil(array.length / logItem));
-
-      // const newArray = [];
-      // for (let i = 0; i < logItem; i++) {
-      //   if (i === array.length) break;
-      //   newArray.push(array[i]);
-      // }
-
-      // setTodos(newArray);
     }
     changePageCountByLogItem();
-  }, [logItem, searchParams._searchText, todoStorage]);
+  }, [logItem, searchParams._searchText, todoStorage, searchParams._actionLog]);
 
   useEffect(() => {
     const array = [];
-    if (todoStorage.length <= logItem && !!searchParams._searchText === false) {
-      setTodos(todoStorage);
+    let newArray = [...todoStorage];
+    if (!!searchParams._actionLog !== false) {
+      if (searchParams._actionLog === 'done') {
+        newArray = newArray.filter((todo) => todo.done === true);
+      } else if (searchParams._actionLog === 'undone') {
+        newArray = newArray.filter((todo) => todo.done === false);
+      }
+    }
+    if (newArray.length <= logItem && !!searchParams._searchText === false) {
+      setTodos(newArray);
     } else if (!!searchParams._searchText !== false) {
-      const newArray = todoStorage.filter((todo) =>
+      newArray = newArray.filter((todo) =>
         todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
       );
+     
       for (
         let start = pageCount * logItem;
         start < Number(pageCount * logItem) + Number(logItem);
@@ -230,17 +242,24 @@ const TodoList = () => {
       }
       setTodos(array);
     } else {
+      if (!!searchParams._actionLog !== false) {
+        if (searchParams._actionLog === 'done') {
+          newArray = newArray.filter((todo) => todo.done === true);
+        } else if (searchParams._actionLog === 'undone') {
+          newArray = newArray.filter((todo) => todo.done === false);
+        }
+      }
       for (
         let start = pageCount * logItem;
         start < Number(pageCount * logItem) + Number(logItem);
         start++
       ) {
-        if (start >= todoStorage.length) break;
-        array.push(todoStorage[start]);
+        if (start >= newArray.length) break;
+        array.push(newArray[start]);
       }
       setTodos(array);
     }
-  }, [pageCount, searchParams._searchText, logItem, todoStorage]);
+  }, [pageCount, searchParams._searchText, logItem, todoStorage , searchParams._actionLog]);
 
   const handleChangeAddInput = (e) => {
     setAddText(e.target.value);
@@ -284,7 +303,7 @@ const TodoList = () => {
     const newArray = todoStorage.filter((todo) =>
       todo.content.toLowerCase().includes(searchText.toLowerCase())
     );
-    if (newArray.length <= 0) setTextError("Can't find todo list");
+    if (newArray.length <= 0 && !!searchParams._searchText === true) setTextError("Can't find todo list");
     else setTextError('');
     setPageCount(0);
     setSearchParams({ ...searchParams, _page: 1, _searchText: searchText });
@@ -308,6 +327,10 @@ const TodoList = () => {
 
   const handleSearchButton = () => {
     changeEventSearch();
+  };
+
+  const handleChangeActionLog = (e) => {
+    setSearchParams({ ...searchParams, _actionLog: e.target.name });
   };
 
   const handleDone = (id) => {
@@ -379,11 +402,16 @@ const TodoList = () => {
           <ContainerSelector>
             <ContainerButtonSelector>
               <WrapperButtonSelector>
-                <div style={{ background: 'lightgray' , display:'inline-block' }}>
-                  <ButtonSelector >All</ButtonSelector>
-                  <ButtonSelector >Done</ButtonSelector>
-                  <ButtonSelector >Undone</ButtonSelector>
-                </div>
+                <ButtonSelector onClick={handleChangeActionLog} name="all">
+                  All ({todoStorage.length})
+                </ButtonSelector>
+                <ButtonSelector onClick={handleChangeActionLog} name="done">
+                  Done ({todoStorage.filter(todo => todo.done === true).length })
+                </ButtonSelector>
+
+                <ButtonSelector onClick={handleChangeActionLog} name="undone">
+                  Undone ({todoStorage.filter(todo => todo.done === false).length })
+                </ButtonSelector>
               </WrapperButtonSelector>
             </ContainerButtonSelector>
           </ContainerSelector>
