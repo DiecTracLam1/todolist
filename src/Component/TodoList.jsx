@@ -118,6 +118,21 @@ const ButtonSelector = styled.button`
   }
 `;
 
+const ButtonAll = styled(ButtonSelector)`
+  text-decoration: ${(props) => props.checkButton === 'all' && 'underline #037ef1 2px'};
+  color: ${(props) => props.checkButton === 'all' && '#037ef1'};
+`;
+
+const ButtonDone = styled(ButtonSelector)`
+  text-decoration: ${(props) => props.checkButton === 'done' && 'underline #037ef1 2px'};
+  color: ${(props) => props.checkButton === 'done' && '#037ef1'};
+`;
+
+const ButtonUnDone = styled(ButtonSelector)`
+  text-decoration: ${(props) => props.checkButton === 'undone' && 'underline #037ef1 2px'};
+  color: ${(props) => props.checkButton === 'undone' && '#037ef1'};
+`;
+
 const ContainerList = styled.ul`
   list-style-type: none;
   padding: 0;
@@ -168,7 +183,7 @@ const TodoList = () => {
     return searchParams._logItem > 20 ? 20 : searchParams._logItem;
   }, [searchParams._logItem]);
   const [logItem, setLogItem] = useState(searchLogItem || 5);
-  const [pageCount, setPageCount] = useState(searchParams._page - 1 < 0 ? 0 : searchParams._page);
+  const [pageCount, setPageCount] = useState(!!(searchParams._page - 1) ? searchParams._page : 0);
   const [pageTotal, setPageTotal] = useState(Math.ceil(todos.length / logItem));
 
   let itemCountList = useMemo(() => {
@@ -227,7 +242,7 @@ const TodoList = () => {
       }
     }
 
-    if (newArray.length <= logItem && !!searchParams._searchText) {
+    if (newArray.length <= logItem && !!searchParams._searchText === false) {
       setTodos(newArray);
       return;
     } else if (!!searchParams._searchText) {
@@ -236,16 +251,18 @@ const TodoList = () => {
       );
     }
 
+    console.log(pageCount);
     for (
       let start = pageCount * logItem;
       start < Number(pageCount * logItem) + Number(logItem);
       start++
     ) {
+      console.log(start);
       if (start >= newArray.length) break;
       array.push(newArray[start]);
     }
+    console.log(array);
     setTodos(array);
-
   }, [pageCount, searchParams._searchText, logItem, todoStorage, searchParams._actionLog]);
 
   const handleChangeAddInput = (e) => {
@@ -317,7 +334,7 @@ const TodoList = () => {
   };
 
   const handleChangeActionLog = (e) => {
-    setSearchParams({ ...searchParams, _actionLog: e.target.name , _page : 1 });
+    setSearchParams({ ...searchParams, _actionLog: e.target.name, _page: 1 });
     setPageCount(0);
   };
 
@@ -390,15 +407,27 @@ const TodoList = () => {
           <ContainerSelector>
             <ContainerButtonSelector>
               <WrapperButtonSelector>
-                <ButtonSelector onClick={handleChangeActionLog} name="all">
+                <ButtonAll
+                  checkButton={searchParams._actionLog}
+                  onClick={handleChangeActionLog}
+                  name="all"
+                >
                   All ({todoStorage.length})
-                </ButtonSelector>
-                <ButtonSelector onClick={handleChangeActionLog} name="done">
+                </ButtonAll>
+                <ButtonDone
+                  checkButton={searchParams._actionLog}
+                  onClick={handleChangeActionLog}
+                  name="done"
+                >
                   Done ({todoStorage.filter((todo) => todo.done).length})
-                </ButtonSelector>
-                <ButtonSelector onClick={handleChangeActionLog} name="undone">
+                </ButtonDone>
+                <ButtonUnDone
+                  checkButton={searchParams._actionLog}
+                  onClick={handleChangeActionLog}
+                  name="undone"
+                >
                   Undone ({todoStorage.filter((todo) => !todo.done).length})
-                </ButtonSelector>
+                </ButtonUnDone>
               </WrapperButtonSelector>
             </ContainerButtonSelector>
           </ContainerSelector>
