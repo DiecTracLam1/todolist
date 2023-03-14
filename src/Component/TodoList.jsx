@@ -242,7 +242,7 @@ const TodoList = () => {
       }
     }
 
-    if (newArray.length <= logItem && !!searchParams._searchText === false) {
+    if (newArray.length <= logItem && !searchParams?._searchText) {
       setTodos(newArray);
       return;
     } else if (!!searchParams._searchText) {
@@ -251,17 +251,14 @@ const TodoList = () => {
       );
     }
 
-    console.log(pageCount);
     for (
       let start = pageCount * logItem;
       start < Number(pageCount * logItem) + Number(logItem);
       start++
     ) {
-      console.log(start);
       if (start >= newArray.length) break;
       array.push(newArray[start]);
     }
-    console.log(array);
     setTodos(array);
   }, [pageCount, searchParams._searchText, logItem, todoStorage, searchParams._actionLog]);
 
