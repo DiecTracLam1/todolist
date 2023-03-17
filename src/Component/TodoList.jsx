@@ -197,16 +197,6 @@ const TodoList = () => {
     return list;
   }, [todoStorage.length]);
 
-  function changePageCountByAction(searchList = [...todoStorage]) {
-    if (!!searchText) {
-      searchList = todoStorage.filter((todo) =>
-        todo.content.toLowerCase().includes(searchText.toLowerCase())
-      );
-    }
-    const array = [...searchList];
-    setPageTotal(Math.ceil(array.length / logItem));
-  }
-
   useEffect(() => {
     function changePageCountByLogItem() {
       let searchList = [...todoStorage];
@@ -267,12 +257,15 @@ const TodoList = () => {
     setSearchParams({ ...searchParams, _addText: e.target.value });
   };
 
-  function addListTodo() {
+  function handleAddButton() {
+    if (addText === '') return;
     const checkAddText = todoStorage.findIndex((todo) => todo.content === addText);
+
     if (checkAddText >= 0) {
       setOpenErrorLog(true);
       return;
     }
+
     dispatch(add({ lastId, addText }));
     setLastId(lastId + 1);
     setAddText('');
@@ -280,42 +273,28 @@ const TodoList = () => {
     setSearchParams(searchParams);
   }
 
-  const handleEnterAddInput = (e) => {
-    if (e.key === 'Enter') {
-      if (addText === '') return;
-      addListTodo();
-    }
-  };
-  const handleAddButton = () => {
-    if (addText === '') return;
-    addListTodo();
-  };
-
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
   };
 
-  function changeEventSearch() {
+  function handleSearchButton() {
     if (searchText === '') {
       setSearchParams({ ...searchParams, _searchText: '' });
-      changePageCountByAction(todoStorage);
+      setPageTotal(todoStorage.length / logItem);
       return;
     }
+
     const newArray = todoStorage.filter((todo) =>
       todo.content.toLowerCase().includes(searchText.toLowerCase())
     );
-    if (newArray.length <= 0 && !!searchParams._searchText) setTextError("Can't find todo list");
+
+    if (newArray.length <= 0 && searchText) setTextError("Can't find todo list");
     else setTextError('');
+
     setPageCount(0);
     setSearchParams({ ...searchParams, _page: 1, _searchText: searchText });
-    changePageCountByAction(newArray);
+    setPageTotal(newArray.length / logItem);
   }
-
-  const handleEnterSearchInput = (e) => {
-    if (e.key === 'Enter') {
-      changeEventSearch();
-    }
-  };
 
   const handleDeleteSearchInput = () => {
     setSearchText('');
@@ -326,11 +305,8 @@ const TodoList = () => {
     setAddText('');
   };
 
-  const handleSearchButton = () => {
-    changeEventSearch();
-  };
-
   const handleChangeActionLog = (e) => {
+    delete searchParams._searchText;
     setSearchParams({ ...searchParams, _actionLog: e.target.name, _page: 1 });
     setPageCount(0);
   };
@@ -372,7 +348,7 @@ const TodoList = () => {
               placeholder="Add Todo..."
               value={addText}
               onChange={handleChangeAddInput}
-              onKeyUp={handleEnterAddInput}
+              onKeyUp={e => e.key === 'Enter' && handleAddButton()}
             />
             {addText && (
               <Times onClick={handleDeleteAddInput}>
@@ -390,7 +366,7 @@ const TodoList = () => {
                 placeholder="Search"
                 value={searchText}
                 onChange={handleChangeSearchInput}
-                onKeyUp={handleEnterSearchInput}
+                onKeyUp={e => e.key === 'Enter' && handleSearchButton()}
               />
               {searchText && (
                 <Times onClick={handleDeleteSearchInput}>
