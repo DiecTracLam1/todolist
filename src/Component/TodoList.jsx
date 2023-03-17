@@ -259,8 +259,9 @@ const TodoList = () => {
 
   function handleAddButton() {
     if (addText === '') return;
+    
+    // check Addtext was already existing
     const checkAddText = todoStorage.findIndex((todo) => todo.content === addText);
-
     if (checkAddText >= 0) {
       setOpenErrorLog(true);
       return;
