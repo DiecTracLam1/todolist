@@ -1,5 +1,5 @@
 import React from "react";
-import "../assets/css/pagingnation.css"
+import "../../assets/css/pagingnation.css"
 import ReactPaginate from "react-paginate";
 import { FcPrevious, FcNext } from 'react-icons/fc';
 

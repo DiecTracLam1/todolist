@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import useCustomSearchParams from '../useCustom/useCustomSearchParams';
+import useCustomSearchParams from '../../useCustom/useCustomSearchParams';
 import styled from 'styled-components';
 import TodoItem from './TodoItem';
 import EditTable from './EditTable';
@@ -7,7 +7,7 @@ import PaginatedItems from './Pagingnation';
 import { TiTimes } from 'react-icons/ti';
 import ErrorLog from './ErrorLog';
 import { useDispatch, useSelector } from 'react-redux';
-import { add, done, edit, remove } from '../features/todo/todoSlice';
+import { add, done, edit, remove } from '../../features/todo/todoSlice';
 
 const Container = styled.div`
   width: 700px;
@@ -259,7 +259,7 @@ const TodoList = () => {
 
   function handleAddButton() {
     if (addText === '') return;
-    
+
     // check Addtext was already existing
     const checkAddText = todoStorage.findIndex((todo) => todo.content === addText);
     if (checkAddText >= 0) {
@@ -349,7 +349,7 @@ const TodoList = () => {
               placeholder="Add Todo..."
               value={addText}
               onChange={handleChangeAddInput}
-              onKeyUp={e => e.key === 'Enter' && handleAddButton()}
+              onKeyUp={(e) => e.key === 'Enter' && handleAddButton()}
             />
             {addText && (
               <Times onClick={handleDeleteAddInput}>
@@ -367,7 +367,7 @@ const TodoList = () => {
                 placeholder="Search"
                 value={searchText}
                 onChange={handleChangeSearchInput}
-                onKeyUp={e => e.key === 'Enter' && handleSearchButton()}
+                onKeyUp={(e) => e.key === 'Enter' && handleSearchButton()}
               />
               {searchText && (
                 <Times onClick={handleDeleteSearchInput}>
