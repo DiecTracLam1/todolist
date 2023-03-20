@@ -1,14 +1,40 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import brandApi from '../../api/brandApi';
+
+export const getData = createAsyncThunk('todoSlice/getData', async () => {
+  try {
+    const data = await brandApi.getAll();
+    console.log(data.data.data.docs);
+    return data.data.data.docs;
+  } catch (error) {}
+});
+
+export const getDetail = createAsyncThunk('todoSlice/getDetail', async () => {
+  try {
+    const data = await brandApi.getAll();
+    console.log(data.data.data.docs);
+    return data.data.data.docs;
+  } catch (error) {}
+});
+
+export const editTodo = createAsyncThunk('todoSlice/editTodo', async (payload) => {
+  try {
+    const data = await brandApi.edit(payload);
+    console.log(data.data.data.docs);
+    return data.data.data.docs;
+  } catch (error) {}
+});
 
 export const todoSlice = createSlice({
   name: 'todoSlice',
   initialState: {
-    data: JSON.parse(localStorage?.getItem('todoList')) ?? [],
+    data: [],
+    loading: true,
   },
   reducers: {
     add: (state, action) => {
       const { lastId, addText } = action.payload;
-      const newTodo = [{ id: lastId + 1, content: addText ,done: false }, ...state.data];
+      const newTodo = [{ id: lastId + 1, content: addText, done: false }, ...state.data];
       localStorage.setItem('todoList', JSON.stringify(newTodo));
       localStorage.setItem('lastID', JSON.stringify(lastId + 1));
       state.data = [...newTodo];
@@ -21,33 +47,25 @@ export const todoSlice = createSlice({
       state.data = [...newArray];
     },
 
-    edit: (state, action) => {
-      const { editTodo, oldIndex, newIndex } = action.payload;
-      let tampTodo;
-      let newArray = state.data.map((todo, i) => {
-        tampTodo = { ...state.data[newIndex] };
-        if (i === Number(newIndex)) {
-          todo = { ...editTodo };
-        } else if (i === Number(oldIndex)) {
-          todo = { ...tampTodo };
-        }
-        return todo;
-      });
-      localStorage.setItem('todoList', JSON.stringify(newArray));
-      state.data = [...newArray];
-    },
-
-    done : (state, action) => {
-      const id = action.payload
-      const index = state.data.findIndex(todo => todo.id === id)
-      state.data[index].done = !state.data[index].done
+    done: (state, action) => {
+      const id = action.payload;
+      const index = state.data.findIndex((todo) => todo.id === id);
+      state.data[index].done = !state.data[index].done;
       localStorage.setItem('todoList', JSON.stringify(state.data));
-
-    }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getData.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getData.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { add, remove, edit , done } = todoSlice.actions;
+export const { add, remove, edit, done } = todoSlice.actions;
 
 export default todoSlice.reducer;

@@ -13,6 +13,7 @@ const ContainerItem = styled.li`
   border-radius: 12px;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 `;
 
 const WrapContent = styled.div`
@@ -69,15 +70,23 @@ const DoneButton = styled(Button)`
   opacity: ${props => props.doneTask && 0.6};
 `;
 
-const TodoItem = ({ todo, handleDelete, handleEdit, handleDone }) => {
+const TodoItem = ({ todo, handleDelete, handleEdit, handleDone , handleDetail ,setOpenDetail }) => {
+  const handleCLickLogDetail = ()=>{
+    setOpenDetail(true)
+    handleDetail()
+  }
+  const handleButtonDone = ()=>{
+
+    handleDone(todo?.id)
+  }
   return (
-    <ContainerItem>
+    <ContainerItem onClick={handleCLickLogDetail}>
       <WrapContent doneTask={todo?.done}>
-        <Content Content>{` ${todo?.content}`}</Content>
-        {todo?.description && <Description>{todo?.description}</Description>}
+        <Content Content>{` ${todo?.name}`}</Content>
+        {todo?.note && <Description>{todo?.note}</Description>}
       </WrapContent>
       <ButtonContainer>
-        <DoneButton doneTask={todo?.done} onClick={() => handleDone(todo?.id)}>
+        <DoneButton doneTask={todo?.done} onClick={handleButtonDone}>
           <MdOutlineDone />
         </DoneButton>
         <EdditButton onClick={() => handleEdit(todo?.id)}>
