@@ -25,6 +25,14 @@ export const editTodo = createAsyncThunk('todoSlice/editTodo', async (payload) =
   } catch (error) {}
 });
 
+export const deleTodo = createAsyncThunk('todoSlice/deleteTodo', async (payload) =>{
+  try {
+    const data = await brandApi.delete(payload);
+    console.log(data.data.data.docs);
+    return data.data.data.docs;
+  } catch (error) {}
+})
+
 export const todoSlice = createSlice({
   name: 'todoSlice',
   initialState: {
@@ -38,13 +46,6 @@ export const todoSlice = createSlice({
       localStorage.setItem('todoList', JSON.stringify(newTodo));
       localStorage.setItem('lastID', JSON.stringify(lastId + 1));
       state.data = [...newTodo];
-    },
-
-    remove: (state, action) => {
-      const id = action.payload;
-      const newArray = state.data.filter((todo) => todo.id !== id);
-      localStorage.setItem('todoList', JSON.stringify(newArray));
-      state.data = [...newArray];
     },
 
     done: (state, action) => {
@@ -62,10 +63,12 @@ export const todoSlice = createSlice({
       state.data = action.payload;
       state.loading = false;
     });
+
+    // builder.addCase(deleTodo.fulfilled
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { add, remove, edit, done } = todoSlice.actions;
+export const { add, remove, edit , done } = todoSlice.actions;
 
 export default todoSlice.reducer;

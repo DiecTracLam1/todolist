@@ -7,7 +7,7 @@ import PaginatedItems from './Pagingnation';
 import { TiTimes } from 'react-icons/ti';
 import ErrorLog from './ErrorLog';
 import { useDispatch, useSelector } from 'react-redux';
-import { add, done, edit, getData, remove } from '../../features/todo/todoSlice';
+import { add, deleTodo, done, edit, getData, remove } from '../../features/todo/todoSlice';
 import Detail from './Detail';
 
 const Container = styled.div`
@@ -185,7 +185,7 @@ const TodoList = () => {
     return searchParams._logItem > 20 ? 20 : searchParams._logItem;
   }, [searchParams._logItem]);
   const [logItem, setLogItem] = useState(searchLogItem || 5);
-  const [pageCount, setPageCount] = useState(!!(searchParams._page - 1) ? searchParams._page : 0);
+  const [pageCount, setPageCount] = useState(!!(searchParams._page - 1) ? searchParams._page - 1 : 0);
   const [pageTotal, setPageTotal] = useState(Math.ceil(todos.length / logItem));
   const [detailTodo , setDetailTodo] = useState();
 
@@ -213,7 +213,7 @@ const TodoList = () => {
       let searchList = [...TodoList];
       if (!!searchParams._searchText) {
         searchList = TodoList.filter((todo) =>
-          todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
+          todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
         );
       }
 
@@ -248,10 +248,9 @@ const TodoList = () => {
       return;
     } else if (!!searchParams._searchText) {
       newArray = newArray.filter((todo) =>
-        todo.content.toLowerCase().includes(searchParams._searchText.toLowerCase())
+        todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
       );
     }
-
     for (
       let start = pageCount * logItem;
       start < Number(pageCount * logItem) + Number(logItem);
@@ -295,9 +294,9 @@ const TodoList = () => {
       setPageTotal(TodoList.length / logItem);
       return;
     }
-
+    console.log(searchText)
     const newArray = TodoList.filter((todo) =>
-      todo.content.toLowerCase().includes(searchText.toLowerCase())
+      todo.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
     if (newArray.length <= 0 && searchText) setTextError("Can't find todo list");
@@ -339,7 +338,7 @@ const TodoList = () => {
 
   const handleDelete = (id) => {
     setSearchParams({ ...searchParams, _page: 1 });
-    dispatch(remove(id));
+    dispatch(deleTodo(id));
   };
 
   const handleChangeLogItem = (e) => {

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { BiTrash } from 'react-icons/bi';
 import { AiOutlineForm } from 'react-icons/ai';
 import { MdOutlineDone } from 'react-icons/md';
+import { useDispatch } from 'react-redux';
+import { editTodo } from '../../features/todo/todoSlice';
 
 const ContainerItem = styled.li`
   display: flex;
@@ -71,13 +73,17 @@ const DoneButton = styled(Button)`
 `;
 
 const TodoItem = ({ todo, handleDelete, handleEdit, handleDone , handleDetail ,setOpenDetail }) => {
+  const dispatch = useDispatch();
   const handleCLickLogDetail = ()=>{
     setOpenDetail(true)
     handleDetail()
   }
-  const handleButtonDone = ()=>{
-
-    handleDone(todo?.id)
+  const handleButtonDone = async()=>{
+    const newTodo = {...todo}
+    console.log(newTodo)
+    newTodo.status = Number(!newTodo.status)
+    // handleDone(todo?.id)
+    await dispatch(editTodo(newTodo))
   }
   return (
     <ContainerItem onClick={handleCLickLogDetail}>
