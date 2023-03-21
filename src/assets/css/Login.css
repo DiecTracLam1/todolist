@@ -1,0 +1,24 @@
+.ContainerLogin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+}
+.form{
+    box-shadow: 5px 10px 8px #888888;
+    width: 600px;
+    padding : 8px 24px;
+    margin: 200px auto 0 auto ;
+    background-color: rgb(219, 219, 218);
+}
+.wrapperLogin {
+    display: flex;
+    justify-content: center;
+}
+.buttonLogin{
+    width: 200px;
+    margin-top: 10px;
+    
+}

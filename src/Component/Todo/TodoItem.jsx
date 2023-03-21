@@ -4,7 +4,8 @@ import { BiTrash } from 'react-icons/bi';
 import { AiOutlineForm } from 'react-icons/ai';
 import { MdOutlineDone } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
-import { editTodo } from '../../features/todo/todoSlice';
+import {  editTodoThunk } from '../../features/todo/todoSlice';
+import { CgNotes } from 'react-icons/cg';
 
 const ContainerItem = styled.li`
   display: flex;
@@ -15,13 +16,12 @@ const ContainerItem = styled.li`
   border-radius: 12px;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
 `;
 
 const WrapContent = styled.div`
   flex: 1;
-  text-decoration: ${props => props.doneTask && "line-through"};
-  opacity: ${props => props.doneTask && 0.6};;
+  text-decoration: ${(props) => !props.doneTask && 'line-through'};
+  opacity: ${(props) => !props.doneTask && 0.6}; 
 `;
 const Content = styled.div`
   flex: 1;
@@ -39,7 +39,6 @@ const Description = styled.p`
   color: #a3a2a2;
   font-size: 14px;
   height: 20px;
-  width: 100px;
 `;
 
 const ButtonContainer = styled.div`
@@ -68,33 +67,39 @@ const DeleButton = styled(Button)`
 
 const DoneButton = styled(Button)`
   background-color: #0dbd0d;
-  color : white;
-  opacity: ${props => props.doneTask && 0.6};
+  color: white;
+  opacity: ${(props) => !props.doneTask && 0.6};
 `;
 
-const TodoItem = ({ todo, handleDelete, handleEdit, handleDone , handleDetail ,setOpenDetail }) => {
+const DetailButton = styled(Button)`
+  background-color: #0da8bd;
+`;
+
+const TodoItem = ({ todo, handleDelete, handleEdit, handleDone, handleDetail, setOpenDetail }) => {
   const dispatch = useDispatch();
-  const handleCLickLogDetail = ()=>{
-    setOpenDetail(true)
-    handleDetail()
-  }
-  const handleButtonDone = async()=>{
-    const newTodo = {...todo}
-    console.log(newTodo)
-    newTodo.status = Number(!newTodo.status)
-    // handleDone(todo?.id)
-    await dispatch(editTodo(newTodo))
-  }
+  const handleCLickLogDetail = () => {
+    setOpenDetail(true);
+    handleDetail(todo);
+  };
+  const handleButtonDone = async () => {
+    const newTodo = { ...todo };
+    console.log(newTodo);
+    newTodo.status = Number(!newTodo.status);
+    await dispatch(editTodoThunk(newTodo));
+  };
   return (
-    <ContainerItem onClick={handleCLickLogDetail}>
-      <WrapContent doneTask={todo?.done}>
+    <ContainerItem>
+      <WrapContent doneTask={todo?.status}>
         <Content Content>{` ${todo?.name}`}</Content>
         {todo?.note && <Description>{todo?.note}</Description>}
       </WrapContent>
       <ButtonContainer>
-        <DoneButton doneTask={todo?.done} onClick={handleButtonDone}>
+        <DoneButton doneTask={todo?.status} onClick={handleButtonDone}>
           <MdOutlineDone />
         </DoneButton>
+        <DetailButton  onClick={handleCLickLogDetail}>
+          <CgNotes />
+        </DetailButton>
         <EdditButton onClick={() => handleEdit(todo?.id)}>
           <AiOutlineForm />
         </EdditButton>

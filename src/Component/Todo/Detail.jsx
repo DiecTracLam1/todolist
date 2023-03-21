@@ -111,7 +111,7 @@ const Detail = ({ setOpenDetail, todo }) => {
 
         <ContainerInput>
           <Label htmlFor="description">Create Date</Label>
-          <TextArea
+          <Input
             id="description"
             name="description"
             value={new Date(todo.createdAt).toLocaleDateString()}

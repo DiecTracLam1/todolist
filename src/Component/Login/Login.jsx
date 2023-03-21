@@ -3,12 +3,14 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { Button, Form, Input, Typography } from 'antd';
 import { useFormik } from 'formik';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginThunk } from '../../features/user/userSlice';
 import { validate } from '../../useCustom/useValidateForm';
+import '../../assets/css/Login.css';
 
 const Login = () => {
+  const userReducer = useSelector((state) => state.user.data)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
@@ -19,23 +21,31 @@ const Login = () => {
     validate,
     onSubmit: async (values) => {
       const resultAction = await dispatch(loginThunk(values));
-      console.log(resultAction)
-      const user = unwrapResult(resultAction)
-      if(user.status === 200){
-        navigate("/todolist");
+      console.log(resultAction);
+      const user = unwrapResult(resultAction);
+      if (user.status === 200) {
+        navigate('/todolist');
       }
     },
   });
+
+  if(localStorage.getItem('user_token')){
+    console.log("dsad")
+    navigate('/todolist') 
+    return ;
+  }
+
   return (
-    <div>
-      <Typography.Title level={2}>Login</Typography.Title>
+    <div className="ContainerLogin">
+
       <Form
+        className='form'
         onSubmitCapture={formik.handleSubmit}
         wrapperCol={{ span: 24 }}
         labelCol={{ span: 24 }}
         name="basic"
-        style={{ maxWidth: 600 }}
       >
+        <Typography.Title level={2} style={{textAlign:'center'}}>Login</Typography.Title>
         <Form.Item
           label="Username"
           rules={[{ message: 'Please input your username!' }]}
@@ -72,8 +82,8 @@ const Login = () => {
           />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+        <Form.Item className='wrapperLogin'>
+          <Button className='buttonLogin' type="primary" htmlType="submit" size='large'>
             Submit
           </Button>
         </Form.Item>

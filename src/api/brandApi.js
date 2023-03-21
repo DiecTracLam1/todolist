@@ -1,30 +1,35 @@
 import axiosClient from './axiosClient';
 
 const url = '/sys/brands/';
-const token = localStorage.getItem('user_token');
+
 
 const brandApi = {
-  getAll() {
+  async getAll() {
+    let token =  await localStorage.getItem('user_token');
     return axiosClient.get(url, { headers: { Authorization: `Bearer ${token}` } });
   },
 
-  getDetail(id) {
+  async getDetail(id) {
+    let token =  await localStorage.getItem('user_token');
     const urlParam = `${url}${id}`;
     return axiosClient.get(urlParam, { headers: { Authorization: `Bearer ${token}` } });
   },
 
-  add(todo){
-    return axiosClient.post(url, { headers: { Authorization: `Bearer ${token}` }  , todo});
+  async add(todo) {
+    let token =  await localStorage.getItem('user_token');
+    return axiosClient.post(url, todo, { headers: { Authorization: `Bearer ${token}` } });
   },
 
-  edit(todo) {
+  async edit(todo) {
+    let token =  await localStorage.getItem('user_token');
     const urlParam = `${url}${todo.id}`;
-    return axiosClient.put(urlParam, { headers: { Authorization: `Bearer ${token}` } }, todo);
+    return axiosClient.put(urlParam, todo, { headers: { Authorization: `Bearer ${token}` } });
   },
 
-  delete(id) {
+  async delete(id) {
+    let token =  await localStorage.getItem('user_token');
     const urlParam = `${url}${id}`;
-    console.log(urlParam)
+    console.log(urlParam);
     return axiosClient.delete(urlParam, { headers: { Authorization: `Bearer ${token}` } });
   },
 };

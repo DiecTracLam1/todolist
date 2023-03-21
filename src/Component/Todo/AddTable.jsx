@@ -1,6 +1,8 @@
-import { Radio, Space } from 'antd';
 import React, { useState } from 'react';
+import { BiHealth } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { addTodoThunk } from '../../features/todo/todoSlice';
 
 const LayoutContainer = styled.div`
   position: fixed;
@@ -39,13 +41,27 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
+const IconWrapper = styled.div`
+  display: inline-block;
+  color: #970101;
+  font-size: 7px;
+  margin-right: 2px;
+`;
+
 const Input = styled.input`
   width: 90%;
   padding: 8px;
   border: 1px solid #cdcccc;
   outline: none;
   border-radius: 6px;
+  border-color : ${props => !!props.textError && '#dd1d1d' };
 `;
+
+const TextError = styled.p`
+    color: #dd1d1d;
+    margin-top: 4px;
+    font-weight: 600;
+`
 
 const TextArea = styled.textarea`
   width: 90%;
@@ -79,20 +95,28 @@ const Button = styled.button`
   }
 `;
 
-const SaveButton = styled(Button)`
+const AddButton = styled(Button)`
   background-color: #1baa1b;
 `;
 const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
 
-const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
+const AddTable = ({ setOpen }) => {
+    const dispatch = useDispatch();
   const [todo, setTodo] = useState({
-    ...editTodo,
-    done: editTodo.done,
+    name: '',
+    note: '',
+    status: 1,
   });
-  const handleSaveButton = () => {
-    handleSaveTodo(todo);
+
+  const [textError , setTextError] = useState("");
+  const handleAddButton = async() => {
+    if (!todo.name) {
+      setTextError("Please type a name todo")
+      return;
+    }
+    await dispatch(addTodoThunk(todo))
     setOpen(false);
   };
   const handleCloseTable = () => {
@@ -100,6 +124,9 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
   };
 
   const handleChangeInput = (e) => {
+    if(e.target.name === 'name'){
+        setTextError("")
+    }
     const newContent = { ...todo, [e.target.name]: e.target.value };
     setTodo(newContent);
   };
@@ -109,15 +136,23 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
       <ContainerTable>
         <Title>Edit Table</Title>
         <ContainerInput>
-          <Label htmlFor="editText">Content</Label>
+          <Label htmlFor="editText">
+            <IconWrapper>
+              <BiHealth />
+            </IconWrapper>
+            Name
+          </Label>
           <Input
             id="editText"
             name="name"
             type="text"
+            textError={textError}
             placeholder="Edit Content ..."
             value={todo.name}
             onChange={handleChangeInput}
+            required
           />
+          <TextError>{textError}</TextError>
         </ContainerInput>
 
         <ContainerInput>
@@ -134,23 +169,13 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
           />
         </ContainerInput>
 
-        <ContainerInput>
-          <Space size={'large'}>
-            <Label htmlFor="description">Status : </Label>
-            <Radio.Group name="status" onChange={handleChangeInput} value={todo.status}>
-              <Radio value={1}>Progressing</Radio>
-              <Radio value={0}>Not progress</Radio>
-            </Radio.Group>
-          </Space>
-        </ContainerInput>
-
         <ContainerButton>
           <CancelButton onClick={handleCloseTable}>Cancel</CancelButton>
-          <SaveButton onClick={handleSaveButton}>Save</SaveButton>
+          <AddButton onClick={handleAddButton}>Add</AddButton>
         </ContainerButton>
       </ContainerTable>
     </LayoutContainer>
   );
 };
 
-export default EditTable;
+export default AddTable;

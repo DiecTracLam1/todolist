@@ -2,9 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import userApi from '../../api/userApi';
 
 export const loginThunk = createAsyncThunk('user/login', async (data, thunkAPI) => {
-    console.log(data)
-    try {       
+    try {    
         const response = await userApi.login(data);
+        localStorage.setItem('user_token', response.data.data.doc.token);
         return response.data;
     } catch (error) {
         throw new Error(error.message)
@@ -19,7 +19,7 @@ export const userSlice = createSlice({
   },
   reducers: {
     logout:(state)=>{
-        localStorage.removeItem('logout');
+        localStorage.removeItem('user_token');
         state.data = {};
     },
   },
@@ -29,7 +29,6 @@ export const userSlice = createSlice({
     })
     builder.addCase(loginThunk.fulfilled , (state,action) =>{
         state.data = action.payload;
-        localStorage.setItem('user_token', action.payload.data.doc.token);
         state.loading = false;
     })
     builder.addCase(loginThunk.rejected , (state,action) =>{
