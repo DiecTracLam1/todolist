@@ -264,7 +264,7 @@ const TodoList = () => {
     return list;
    
   }, [TodoList.length]);
-  console.log("dasda")
+
   useEffect(() => {
     function changePageCountByLogItem() {
       let searchList = [...TodoList];
