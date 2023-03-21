@@ -384,11 +384,11 @@ const TodoList = () => {
     dispatch(logout());
   }
 
-  if(!localStorage.getItem('user_token')){
-    console.log("asds")
-    navigate('/login') 
-    return ;
-  } 
+  // if(!localStorage.getItem('user_token')){
+  //   console.log("asds")
+  //   navigate('/login') 
+  //   return ;
+  // } 
   if(todoReducer.loading) return;
 
   return (

@@ -29,11 +29,11 @@ const Login = () => {
     },
   });
 
-  if(localStorage.getItem('user_token')){
-    console.log("dsad")
-    navigate('/todolist') 
-    return ;
-  }
+  // if(localStorage.getItem('user_token')){
+  //   console.log("dsad")
+  //   navigate('/todolist') 
+  //   return ;
+  // }
 
   return (
     <div className="ContainerLogin">
