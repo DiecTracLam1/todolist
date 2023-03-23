@@ -20,7 +20,7 @@ export const userSlice = createSlice({
   reducers: {
     logout:(state)=>{
         localStorage.removeItem('user_token');
-        state.data = {};
+        state.data = {"code":123};
     },
   },
   extraReducers:(builder)=>{

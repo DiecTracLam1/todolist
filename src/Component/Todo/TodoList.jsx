@@ -5,11 +5,7 @@ import { TiTimes } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  deleTodoThunk,
-  editTodoThunk,
-  getDataThunk
-} from '../../features/todo/todoSlice';
+import { deleTodoThunk, editTodoThunk, getDataThunk } from '../../features/todo/todoSlice';
 import { logout } from '../../features/user/userSlice';
 import useCustomSearchParams from '../../useCustom/useCustomSearchParams';
 import AddTable from './AddTable';
@@ -18,8 +14,6 @@ import EditTable from './EditTable';
 import ErrorLog from './ErrorLog';
 import PaginatedItems from './Pagingnation';
 import TodoItem from './TodoItem';
-
-
 
 const Container = styled.div`
   width: 700px;
@@ -43,7 +37,7 @@ const ContainerHeaderButton = styled.div`
   bottom: 0;
   display: flex;
   align-items: center;
-`
+`;
 const ButtonHeader = styled.button`
   padding: 4px 8px;
   text-transform: uppercase;
@@ -58,14 +52,14 @@ const ButtonHeader = styled.button`
 const ButtonAdd = styled(ButtonHeader)`
   background-color: rgb(13, 189, 13);
   color: white;
-`
+`;
 
 const ButtonLogOut = styled(ButtonHeader)`
-  &:hover{
+  &:hover {
     background-color: red;
     color: white;
   }
-`
+`;
 
 const SearchContainer = styled.div`
   display: flex;
@@ -214,9 +208,9 @@ const ItemCount = styled.p`
 `;
 
 const TodoList = () => {
-  const userReducer = useSelector((state) => state.user.data)
-  const todoReducer = useSelector((state) => state.todo)
-  const TodoList = useMemo(() => todoReducer.data , [todoReducer]);
+  const TodoList = useSelector((state) => state.todo.data);
+  const error = useSelector((state) => state.todo.error);
+  const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useCustomSearchParams();
   const [todos, setTodos] = useState([]);
@@ -225,7 +219,7 @@ const TodoList = () => {
   const [openEdit, setOpen] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
   const [openErrorLog, setOpenErrorLog] = useState(false);
-  const [openAddLog , setOpenAddLog] = useState(false);
+  const [openAddLog, setOpenAddLog] = useState(false);
   const [editTodo, setEditTodo] = useState('');
   const searchLogItem = useMemo(() => {
     return searchParams._logItem > 20 ? 20 : searchParams._logItem;
@@ -239,21 +233,26 @@ const TodoList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('Error');
+    if (!localStorage.getItem('user_token') || !!error.errorCode) {
+      if (!!error.errorCode) console.log('asds');
+      navigate('/login');
+    }
+  }, [navigate, error]);
+
+  useEffect(() => {
+    console.log('getApi');
     const getApi = async () => {
       await dispatch(getDataThunk());
     };
     getApi();
-  }, []);
 
-  // useEffect(()=>{
-  //   const getApi = async()=>{
-  //     await dispatch(getDetailThunk('NH0010'));
-  //   }
-  //   getApi()
-  // })
+  }, [dispatch]);
+
+  console.log(TodoList);
 
   let itemCountList = useMemo(() => {
-    if(TodoList.length === 0) return; 
+    if (TodoList.length === 0) return;
     const initialList = [5, 10, 15, 20];
     const list = initialList.reduce((item, currenItem, index) => {
       if (initialList.length - 1 === index) {
@@ -262,7 +261,6 @@ const TodoList = () => {
       return item.concat(currenItem);
     }, []);
     return list;
-   
   }, [TodoList.length]);
 
   useEffect(() => {
@@ -276,9 +274,9 @@ const TodoList = () => {
 
       if (!!searchParams._actionLog) {
         if (searchParams._actionLog === 'done') {
-          searchList = searchList.filter((todo) => todo.done);
+          searchList = searchList.filter((todo) => !todo.status);
         } else if (searchParams._actionLog === 'undone') {
-          searchList = searchList.filter((todo) => !todo.done);
+          searchList = searchList.filter((todo) => todo.status);
         }
       }
       const array = [...searchList];
@@ -294,9 +292,9 @@ const TodoList = () => {
     // Check _actionLog is exist
     if (!!searchParams._actionLog) {
       if (searchParams._actionLog === 'done') {
-        newArray = newArray.filter((todo) => todo.done);
+        newArray = newArray.filter((todo) => !todo.status);
       } else if (searchParams._actionLog === 'undone') {
-        newArray = newArray.filter((todo) => !todo.done);
+        newArray = newArray.filter((todo) => todo.status);
       }
     }
 
@@ -346,7 +344,6 @@ const TodoList = () => {
     setSearchParams({ ...searchParams, _searchText: '' });
   };
 
-
   const handleChangeActionLog = (e) => {
     delete searchParams._searchText;
     setSearchParams({ ...searchParams, _actionLog: e.target.name, _page: 1 });
@@ -380,16 +377,13 @@ const TodoList = () => {
     setSearchParams({ ...searchParams, _page: 1 });
   };
 
-  const handleLogout =  ()=>{
+  const handleLogout = () => {
     dispatch(logout());
-  }
+    navigate('/login');
+  };
 
-  // if(!localStorage.getItem('user_token')){
-  //   console.log("asds")
-  //   navigate('/login') 
-  //   return ;
-  // } 
-  if(todoReducer.loading) return;
+  // console.log(todoReducer.loading)
+  if (loading) return;
 
   return (
     <>
@@ -397,8 +391,12 @@ const TodoList = () => {
         <ContainerHeader>
           <Title>Todo List</Title>
           <ContainerHeaderButton>
-              <ButtonAdd onClick={()=>setOpenAddLog(true)}><IoMdAddCircle/></ButtonAdd>
-              <ButtonLogOut onClick={handleLogout}><FaSignOutAlt/></ButtonLogOut>
+            <ButtonAdd onClick={() => setOpenAddLog(true)}>
+              <IoMdAddCircle />
+            </ButtonAdd>
+            <ButtonLogOut onClick={handleLogout}>
+              <FaSignOutAlt />
+            </ButtonLogOut>
           </ContainerHeaderButton>
         </ContainerHeader>
 
@@ -483,7 +481,7 @@ const TodoList = () => {
           </ContainerPagingnation>
         </TodoContainer>
       </Container>
-      {openAddLog && <AddTable setOpen={setOpenAddLog}/>}
+      {openAddLog && <AddTable setOpen={setOpenAddLog} />}
       {openErrorLog && <ErrorLog setOpenErrorLog={setOpenErrorLog} />}
       {openEdit && (
         <EditTable setOpen={setOpen} editTodo={editTodo} handleSaveTodo={handleSaveTodo} />

@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import brandApi from '../../api/brandApi';
 
-export const getDataThunk = createAsyncThunk('todoSlice/getData', async () => {
+export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload,thunkAPI) => {
   try {
     const data = await brandApi.getAll();
     console.log(data)
     return data.data.data.docs;
   } catch (error) {
+    console.log(error)
+    return thunkAPI.rejectWithValue(error.response.data)
   }
 });
 
@@ -46,6 +48,7 @@ export const todoSlice = createSlice({
   initialState: {
     data: [],
     loading: true,
+    error:""
   },
   reducers: {
     add: (state, action) => {
@@ -63,7 +66,14 @@ export const todoSlice = createSlice({
     builder.addCase(getDataThunk.fulfilled, (state, action) => {
       state.data = action.payload;
       state.loading = false;
+      state.error = {}
     });
+    builder.addCase(getDataThunk.rejected ,  (state, action) => {
+      console.log("error")
+      state.data = []
+      state.loading = false;
+      state.error = action.payload
+    })
 
     builder.addCase(editTodoThunk.fulfilled, (state, action) => {
       const data = action.payload
@@ -84,8 +94,5 @@ export const todoSlice = createSlice({
     })
   },
 });
-
-// Action creators are generated for each case reducer function
-export const { add } = todoSlice.actions;
 
 export default todoSlice.reducer;

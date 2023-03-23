@@ -2,15 +2,14 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Button, Form, Input, Typography } from 'antd';
 import { useFormik } from 'formik';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import '../../assets/css/Login.css';
 import { loginThunk } from '../../features/user/userSlice';
 import { validate } from '../../useCustom/useValidateForm';
-import '../../assets/css/Login.css';
 
 const Login = () => {
-  const userReducer = useSelector((state) => state.user.data)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
@@ -24,28 +23,31 @@ const Login = () => {
       console.log(resultAction);
       const user = unwrapResult(resultAction);
       if (user.status === 200) {
-        navigate('/todolist');
+        navigate('/');
       }
     },
   });
 
-  // if(localStorage.getItem('user_token')){
-  //   console.log("dsad")
-  //   navigate('/todolist') 
-  //   return ;
-  // }
+  useEffect(() => {
+    if (localStorage.getItem('user_token')) {
+      console.log('dsad');
+      navigate('/');
+      return;
+    }
+  }, [navigate]);
 
   return (
     <div className="ContainerLogin">
-
       <Form
-        className='form'
+        className="form"
         onSubmitCapture={formik.handleSubmit}
         wrapperCol={{ span: 24 }}
         labelCol={{ span: 24 }}
         name="basic"
       >
-        <Typography.Title level={2} style={{textAlign:'center'}}>Login</Typography.Title>
+        <Typography.Title level={2} style={{ textAlign: 'center' }}>
+          Login
+        </Typography.Title>
         <Form.Item
           label="Username"
           rules={[{ message: 'Please input your username!' }]}
@@ -82,8 +84,8 @@ const Login = () => {
           />
         </Form.Item>
 
-        <Form.Item className='wrapperLogin'>
-          <Button className='buttonLogin' type="primary" htmlType="submit" size='large'>
+        <Form.Item className="wrapperLogin">
+          <Button className="buttonLogin" type="primary" htmlType="submit" size="large">
             Submit
           </Button>
         </Form.Item>
