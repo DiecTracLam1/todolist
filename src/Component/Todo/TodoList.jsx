@@ -233,27 +233,23 @@ const TodoList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Error');
     if (!localStorage.getItem('user_token') || !!error.errorCode) {
-      if (!!error.errorCode) console.log('asds');
       navigate('/login');
     }
   }, [navigate, error]);
 
   useEffect(() => {
-    console.log('getApi');
     const getApi = async () => {
       await dispatch(getDataThunk());
     };
     getApi();
-
   }, [dispatch]);
 
-  console.log(TodoList);
 
   let itemCountList = useMemo(() => {
-    if (TodoList.length === 0) return;
     const initialList = [5, 10, 15, 20];
+    if (TodoList.length === 0) return initialList;
+
     const list = initialList.reduce((item, currenItem, index) => {
       if (initialList.length - 1 === index) {
         if (currenItem < TodoList.length) return item.concat([currenItem, TodoList.length]);
@@ -382,7 +378,6 @@ const TodoList = () => {
     navigate('/login');
   };
 
-  // console.log(todoReducer.loading)
   if (loading) return;
 
   return (

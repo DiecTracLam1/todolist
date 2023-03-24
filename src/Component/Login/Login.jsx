@@ -20,7 +20,6 @@ const Login = () => {
     validate,
     onSubmit: async (values) => {
       const resultAction = await dispatch(loginThunk(values));
-      console.log(resultAction);
       const user = unwrapResult(resultAction);
       if (user.status === 200) {
         navigate('/');
@@ -30,7 +29,6 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem('user_token')) {
-      console.log('dsad');
       navigate('/');
       return;
     }
