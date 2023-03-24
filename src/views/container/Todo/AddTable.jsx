@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { BiHealth } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { addTodoThunk } from '../../features/todo/todoSlice';
+import { addTodoThunk, getDataThunk } from '../../../features/todo/todoSlice';
+import InputField from '../../component/InputField/InputField';
+import TextareaField from '../../component/TextareaField/TextareaField';
 
 const LayoutContainer = styled.div`
   position: fixed;
@@ -48,28 +50,7 @@ const IconWrapper = styled.div`
   margin-right: 2px;
 `;
 
-const Input = styled.input`
-  width: 90%;
-  padding: 8px;
-  border: 1px solid #cdcccc;
-  outline: none;
-  border-radius: 6px;
-  border-color : ${props => !!props.textError && '#dd1d1d' };
-`;
 
-const TextError = styled.p`
-    color: #dd1d1d;
-    margin-top: 4px;
-    font-weight: 600;
-`
-
-const TextArea = styled.textarea`
-  width: 90%;
-  padding: 8px;
-  border: 1px solid #cdcccc;
-  outline: none;
-  border-radius: 6px;
-`;
 
 const ContainerButton = styled.div`
   display: flex;
@@ -102,33 +83,33 @@ const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
 
-const AddTable = ({ setOpen }) => {
-    const dispatch = useDispatch();
+const AddTable = ({ setOpen , limit , searchParams }) => {
+  const dispatch = useDispatch();
   const [todo, setTodo] = useState({
     name: '',
     note: '',
     status: 1,
   });
 
-  const [textError , setTextError] = useState("");
-  const handleAddButton = async() => {
+  const [textError, setTextError] = useState('');
+  const handleChangeInput = (e) => {
+    if (e.target.name === 'name' || !todo.name.length) {
+      setTextError('');
+    }
+    const newContent = { ...todo, [e.target.name]: e.target.value };
+    setTodo(newContent);
+  };
+  const handleAddButton = async () => {
     if (!todo.name) {
-      setTextError("Please type a name todo")
+      setTextError('Please type a name todo');
       return;
     }
-    await dispatch(addTodoThunk(todo))
+    await dispatch(addTodoThunk(todo));
+    await dispatch(getDataThunk({limit , offset:searchParams._offset}))
     setOpen(false);
   };
   const handleCloseTable = () => {
     setOpen(false);
-  };
-
-  const handleChangeInput = (e) => {
-    if(e.target.name === 'name' || !todo.name.length){
-        setTextError("")
-    }
-    const newContent = { ...todo, [e.target.name]: e.target.value };
-    setTodo(newContent);
   };
 
   return (
@@ -142,31 +123,18 @@ const AddTable = ({ setOpen }) => {
             </IconWrapper>
             Name
           </Label>
-          <Input
-            id="editText"
-            name="name"
-            type="text"
+          <InputField
+            todo={todo}
             textError={textError}
-            placeholder="Edit Content ..."
-            value={todo.name}
-            onChange={handleChangeInput}
-            required
+            setTodo={setTodo}
+            handleChangeInput={handleChangeInput}
+            placeholder="Add content ... "
           />
-          <TextError>{textError}</TextError>
         </ContainerInput>
 
         <ContainerInput>
           <Label htmlFor="description">Note</Label>
-          <TextArea
-            id="description"
-            name="note"
-            rows="4"
-            cols="50"
-            type="text"
-            placeholder="Fill Note ... "
-            value={todo?.note}
-            onChange={handleChangeInput}
-          />
+          <TextareaField todo={todo} handleChangeInput={handleChangeInput}/>
         </ContainerInput>
 
         <ContainerButton>

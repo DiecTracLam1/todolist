@@ -4,7 +4,7 @@ import { BiTrash } from 'react-icons/bi';
 import { AiOutlineForm } from 'react-icons/ai';
 import { MdOutlineDone } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
-import {  editTodoThunk } from '../../features/todo/todoSlice';
+import {  editTodoThunk } from '../../../features/todo/todoSlice';
 import { CgNotes } from 'react-icons/cg';
 
 const ContainerItem = styled.li`

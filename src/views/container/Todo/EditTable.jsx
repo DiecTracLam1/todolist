@@ -1,6 +1,8 @@
 import { Radio, Space } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import InputField from '../../component/InputField/InputField';
+import TextareaField from '../../component/TextareaField/TextareaField';
 
 const LayoutContainer = styled.div`
   position: fixed;
@@ -37,28 +39,6 @@ const Label = styled.label`
   margin-bottom: 8px;
   color: #8f8585;
   font-weight: 600;
-`;
-
-const Input = styled.input`
-  width: 90%;
-  padding: 8px;
-  border: 1px solid #cdcccc;
-  outline: none;
-  border-radius: 6px;
-  border-color: ${(props) => !!props.textError && '#dd1d1d'};
-`;
-const TextError = styled.p`
-  color: #dd1d1d;
-  margin-top: 4px;
-  font-weight: 600;
-`;
-
-const TextArea = styled.textarea`
-  width: 90%;
-  padding: 8px;
-  border: 1px solid #cdcccc;
-  outline: none;
-  border-radius: 6px;
 `;
 
 const ContainerButton = styled.div`
@@ -124,30 +104,18 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
         <Title>Edit Table</Title>
         <ContainerInput>
           <Label htmlFor="editText">Content</Label>
-          <Input
-            id="editText"
-            name="name"
-            type="text"
+          <InputField
+            todo={todo}
             textError={textError}
-            placeholder="Edit Content ..."
-            value={todo.name}
-            onChange={handleChangeInput}
+            setTodo={setTodo}
+            handleChangeInput={handleChangeInput}
+            placeholder="Fill content"
           />
-          <TextError>{textError}</TextError>
         </ContainerInput>
 
         <ContainerInput>
           <Label htmlFor="description">Note</Label>
-          <TextArea
-            id="description"
-            name="note"
-            rows="4"
-            cols="50"
-            type="text"
-            placeholder="Fill Note ... "
-            value={todo?.note}
-            onChange={handleChangeInput}
-          />
+          <TextareaField todo={todo} handleChangeInput={handleChangeInput} />
         </ContainerInput>
 
         <ContainerInput>

@@ -5,9 +5,9 @@ import { TiTimes } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { deleTodoThunk, editTodoThunk, getDataThunk } from '../../features/todo/todoSlice';
-import { logout } from '../../features/user/userSlice';
-import useCustomSearchParams from '../../useCustom/useCustomSearchParams';
+import { deleTodoThunk, editTodoThunk, getDataThunk } from '../../../features/todo/todoSlice';
+import { logout } from '../../../features/user/userSlice';
+import useCustomSearchParams from '../../../useCustom/useCustomSearchParams';
 import AddTable from './AddTable';
 import Detail from './Detail';
 import EditTable from './EditTable';
@@ -208,7 +208,8 @@ const ItemCount = styled.p`
 `;
 
 const TodoList = () => {
-  const TodoList = useSelector((state) => state.todo.data);
+  const todoReducer = useSelector((state) => state.todo.data);
+  const TodoList = useMemo(() => todoReducer.docs, [todoReducer]);
   const error = useSelector((state) => state.todo.error);
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
@@ -221,14 +222,14 @@ const TodoList = () => {
   const [openErrorLog, setOpenErrorLog] = useState(false);
   const [openAddLog, setOpenAddLog] = useState(false);
   const [editTodo, setEditTodo] = useState('');
-  const searchLogItem = useMemo(() => {
-    return searchParams._logItem > 20 ? 20 : searchParams._logItem;
-  }, [searchParams._logItem]);
-  const [logItem, setLogItem] = useState(searchLogItem || 5);
+  const searchLimit = useMemo(() => {
+    return searchParams._limit > 20 ? 20 : searchParams._limit;
+  }, [searchParams._limit]);
+  const [limit, setLimit] = useState(searchLimit || 5);
   const [pageCount, setPageCount] = useState(
     !!(searchParams._page - 1) ? searchParams._page - 1 : 0
   );
-  const [pageTotal, setPageTotal] = useState(Math.ceil(todos.length / logItem));
+  const pageTotal = useMemo(() => Math.ceil(todoReducer.total / limit), [todoReducer.total, limit]);
   const [detailTodo, setDetailTodo] = useState();
   const navigate = useNavigate();
 
@@ -237,14 +238,15 @@ const TodoList = () => {
       navigate('/login');
     }
   }, [navigate, error]);
+  console.log('dasdasasd');
 
   useEffect(() => {
+    const offset = searchParams._offset ? Number(searchParams._offset) : 0;
     const getApi = async () => {
-      await dispatch(getDataThunk());
+      await dispatch(getDataThunk({ limit, offset: offset }));
     };
     getApi();
-  }, [dispatch]);
-
+  }, [dispatch, limit, searchParams?._offset , ]);
 
   let itemCountList = useMemo(() => {
     const initialList = [5, 10, 15, 20];
@@ -259,59 +261,59 @@ const TodoList = () => {
     return list;
   }, [TodoList.length]);
 
-  useEffect(() => {
-    function changePageCountByLogItem() {
-      let searchList = [...TodoList];
-      if (!!searchParams._searchText) {
-        searchList = TodoList.filter((todo) =>
-          todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
-        );
-      }
+  // useEffect(() => {
+  // function changePageCountByLogItem() {
+  // let searchList = [...TodoList];
+  // if (!!searchParams._searchText) {
+  //   searchList = TodoList.filter((todo) =>
+  //     todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
+  //   );
+  // }
 
-      if (!!searchParams._actionLog) {
-        if (searchParams._actionLog === 'done') {
-          searchList = searchList.filter((todo) => !todo.status);
-        } else if (searchParams._actionLog === 'undone') {
-          searchList = searchList.filter((todo) => todo.status);
-        }
-      }
-      const array = [...searchList];
-      setPageTotal(Math.ceil(array.length / logItem));
-    }
-    changePageCountByLogItem();
-  }, [logItem, searchParams._searchText, TodoList, searchParams._actionLog]);
+  // if (!!searchParams._actionLog) {
+  //   if (searchParams._actionLog === 'done') {
+  //     searchList = searchList.filter((todo) => !todo.status);
+  //   } else if (searchParams._actionLog === 'undone') {
+  //     searchList = searchList.filter((todo) => todo.status);
+  //   }
+  // }
+  // const array = [...searchList];
+  // }
+  // changePageCountByLogItem();
+  //   setPageTotal(Math.ceil(todoReducer.total / limit));
+  // }, [limit, searchParams._searchText, TodoList, searchParams._actionLog , todoReducer]);
 
-  useEffect(() => {
-    const array = [];
-    let newArray = [...TodoList];
+  // useEffect(() => {
+  //   const array = [];
+  //   let newArray = [...TodoList];
 
-    // Check _actionLog is exist
-    if (!!searchParams._actionLog) {
-      if (searchParams._actionLog === 'done') {
-        newArray = newArray.filter((todo) => !todo.status);
-      } else if (searchParams._actionLog === 'undone') {
-        newArray = newArray.filter((todo) => todo.status);
-      }
-    }
+  // Check _actionLog is exist
+  // if (!!searchParams._actionLog) {
+  //   if (searchParams._actionLog === 'done') {
+  //     newArray = newArray.filter((todo) => !todo.status);
+  //   } else if (searchParams._actionLog === 'undone') {
+  //     newArray = newArray.filter((todo) => todo.status);
+  //   }
+  // }
 
-    if (newArray.length <= logItem && !searchParams?._searchText) {
-      setTodos(newArray);
-      return;
-    } else if (!!searchParams._searchText) {
-      newArray = newArray.filter((todo) =>
-        todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
-      );
-    }
-    for (
-      let start = pageCount * logItem;
-      start < Number(pageCount * logItem) + Number(logItem);
-      start++
-    ) {
-      if (start >= newArray.length) break;
-      array.push(newArray[start]);
-    }
-    setTodos(array);
-  }, [pageCount, searchParams._searchText, logItem, TodoList, searchParams._actionLog]);
+  // if (newArray.length <= limit && !searchParams?._searchText) {
+  //   setTodos(newArray);
+  //   return;
+  // } else if (!!searchParams._searchText) {
+  //   newArray = newArray.filter((todo) =>
+  //     todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
+  //   );
+  // }
+  // for (
+  //   let start = pageCount * limit;
+  //   start < Number(pageCount * limit) + Number(limit);
+  //   start++
+  // ) {
+  //   if (start >= newArray.length) break;
+  //   array.push(newArray[start]);
+  // }
+  // setTodos(array);
+  // }, [pageCount, searchParams._searchText, limit, TodoList, searchParams._actionLog]);
 
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
@@ -320,7 +322,7 @@ const TodoList = () => {
   function handleSearchButton() {
     if (!searchText) {
       setSearchParams({ ...searchParams, _searchText: '' });
-      setPageTotal(TodoList.length / logItem);
+      // setPageTotal(TodoList.length / limit);
       return;
     }
     const newArray = TodoList.filter((todo) =>
@@ -332,7 +334,7 @@ const TodoList = () => {
 
     setPageCount(0);
     setSearchParams({ ...searchParams, _page: 1, _searchText: searchText });
-    setPageTotal(newArray.length / logItem);
+    // setPageTotal(newArray.length / limit);
   }
 
   const handleDeleteSearchInput = () => {
@@ -362,9 +364,9 @@ const TodoList = () => {
   };
 
   const handleChangeLogItem = (e) => {
-    setLogItem(e.target.value);
+    setLimit(e.target.value);
     delete searchParams._page;
-    setSearchParams({ ...searchParams, _logItem: e.target.value });
+    setSearchParams({ ...searchParams, _limit: e.target.value });
     setPageCount(0);
   };
 
@@ -443,7 +445,7 @@ const TodoList = () => {
 
           {todos.length > 0 || <TextError>{textError}</TextError>}
           <ContainerList>
-            {todos.map((todo, index) => {
+            {TodoList.map((todo, index) => {
               return (
                 <TodoItem
                   handleDetail={handleDetail}
@@ -464,19 +466,20 @@ const TodoList = () => {
               setPagecount={setPageCount}
               setSearchparams={setSearchParams}
               searchParams={searchParams}
+              limit={limit}
             />
-            <Select value={logItem} onChange={handleChangeLogItem}>
+            <Select value={limit} onChange={handleChangeLogItem}>
               {itemCountList.map((item, index) => (
                 <option key={index} value={item}>
                   {item} items
                 </option>
               ))}
             </Select>
-            <ItemCount>Have {TodoList.length} items</ItemCount>
+            <ItemCount>Have {todoReducer.total} items</ItemCount>
           </ContainerPagingnation>
         </TodoContainer>
       </Container>
-      {openAddLog && <AddTable setOpen={setOpenAddLog} />}
+      {openAddLog && <AddTable searchParams={searchParams} setOpen={setOpenAddLog} limit={limit} />}
       {openErrorLog && <ErrorLog setOpenErrorLog={setOpenErrorLog} />}
       {openEdit && (
         <EditTable setOpen={setOpen} editTodo={editTodo} handleSaveTodo={handleSaveTodo} />

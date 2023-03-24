@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import brandApi from '../../api/brandApi';
 
-export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload,thunkAPI) => {
+export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload, thunkAPI) => {
   try {
-    const data = await brandApi.getAll();
-    return data.data.data.docs;
+    console.log(payload)
+    const data = await brandApi.getAll(payload?.offset , payload.limit);
+    console.log(data);
+    return data.data.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data)
+    return thunkAPI.rejectWithValue(error.response.data);
   }
 });
 
@@ -17,14 +19,13 @@ export const getDetailThunk = createAsyncThunk('todoSlice/getDetail', async (pay
   } catch (error) {}
 });
 
-export const addTodoThunk = createAsyncThunk('todoSlice/addTodo', async (payload) =>{
+export const addTodoThunk = createAsyncThunk('todoSlice/addTodo', async (payload) => {
   try {
     const data = await brandApi.add(payload);
+    console.log(data);
     return data.data.data.doc;
-  } catch (error) {
-    
-  }
-})
+  } catch (error) {}
+});
 
 export const editTodoThunk = createAsyncThunk('todoSlice/editTodo', async (payload) => {
   try {
@@ -33,19 +34,19 @@ export const editTodoThunk = createAsyncThunk('todoSlice/editTodo', async (paylo
   } catch (error) {}
 });
 
-export const deleTodoThunk = createAsyncThunk('todoSlice/deleteTodo', async (payload) =>{
+export const deleTodoThunk = createAsyncThunk('todoSlice/deleteTodo', async (payload) => {
   try {
     await brandApi.delete(payload);
     return payload;
   } catch (error) {}
-})
+});
 
 export const todoSlice = createSlice({
   name: 'todoSlice',
   initialState: {
-    data: [],
+    data: { docs: [], total: 0 },
     loading: true,
-    error:""
+    error: '',
   },
   reducers: {
     add: (state, action) => {
@@ -61,33 +62,34 @@ export const todoSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getDataThunk.fulfilled, (state, action) => {
+      console.log(action.payload)
       state.data = action.payload;
       state.loading = false;
-      state.error = {}
+      state.error = {};
     });
-    builder.addCase(getDataThunk.rejected ,  (state, action) => {
-      state.data = []
+    builder.addCase(getDataThunk.rejected, (state, action) => {
+      state.data = {};
       state.loading = false;
-      state.error = action.payload
-    })
+      state.error = action.payload;
+    });
 
     builder.addCase(editTodoThunk.fulfilled, (state, action) => {
-      const data = action.payload
-      const index = state.data.findIndex(todo => todo.id === data.id);
-      state.data[index] = data;
+      const data = action.payload;
+      const index = state.data.docs.findIndex((todo) => todo.id === data.id);
+      state.data.docs[index] = data;
     });
 
-    builder.addCase(addTodoThunk.fulfilled , (state, action) => {
+    builder.addCase(addTodoThunk.fulfilled, (state, action) => {
       const data = action.payload;
-      const newArray = [data , ...state.data]
-      state.data = newArray;
-    })
+      const newArray = [data, ...state.data.docs];
+      state.data.docs = newArray;
+    });
 
     builder.addCase(deleTodoThunk.fulfilled, (state, action) => {
-      const id = action.payload
-      const newArray = state.data.filter(todo => todo.id !== id)
-      state.data = newArray;
-    })
+      const id = action.payload;
+      const newArray = state.data.docs.filter((todo) => todo.id !== id);
+      state.data.docs = newArray;
+    });
   },
 });
 
