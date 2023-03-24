@@ -1,15 +1,17 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { unwrapResult } from '@reduxjs/toolkit';
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, Form, Input, message, Typography } from 'antd';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/Login.css';
 import { loginThunk } from '../../features/user/userSlice';
 import { validate } from '../../useCustom/useValidateForm';
 
 const Login = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const error = useSelector((state) => state.user.error);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
@@ -27,6 +29,15 @@ const Login = () => {
     },
   });
 
+  useEffect(()=>{
+    if(!!error.errorCode){
+      messageApi.open({
+        type: 'error',
+        content: 'Username or password is wrong',
+      });
+    }
+  },[error , messageApi])
+
   useEffect(() => {
     if (localStorage.getItem('user_token')) {
       navigate('/');
@@ -36,6 +47,7 @@ const Login = () => {
 
   return (
     <div className="ContainerLogin">
+      {contextHolder}
       <Form
         className="form"
         onSubmitCapture={formik.handleSubmit}

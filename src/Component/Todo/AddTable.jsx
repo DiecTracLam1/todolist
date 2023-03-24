@@ -124,7 +124,7 @@ const AddTable = ({ setOpen }) => {
   };
 
   const handleChangeInput = (e) => {
-    if(e.target.name === 'name'){
+    if(e.target.name === 'name' || !todo.name.length){
         setTextError("")
     }
     const newContent = { ...todo, [e.target.name]: e.target.value };

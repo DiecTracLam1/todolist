@@ -1,14 +1,14 @@
 export const validate = values => {
     const errors = {};
     if (!values.username) {
-      errors.username = 'Required';
+      errors.username = 'Please type your username';
     }
     // else if (values.username.length < 7) {
     //   errors.username = 'Must be 5 characters or more';
     // }
   
     if (!values.password) {
-      errors.password = 'Required';
+      errors.password = 'Plaese type your password';
     }
     // else if (values.password.length < 10) {
     //   errors.password = 'Must be 10 characters or more';

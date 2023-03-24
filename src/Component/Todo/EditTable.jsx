@@ -45,6 +45,12 @@ const Input = styled.input`
   border: 1px solid #cdcccc;
   outline: none;
   border-radius: 6px;
+  border-color: ${(props) => !!props.textError && '#dd1d1d'};
+`;
+const TextError = styled.p`
+  color: #dd1d1d;
+  margin-top: 4px;
+  font-weight: 600;
 `;
 
 const TextArea = styled.textarea`
@@ -91,7 +97,12 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
     ...editTodo,
     done: editTodo.done,
   });
+  const [textError, setTextError] = useState('');
   const handleSaveButton = () => {
+    if (!todo.name) {
+      setTextError('Please type a name todo');
+      return;
+    }
     handleSaveTodo(todo);
     setOpen(false);
   };
@@ -100,6 +111,9 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
   };
 
   const handleChangeInput = (e) => {
+    if (e.target.name === 'name' || !todo.name.length) {
+      setTextError('');
+    }
     const newContent = { ...todo, [e.target.name]: e.target.value };
     setTodo(newContent);
   };
@@ -114,10 +128,12 @@ const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
             id="editText"
             name="name"
             type="text"
+            textError={textError}
             placeholder="Edit Content ..."
             value={todo.name}
             onChange={handleChangeInput}
           />
+          <TextError>{textError}</TextError>
         </ContainerInput>
 
         <ContainerInput>
