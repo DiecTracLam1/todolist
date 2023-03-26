@@ -209,7 +209,7 @@ const ItemCount = styled.p`
 
 const TodoList = () => {
   const todoReducer = useSelector((state) => state.todo.data);
-  const TodoList = useMemo(() => todoReducer.docs, [todoReducer]);
+  const TodoList = useMemo(() => todoReducer.docs ?? [] , [todoReducer]);
   const error = useSelector((state) => state.todo.error);
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
@@ -234,11 +234,13 @@ const TodoList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('dasdasasd');
     if (!localStorage.getItem('user_token') || !!error.errorCode) {
+      // if(!!error.errorCode) localStorage.removeItem('user_token');
       navigate('/login');
     }
   }, [navigate, error]);
-  console.log('dasdasasd');
+  console.log(TodoList)
 
   useEffect(() => {
     const offset = searchParams._offset ? Number(searchParams._offset) : 0;
@@ -358,9 +360,10 @@ const TodoList = () => {
     setOpen(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     setSearchParams({ ...searchParams, _page: 1 });
-    dispatch(deleTodoThunk(id));
+    await dispatch(deleTodoThunk(id));
+    await dispatch(getDataThunk({limit , offset:searchParams._offset}))
   };
 
   const handleChangeLogItem = (e) => {

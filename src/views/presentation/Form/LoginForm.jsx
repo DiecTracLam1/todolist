@@ -21,6 +21,7 @@ const LoginForm = () => {
     onSubmit: async (values) => {
       const resultAction = await dispatch(loginThunk(values));
       const user = unwrapResult(resultAction);
+      console.log(user)
       if (user.status === 200) {
         navigate('/list');
       }
