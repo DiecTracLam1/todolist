@@ -236,7 +236,7 @@ const TodoList = () => {
     const offset = searchParams._offset ? Number(searchParams._offset) : 0;
     const getApi = async () => {
       const result = await dispatch(getDataThunk({ limit, offset: offset }));
-      if(!!result.errorCode ){
+      if(!!result.payload.errorCode ){
         localStorage.removeItem('user_token');
         navigate('/login');
       }
