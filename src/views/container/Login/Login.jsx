@@ -21,7 +21,7 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem('user_token')) {
-      navigate('/list');
+      navigate('/');
       return;
     }
   }, [navigate]);
