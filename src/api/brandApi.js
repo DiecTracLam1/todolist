@@ -1,36 +1,40 @@
+import { fetchApi } from '../features/api/apiTodo';
 import axiosClient from './axiosClient';
 
 const url = '/sys/brands';
 
-
 const brandApi = {
-  async getAll(offset = 5 , limit = 5) {
-    let token =  await localStorage.getItem('user_token');
-    const urlParam = `${url}?limit=${limit}&offset=${offset}`
-    return axiosClient.get(urlParam, { headers: { Authorization: `Bearer ${token}` } });
+  async getAll(offset = 5, limit = 5, searchText) {
+    let params = {
+      filters: JSON.stringify([
+        {
+          code: 'name',
+          operator: 'contains_case_insensitive',
+          value: searchText,
+        },
+      ]),
+      limit: limit,
+      offset: offset,
+    };
+    params = new URLSearchParams(params).toString();
+    return fetchApi(url , { method: "GET", params});
   },
 
-  async getDetail(id) {
-    let token =  await localStorage.getItem('user_token');
-    const urlParam = `${url}/${id}`;
-    return axiosClient.get(urlParam, { headers: { Authorization: `Bearer ${token}` } });
+  async getDetail(params) {
+    return fetchApi(url,{  method: "GET", params });
   },
 
-  async add(todo) {
-    let token =  await localStorage.getItem('user_token');
-    return axiosClient.post(url, todo, { headers: { Authorization: `Bearer ${token}` } });
+  async add(data) {
+    return fetchApi(url , { method: "POST",data });
   },
 
-  async edit(todo) {
-    let token =  await localStorage.getItem('user_token');
-    const urlParam = `${url}/${todo.id}`;
-    return axiosClient.put(urlParam, todo, { headers: { Authorization: `Bearer ${token}` } });
+  async edit(data) {
+    const params = data.id;
+    return fetchApi( url ,{ params , method : "PUT" , data});
   },
 
-  async delete(id) {
-    let token =  await localStorage.getItem('user_token');
-    const urlParam = `${url}/${id}`;
-    return axiosClient.delete(urlParam, { headers: { Authorization: `Bearer ${token}` } });
+  async delete(param) {
+    return axiosClient.delete(fetchApi({ url, param }));
   },
 };
 export default brandApi;

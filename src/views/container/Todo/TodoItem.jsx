@@ -90,7 +90,7 @@ const TodoItem = ({ todo, handleDelete, handleEdit, handleDone, handleDetail, se
   return (
     <ContainerItem>
       <WrapContent doneTask={todo?.status}>
-        <Content Content>{` ${todo?.name}`}</Content>
+        <Content Content>{` ${todo?.name} - ${todo.id}`}</Content>
         {todo?.note && <Description>{todo?.note}</Description>}
       </WrapContent>
       <ButtonContainer>

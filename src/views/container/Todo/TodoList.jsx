@@ -5,7 +5,11 @@ import { TiTimes } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { deleTodoThunk, editTodoThunk, getDataThunk } from '../../../features/todo/todoSlice';
+import {
+  deleTodoThunk,
+  editTodoThunk,
+  getDataThunk
+} from '../../../features/todo/todoSlice';
 import { logout } from '../../../features/user/userSlice';
 import useCustomSearchParams from '../../../useCustom/useCustomSearchParams';
 import AddTable from './AddTable';
@@ -209,11 +213,10 @@ const ItemCount = styled.p`
 
 const TodoList = () => {
   const todoReducer = useSelector((state) => state.todo.data);
-  const TodoList = useMemo(() => todoReducer.docs ?? [] , [todoReducer]);
+  const TodoList = useMemo(() => todoReducer.docs ?? [], [todoReducer]);
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useCustomSearchParams();
-  const [todos, setTodos] = useState([]);
   const [textError, setTextError] = useState('');
   const [searchText, setSearchText] = useState(searchParams._searchText || '');
   const [openEdit, setOpen] = useState(false);
@@ -235,14 +238,19 @@ const TodoList = () => {
   useEffect(() => {
     const offset = searchParams._offset ? Number(searchParams._offset) : 0;
     const getApi = async () => {
-      const result = await dispatch(getDataThunk({ limit, offset: offset }));
-      if(!!result.payload.errorCode ){
+      const result = await dispatch(
+        getDataThunk({ limit, offset: offset, searchText: searchParams._searchText })
+      );
+      console.log(result);
+      if (!!result.payload.errorCode) {
         localStorage.removeItem('user_token');
         navigate('/login');
       }
+      if (TodoList.length <= 0 && searchParams?._searchText) setTextError("Can't find todo list");
+      else setTextError('');
     };
     getApi();
-  }, [dispatch, limit, searchParams?._offset , navigate]);
+  }, [dispatch, limit, searchParams?._offset, navigate, searchParams?._searchText , TodoList.length]);
 
   useEffect(() => {
     if (!localStorage.getItem('user_token')) {
@@ -253,8 +261,8 @@ const TodoList = () => {
   let itemCountList = useMemo(() => {
     const initialList = [5, 10, 15, 20];
     if (todoReducer.total === 0 || initialList.includes(todoReducer.total)) return initialList;
-    
-    const list = [todoReducer.total , ...initialList]
+
+    const list = [todoReducer.total, ...initialList];
     return list;
   }, [todoReducer.total]);
 
@@ -319,19 +327,10 @@ const TodoList = () => {
   function handleSearchButton() {
     if (!searchText) {
       setSearchParams({ ...searchParams, _searchText: '' });
-      // setPageTotal(TodoList.length / limit);
       return;
     }
-    const newArray = TodoList.filter((todo) =>
-      todo.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    if (newArray.length <= 0 && searchText) setTextError("Can't find todo list");
-    else setTextError('');
-
+    setSearchParams({ ...searchParams, _searchText: searchText, _offset: 0, _page: 1 });
     setPageCount(0);
-    setSearchParams({ ...searchParams, _page: 1, _searchText: searchText });
-    // setPageTotal(newArray.length / limit);
   }
 
   const handleDeleteSearchInput = () => {
@@ -358,13 +357,13 @@ const TodoList = () => {
   const handleDelete = async (id) => {
     setSearchParams({ ...searchParams, _page: 1 });
     await dispatch(deleTodoThunk(id));
-    await dispatch(getDataThunk({limit , offset:searchParams._offset}))
+    await dispatch(getDataThunk({ limit, offset: searchParams._offset }));
   };
 
   const handleChangeLimit = (e) => {
     setLimit(e.target.value);
     delete searchParams._page;
-    setSearchParams({ ...searchParams, _limit: e.target.value , _offset : 0});
+    setSearchParams({ ...searchParams, _limit: e.target.value, _offset: 0 });
     setPageCount(0);
   };
 
@@ -441,7 +440,7 @@ const TodoList = () => {
             </ContainerButtonSelector>
           </ContainerSelector>
 
-          {todos.length > 0 || <TextError>{textError}</TextError>}
+          {TodoList.length > 0 || <TextError>{textError}</TextError>}
           <ContainerList>
             {TodoList.map((todo, index) => {
               return (

@@ -3,7 +3,7 @@ import brandApi from '../../api/brandApi';
 
 export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload, thunkAPI) => {
   try {
-    const data = await brandApi.getAll(payload?.offset , payload.limit);
+    const data = await brandApi.getAll(payload?.offset , payload.limit , payload.searchText);
     return data.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -37,6 +37,15 @@ export const deleTodoThunk = createAsyncThunk('todoSlice/deleteTodo', async (pay
     return payload;
   } catch (error) {}
 });
+
+export const searchTodoThunk = createAsyncThunk('todoSlice/search', async (payload) =>{
+  try {
+    const data = await brandApi.search();
+    return data.data.data.docs
+  } catch (error) {
+    
+  }
+})
 
 export const todoSlice = createSlice({
   name: 'todoSlice',
@@ -86,6 +95,10 @@ export const todoSlice = createSlice({
       const newArray = state.data.docs.filter((todo) => todo.id !== id);
       state.data.docs = newArray;
     });
+
+    builder.addCase(searchTodoThunk.fulfilled , (state, action) => {
+      state.data.docs = action.payload;
+    })
   },
 });
 
