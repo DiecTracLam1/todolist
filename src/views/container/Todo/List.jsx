@@ -10,13 +10,13 @@ const List = () => {
       {TodoList.map((todo, index) => {
         return (
           <TodoItem
-            handleDetail={handleDetail}
-            setOpenDetail={setOpenDetail}
-            key={todo.id}
-            todo={todo}
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-            index={index}
+            // handleDetail={handleDetail}
+            // setOpenDetail={setOpenDetail}
+            // key={todo.id}
+            // todo={todo}
+            // handleDelete={handleDelete}
+            // handleEdit={handleEdit}
+            // index={index}
           />
         );
       })}
