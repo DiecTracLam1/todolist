@@ -249,9 +249,6 @@ const TodoList = () => {
       navigate('/login');
     }
   }, [navigate]);
-  console.log(TodoList)
-
-
 
   let itemCountList = useMemo(() => {
     const initialList = [5, 10, 15, 20];

@@ -3,9 +3,7 @@ import brandApi from '../../api/brandApi';
 
 export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload, thunkAPI) => {
   try {
-    console.log(payload)
     const data = await brandApi.getAll(payload?.offset , payload.limit);
-    console.log(data);
     return data.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -22,7 +20,6 @@ export const getDetailThunk = createAsyncThunk('todoSlice/getDetail', async (pay
 export const addTodoThunk = createAsyncThunk('todoSlice/addTodo', async (payload) => {
   try {
     const data = await brandApi.add(payload);
-    console.log(data);
     return data.data.data.doc;
   } catch (error) {}
 });
@@ -62,7 +59,6 @@ export const todoSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getDataThunk.fulfilled, (state, action) => {
-      console.log(action.payload)
       state.data = action.payload;
       state.loading = false;
       state.error = {};
