@@ -361,10 +361,10 @@ const TodoList = () => {
     await dispatch(getDataThunk({limit , offset:searchParams._offset}))
   };
 
-  const handleChangeLogItem = (e) => {
+  const handleChangeLimit = (e) => {
     setLimit(e.target.value);
     delete searchParams._page;
-    setSearchParams({ ...searchParams, _limit: e.target.value });
+    setSearchParams({ ...searchParams, _limit: e.target.value , _offset : 0});
     setPageCount(0);
   };
 
@@ -466,7 +466,7 @@ const TodoList = () => {
               searchParams={searchParams}
               limit={limit}
             />
-            <Select value={limit} onChange={handleChangeLogItem}>
+            <Select value={limit} onChange={handleChangeLimit}>
               {itemCountList.map((item, index) => (
                 <option key={index} value={item}>
                   {item} items
