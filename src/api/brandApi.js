@@ -1,5 +1,4 @@
-import { fetchApi } from '../features/api/apiTodo';
-import axiosClient from './axiosClient';
+import {  fetchApiTodo } from '../features/api/fetchApiTodo';
 
 const url = '/sys/brands';
 
@@ -17,24 +16,24 @@ const brandApi = {
       offset: offset,
     };
     params = new URLSearchParams(params).toString();
-    return fetchApi(url , { method: "GET", params});
+    return fetchApiTodo(url , { method: "GET", params});
   },
 
   async getDetail(params) {
-    return fetchApi(url,{  method: "GET", params });
+    return fetchApiTodo(url,{  method: "GET", params });
   },
 
   async add(data) {
-    return fetchApi(url , { method: "POST",data });
+    return fetchApiTodo(url , { method: "POST",data });
   },
 
   async edit(data) {
-    const params = data.id;
-    return fetchApi( url ,{ params , method : "PUT" , data});
+    const id = data.id;
+    return fetchApiTodo( url ,{ id , method : "PUT" , data});
   },
 
-  async delete(param) {
-    return axiosClient.delete(fetchApi({ url, param }));
+  async delete(id) {
+    return fetchApiTodo(url , {id , method : "DELETE" });
   },
 };
 export default brandApi;

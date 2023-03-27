@@ -5,6 +5,6 @@ const getAuthorizationHeader = () => {
   return { Authorization: `Bearer ${token}` } ;
 };
 
-export const fetchApi = async(url, { id = '', params= '',...option }) => {
+export const fetchApiTodo = async(url, { id = '', params= '',...option }) => {
   return axiosClient(`${url}/${id}?${params}`, { headers : getAuthorizationHeader() , ...option});
 };

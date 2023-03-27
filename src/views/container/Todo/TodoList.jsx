@@ -241,7 +241,6 @@ const TodoList = () => {
       const result = await dispatch(
         getDataThunk({ limit, offset: offset, searchText: searchParams._searchText })
       );
-      console.log(result);
       if (!!result.payload.errorCode) {
         localStorage.removeItem('user_token');
         navigate('/login');
@@ -265,60 +264,6 @@ const TodoList = () => {
     const list = [todoReducer.total, ...initialList];
     return list;
   }, [todoReducer.total]);
-
-  // useEffect(() => {
-  // function changePageCountByLogItem() {
-  // let searchList = [...TodoList];
-  // if (!!searchParams._searchText) {
-  //   searchList = TodoList.filter((todo) =>
-  //     todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
-  //   );
-  // }
-
-  // if (!!searchParams._actionLog) {
-  //   if (searchParams._actionLog === 'done') {
-  //     searchList = searchList.filter((todo) => !todo.status);
-  //   } else if (searchParams._actionLog === 'undone') {
-  //     searchList = searchList.filter((todo) => todo.status);
-  //   }
-  // }
-  // const array = [...searchList];
-  // }
-  // changePageCountByLogItem();
-  //   setPageTotal(Math.ceil(todoReducer.total / limit));
-  // }, [limit, searchParams._searchText, TodoList, searchParams._actionLog , todoReducer]);
-
-  // useEffect(() => {
-  //   const array = [];
-  //   let newArray = [...TodoList];
-
-  // Check _actionLog is exist
-  // if (!!searchParams._actionLog) {
-  //   if (searchParams._actionLog === 'done') {
-  //     newArray = newArray.filter((todo) => !todo.status);
-  //   } else if (searchParams._actionLog === 'undone') {
-  //     newArray = newArray.filter((todo) => todo.status);
-  //   }
-  // }
-
-  // if (newArray.length <= limit && !searchParams?._searchText) {
-  //   setTodos(newArray);
-  //   return;
-  // } else if (!!searchParams._searchText) {
-  //   newArray = newArray.filter((todo) =>
-  //     todo.name.toLowerCase().includes(searchParams._searchText.toLowerCase())
-  //   );
-  // }
-  // for (
-  //   let start = pageCount * limit;
-  //   start < Number(pageCount * limit) + Number(limit);
-  //   start++
-  // ) {
-  //   if (start >= newArray.length) break;
-  //   array.push(newArray[start]);
-  // }
-  // setTodos(array);
-  // }, [pageCount, searchParams._searchText, limit, TodoList, searchParams._actionLog]);
 
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
