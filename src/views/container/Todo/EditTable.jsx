@@ -75,7 +75,7 @@ const CancelButton = styled(Button)`
 const EditTable = ({ setOpen, editTodo, handleSaveTodo }) => {
   const [todo, setTodo] = useState({
     ...editTodo,
-    done: editTodo.done,
+    status: editTodo.status,
   });
   const [textError, setTextError] = useState('');
   const handleSaveButton = () => {

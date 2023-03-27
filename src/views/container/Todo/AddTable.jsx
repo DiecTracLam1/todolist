@@ -115,7 +115,7 @@ const AddTable = ({ setOpen , limit , searchParams }) => {
   return (
     <LayoutContainer>
       <ContainerTable>
-        <Title>Edit Table</Title>
+        <Title>Add Table</Title>
         <ContainerInput>
           <Label htmlFor="editText">
             <IconWrapper>

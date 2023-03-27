@@ -252,11 +252,11 @@ const TodoList = () => {
 
   let itemCountList = useMemo(() => {
     const initialList = [5, 10, 15, 20];
-    if (TodoList.length === 0) return initialList;
-
-    const list = [TodoList.length , ...initialList]
+    if (todoReducer.total === 0 || initialList.includes(todoReducer.total)) return initialList;
+    
+    const list = [todoReducer.total , ...initialList]
     return list;
-  }, [TodoList.length]);
+  }, [todoReducer.total]);
 
   // useEffect(() => {
   // function changePageCountByLogItem() {
@@ -350,7 +350,7 @@ const TodoList = () => {
   };
 
   const handleEdit = (id) => {
-    const todoEdit = todos.find((todo) => todo.id === id);
+    const todoEdit = TodoList.find((todo) => todo.id === id);
     setEditTodo(todoEdit);
     setOpen(true);
   };

@@ -1,8 +1,7 @@
-import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { unwrapResult } from '@reduxjs/toolkit';
 import { Button, Form, Input, Typography } from 'antd';
 import { useFormik } from 'formik';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import '../../../assets/css/Login.css';
@@ -11,6 +10,7 @@ import { validate } from '../../../useCustom/useValidateForm';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -18,12 +18,12 @@ const LoginForm = () => {
       password: '',
     },
     validate,
-    onSubmit: async (values) => {
+    onSubmit: async (values, action) => {
       const resultAction = await dispatch(loginThunk(values));
-      const user = unwrapResult(resultAction);
-      console.log(user)
-      if (user.status === 200) {
+      if (resultAction.payload.status === 200) {
         navigate('/');
+      } else {
+        action.resetForm({ values: { password: '', username: values.username } });
       }
     },
   });
