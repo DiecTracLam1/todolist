@@ -210,7 +210,6 @@ const ItemCount = styled.p`
 const TodoList = () => {
   const todoReducer = useSelector((state) => state.todo.data);
   const TodoList = useMemo(() => todoReducer.docs ?? [] , [todoReducer]);
-  const error = useSelector((state) => state.todo.error);
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useCustomSearchParams();
@@ -234,32 +233,31 @@ const TodoList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('dasdasasd');
-    if (!localStorage.getItem('user_token') || !!error.errorCode) {
-      // if(!!error.errorCode) localStorage.removeItem('user_token');
-      navigate('/login');
-    }
-  }, [navigate, error]);
-  console.log(TodoList)
-
-  useEffect(() => {
     const offset = searchParams._offset ? Number(searchParams._offset) : 0;
     const getApi = async () => {
-      await dispatch(getDataThunk({ limit, offset: offset }));
+      const result = await dispatch(getDataThunk({ limit, offset: offset }));
+      if(!!result.errorCode ){
+        localStorage.removeItem('user_token');
+        navigate('/login');
+      }
     };
     getApi();
-  }, [dispatch, limit, searchParams?._offset , ]);
+  }, [dispatch, limit, searchParams?._offset , navigate]);
+
+  useEffect(() => {
+    if (!localStorage.getItem('user_token')) {
+      navigate('/login');
+    }
+  }, [navigate]);
+  console.log(TodoList)
+
+
 
   let itemCountList = useMemo(() => {
     const initialList = [5, 10, 15, 20];
     if (TodoList.length === 0) return initialList;
 
-    const list = initialList.reduce((item, currenItem, index) => {
-      if (initialList.length - 1 === index) {
-        if (currenItem < TodoList.length) return item.concat([currenItem, TodoList.length]);
-      }
-      return item.concat(currenItem);
-    }, []);
+    const list = [TodoList.length , ...initialList]
     return list;
   }, [TodoList.length]);
 
