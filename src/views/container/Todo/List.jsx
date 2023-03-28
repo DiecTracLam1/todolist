@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { deleTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
+import Table from 'antd/es/table';
 import TodoItem from './TodoItem';
+import { Button, Space } from 'antd';
+import { CheckOutlined, DeleteOutlined, FileTextOutlined, FormOutlined } from '@ant-design/icons';
+import '~/assets/css/TodoList.css';
+import { columns } from '~/assets/antd/tableColumn';
 
 const TextError = styled.p`
   color: red;
@@ -16,8 +21,8 @@ const ContainerList = styled.ul`
   list-style-type: none;
   padding: 0;
   margin: 0;
-  overflow-y: scroll;
-  max-height: 400px;
+  /* overflow-y: scroll;
+  max-height: 400px; */
   padding-right: 8px;
   margin-top: 18px;
 `;
@@ -84,7 +89,18 @@ const ButtonUnDone = styled(ButtonSelector)`
 const List = (props) => {
   const { searchParams, setSearchParams, limit, handleDetail, handleEdit, setOpenDetail } = props;
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
-  const [textError, setTextError] = useState('');
+  const NewTodoList = useMemo(
+    () =>
+      TodoList.map((todo, i) => {
+        const offset = searchParams._offset ? Number(searchParams._offset) : 0;
+        return {
+          num: i + 1 + offset,
+          ...todo,
+          createdAt: new Date(todo.createdAt).toLocaleDateString(),
+        };
+      }),
+    [TodoList, searchParams._offset]
+  );
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -105,11 +121,6 @@ const List = (props) => {
     };
     getApi();
   }, [dispatch, limit, offset, navigate, searchParams?._searchText]);
-
-  useEffect(() => {
-    if (TodoList.length <= 0 && searchParams?._searchText) setTextError("Can't find todo list");
-    else setTextError('');
-  }, [TodoList.length, searchParams?._searchText]);
 
   const handleDelete = async (id) => {
     setSearchParams({ ...searchParams, _page: 1 });
@@ -154,9 +165,16 @@ const List = (props) => {
           </WrapperButtonSelector>
         </ContainerButtonSelector>
       </ContainerSelector>
-      {TodoList.length > 0 || <TextError>{textError}</TextError>}
       <ContainerList>
-        {TodoList.map((todo) => {
+        <Table
+          rowKey="id"
+          columns={columns(handleEdit)}
+          dataSource={NewTodoList}
+          pagination={false}
+          scroll={{ x: true, y: '500px' }}
+          bordered
+        />
+        {/* {TodoList.map((todo) => {
           return (
             <TodoItem
               key={todo.id}
@@ -167,7 +185,7 @@ const List = (props) => {
               handleEdit={handleEdit}
             />
           );
-        })}
+        })} */}
       </ContainerList>
     </>
   );

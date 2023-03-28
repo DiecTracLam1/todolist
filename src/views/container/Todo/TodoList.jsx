@@ -16,7 +16,7 @@ import List from './List';
 import PaginatedItems from './Pagingnation';
 
 const Container = styled.div`
-  width: 700px;
+  width: 800px;
   margin: auto;
 `;
 const ContainerHeader = styled.div`
