@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import brandApi from '../../api/brandApi';
+import brandApi from '~/api/brandApi';
 
 export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload, thunkAPI) => {
   try {
-    const data = await brandApi.getAll(payload?.offset , payload.limit , payload.searchText);
+    const data = await brandApi.getAll(payload?.offset, payload.limit, payload.searchText);
     return data.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -38,14 +38,12 @@ export const deleTodoThunk = createAsyncThunk('todoSlice/deleteTodo', async (pay
   } catch (error) {}
 });
 
-export const searchTodoThunk = createAsyncThunk('todoSlice/search', async (payload) =>{
+export const searchTodoThunk = createAsyncThunk('todoSlice/search', async (payload) => {
   try {
     const data = await brandApi.search();
-    return data.data.data.docs
-  } catch (error) {
-    
-  }
-})
+    return data.data.data.docs;
+  } catch (error) {}
+});
 
 export const todoSlice = createSlice({
   name: 'todoSlice',
@@ -54,15 +52,7 @@ export const todoSlice = createSlice({
     loading: true,
     error: '',
   },
-  reducers: {
-    add: (state, action) => {
-      const { lastId, addText } = action.payload;
-      const newTodo = [{ id: lastId + 1, content: addText, done: false }, ...state.data];
-      localStorage.setItem('todoList', JSON.stringify(newTodo));
-      localStorage.setItem('lastID', JSON.stringify(lastId + 1));
-      state.data = [...newTodo];
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getDataThunk.pending, (state) => {
       state.loading = true;
@@ -96,9 +86,9 @@ export const todoSlice = createSlice({
       state.data.docs = newArray;
     });
 
-    builder.addCase(searchTodoThunk.fulfilled , (state, action) => {
+    builder.addCase(searchTodoThunk.fulfilled, (state, action) => {
       state.data.docs = action.payload;
-    })
+    });
   },
 });
 

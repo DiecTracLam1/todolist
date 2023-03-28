@@ -4,9 +4,9 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import '../../../assets/css/Login.css';
-import { loginThunk } from '../../../features/user/userSlice';
-import { validate } from '../../../useCustom/useValidateForm';
+import '~/assets/css/Login.css';
+import { loginThunk } from '~/features/user/userSlice';
+import { validate } from '~/useCustom/useValidateForm';
 
 const LoginForm = () => {
   const dispatch = useDispatch();

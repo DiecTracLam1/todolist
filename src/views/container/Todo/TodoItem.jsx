@@ -4,7 +4,7 @@ import { BiTrash } from 'react-icons/bi';
 import { AiOutlineForm } from 'react-icons/ai';
 import { MdOutlineDone } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
-import {  editTodoThunk } from '../../../features/todo/todoSlice';
+import { editTodoThunk } from '../../../features/todo/todoSlice';
 import { CgNotes } from 'react-icons/cg';
 
 const ContainerItem = styled.li`
@@ -21,7 +21,7 @@ const ContainerItem = styled.li`
 const WrapContent = styled.div`
   flex: 1;
   text-decoration: ${(props) => !props.doneTask && 'line-through'};
-  opacity: ${(props) => !props.doneTask && 0.6}; 
+  opacity: ${(props) => !props.doneTask && 0.6};
 `;
 const Content = styled.div`
   flex: 1;
@@ -97,10 +97,10 @@ const TodoItem = ({ todo, handleDelete, handleEdit, handleDone, handleDetail, se
         <DoneButton doneTask={todo?.status} onClick={handleButtonDone}>
           <MdOutlineDone />
         </DoneButton>
-        <DetailButton  onClick={handleCLickLogDetail}>
+        <DetailButton onClick={handleCLickLogDetail}>
           <CgNotes />
         </DetailButton>
-        <EdditButton onClick={() => handleEdit(todo?.id)}>
+        <EdditButton onClick={() => handleEdit(todo)}>
           <AiOutlineForm />
         </EdditButton>
         <DeleButton onClick={() => handleDelete(todo?.id)}>

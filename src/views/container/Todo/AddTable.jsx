@@ -50,8 +50,6 @@ const IconWrapper = styled.div`
   margin-right: 2px;
 `;
 
-
-
 const ContainerButton = styled.div`
   display: flex;
   margin: 22px 36px 0 0;
@@ -83,7 +81,7 @@ const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
 
-const AddTable = ({ setOpen , limit , searchParams }) => {
+const AddTable = ({ setOpen, limit, searchParams }) => {
   const dispatch = useDispatch();
   const [todo, setTodo] = useState({
     name: '',
@@ -105,7 +103,7 @@ const AddTable = ({ setOpen , limit , searchParams }) => {
       return;
     }
     await dispatch(addTodoThunk(todo));
-    await dispatch(getDataThunk({limit , offset:searchParams._offset}))
+    await dispatch(getDataThunk({ limit, offset: searchParams._offset }));
     setOpen(false);
   };
   const handleCloseTable = () => {
@@ -134,7 +132,7 @@ const AddTable = ({ setOpen , limit , searchParams }) => {
 
         <ContainerInput>
           <Label htmlFor="description">Note</Label>
-          <TextareaField todo={todo} handleChangeInput={handleChangeInput}/>
+          <TextareaField todo={todo} handleChangeInput={handleChangeInput} />
         </ContainerInput>
 
         <ContainerButton>
