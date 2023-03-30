@@ -1,3 +1,5 @@
+import { CaretDownOutlined } from '@ant-design/icons';
+import { Divider, Dropdown, Form, Space, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
@@ -5,6 +7,7 @@ import { TiTimes } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { items } from '~/features/antd/dropdownItems';
 import { editTodoThunk } from '~/features/todo/todoSlice';
 import { logout } from '~/features/user/userSlice';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
@@ -89,6 +92,7 @@ const Times = styled.div`
     opacity: 1;
   }
 `;
+
 const Button = styled.button`
   padding: 6px 10px;
   text-transform: uppercase;
@@ -186,9 +190,11 @@ const TodoList = () => {
 
   const handleDetail = (todo) => {
     setDetailTodo(todo);
+    setOpenDetail(true);
   };
 
   const handleEdit = (todo) => {
+    console.log(todo);
     setEditTodo(todo);
     setOpen(true);
   };
@@ -239,6 +245,39 @@ const TodoList = () => {
                   <TiTimes />
                 </Times>
               )}
+              <Dropdown
+                menu={{ items }}
+                placement="bottomRight"
+                dropdownRender={(menu) => (
+                  <div className="dropdown">
+                    <Typography.Title className="dropdown_topic" level={5}>
+                      Search
+                    </Typography.Title>
+                    <div>
+                      <Form layout="vertical">
+                        <Form.Item label="ID Todo">
+                          <Input placeholder="input placeholder" />
+                        </Form.Item>
+                        <Form.Item label="Owner">
+                          <Input placeholder="input placeholder" />
+                        </Form.Item>
+                        <Form.Item label="Date">
+                          <Input type="date" placeholder="input placeholder" />
+                        </Form.Item>
+                      </Form>
+                    </div>
+                    <Divider style={{ margin: 0 }} />
+                    <Space style={{ padding: 8 }}>
+                      <Button type="primary">Click me!</Button>
+                    </Space>
+                  </div>
+                )}
+                trigger={['click']}
+              >
+                <Space>
+                  <CaretDownOutlined className="dropdown_icon" />
+                </Space>
+              </Dropdown>
             </InputContainer>
             <Button onClick={handleSearchButton}>Search</Button>
           </SearchContainer>

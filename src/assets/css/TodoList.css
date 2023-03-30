@@ -1,3 +1,23 @@
 .ant-table-thead .ant-table-cell {
-    background-color: #13c2c2 !important
-  }
+  background-color: #13c2c2 !important;
+}
+
+.dropdown {
+  background-color: white;
+  box-shadow: 5px 10px 8px #888888;
+  width: 300px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.dropdown_topic {
+  background-color: #13c2c2;
+  margin-top: 0;
+  padding: 6px 14px;
+  font-weight: 700;
+}
+.dropdown_icon {
+  font-size: 12px;
+  line-height: 19px;
+  margin-right: 8px;
+}

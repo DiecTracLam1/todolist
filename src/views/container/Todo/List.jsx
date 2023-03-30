@@ -1,21 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import Table from 'antd/es/table';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { deleTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
-import Table from 'antd/es/table';
-import TodoItem from './TodoItem';
-import { Button, Space } from 'antd';
-import { CheckOutlined, DeleteOutlined, FileTextOutlined, FormOutlined } from '@ant-design/icons';
+import { columns } from '~/features/antd/tableColumn';
 import '~/assets/css/TodoList.css';
-import { columns } from '~/assets/antd/tableColumn';
-
-const TextError = styled.p`
-  color: red;
-  text-align: center;
-  font-weight: 500;
-  margin: 20px 0;
-`;
+import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
 
 const ContainerList = styled.ul`
   list-style-type: none;
@@ -87,7 +77,7 @@ const ButtonUnDone = styled(ButtonSelector)`
 `;
 
 const List = (props) => {
-  const { searchParams, setSearchParams, limit, handleDetail, handleEdit, setOpenDetail } = props;
+  const { searchParams, setSearchParams, limit, handleDetail, handleEdit } = props;
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
   const NewTodoList = useMemo(
     () =>
@@ -134,6 +124,13 @@ const List = (props) => {
     // setPageCount(0);
   };
 
+  const handleButtonDone = async (todo) => {
+    const newTodo = { ...todo };
+    console.log(newTodo);
+    newTodo.status = Number(!newTodo.status);
+    await dispatch(editTodoThunk(newTodo));
+  };
+
   if (loading) return;
 
   return (
@@ -168,10 +165,10 @@ const List = (props) => {
       <ContainerList>
         <Table
           rowKey="id"
-          columns={columns(handleEdit)}
+          columns={columns({ handleEdit, handleDetail, handleButtonDone ,handleDelete })}
           dataSource={NewTodoList}
           pagination={false}
-          scroll={{ x: true, y: '500px' }}
+          scroll={{ x: true, y: '420px' }}
           bordered
         />
         {/* {TodoList.map((todo) => {

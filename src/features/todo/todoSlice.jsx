@@ -20,6 +20,7 @@ export const getDetailThunk = createAsyncThunk('todoSlice/getDetail', async (pay
 export const addTodoThunk = createAsyncThunk('todoSlice/addTodo', async (payload) => {
   try {
     const data = await brandApi.add(payload);
+    console.log(data)
     return data.data.data.doc;
   } catch (error) {}
 });
@@ -71,11 +72,12 @@ export const todoSlice = createSlice({
     builder.addCase(editTodoThunk.fulfilled, (state, action) => {
       const data = action.payload;
       const index = state.data.docs.findIndex((todo) => todo.id === data.id);
-      state.data.docs[index] = data;
+      state.data.docs[index] = {...state.data.docs[index] , ...data};
     });
 
     builder.addCase(addTodoThunk.fulfilled, (state, action) => {
       const data = action.payload;
+      console.log(data)
       const newArray = [data, ...state.data.docs];
       state.data.docs = newArray;
     });
