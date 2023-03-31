@@ -1,9 +1,9 @@
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Divider, Dropdown, Form, Space, Typography } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Dropdown, Form, Space, Typography } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
-import { TiTimes } from 'react-icons/ti';
+import Times from '../../component/Times/times';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -11,13 +11,13 @@ import { items } from '~/features/antd/dropdownItems';
 import { editTodoThunk } from '~/features/todo/todoSlice';
 import { logout } from '~/features/user/userSlice';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
+import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
 import AddTable from './AddTable';
 import Detail from './Detail';
 import EditTable from './EditTable';
 import ErrorLog from './ErrorLog';
 import List from './List';
 import PaginatedItems from './Pagingnation';
-import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
 
 const Container = styled.div`
   width: 800px;
@@ -84,15 +84,6 @@ const Input = styled.input`
   flex: 1;
 `;
 
-const Times = styled.div`
-  cursor: pointer;
-  opacity: 0.4;
-  margin-right: 4px;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
 
 const Button = styled.button`
   padding: 6px 10px;
@@ -242,9 +233,7 @@ const TodoList = () => {
                 onKeyUp={(e) => e.key === 'Enter' && handleSearchButton()}
               />
               {searchText && (
-                <Times onClick={handleDeleteSearchInput}>
-                  <TiTimes />
-                </Times>
+                <Times handleDeleteSearchInput={handleDeleteSearchInput}/>
               )}
               <Dropdown
                 menu={{ items }}
@@ -260,15 +249,9 @@ const TodoList = () => {
                     </Typography.Title>
                     <div>
                       <Form layout="vertical" size="" style={{ padding: '0px 12px' }}>
-                        <InputSearchContainer/>
+                        <InputSearchContainer searchParams={searchParams} setSearchParams={setSearchParams}/>
                       </Form>
-                    </div>
-                    <Divider style={{ margin: 0 }} />
-                    <Space style={{ padding: 12 }} align="end" direction="horizontal">
-                      <Space.Compact>
-                        <Button type="primary">Apply</Button>
-                      </Space.Compact>
-                    </Space>
+                    </div>               
                   </div>
                 )}
                 trigger={['click']}

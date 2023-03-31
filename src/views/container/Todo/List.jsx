@@ -7,14 +7,9 @@ import { columns } from '~/features/antd/tableColumn';
 import '~/assets/css/TodoList.css';
 import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
 
-const ContainerList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  /* overflow-y: scroll;
-  max-height: 400px; */
-  padding-right: 8px;
-  margin-top: 18px;
+const ContainerList = styled.div`
+  padding: 0 8px 0 0;
+  margin: 18px 0 0 0;
 `;
 
 const ContainerSelector = styled.div`
@@ -102,7 +97,16 @@ const List = (props) => {
   useEffect(() => {
     const getApi = async () => {
       const result = await dispatch(
-        getDataThunk({ limit, offset, searchText: searchParams._searchText })
+        getDataThunk({
+          limit,
+          offset,
+          searchText: [
+            { value: searchParams._searchText, key: 'name' },
+            { value: searchParams.id, key: 'id' },
+            { value: searchParams.fullname, key: 'fullname' },
+            { value: searchParams.createdAt, key: 'createAt' },
+          ],
+        })
       );
       if (!!result.payload.errorCode) {
         localStorage.removeItem('user_token');
@@ -110,7 +114,16 @@ const List = (props) => {
       }
     };
     getApi();
-  }, [dispatch, limit, offset, navigate, searchParams?._searchText]);
+  }, [
+    dispatch,
+    limit,
+    offset,
+    navigate,
+    searchParams?._searchText,
+    searchParams.id,
+    searchParams.fullname,
+    searchParams.createdAt,
+  ]);
 
   const handleDelete = async (id) => {
     setSearchParams({ ...searchParams, _page: 1 });
@@ -165,24 +178,12 @@ const List = (props) => {
       <ContainerList>
         <Table
           rowKey="id"
-          columns={columns({ handleEdit, handleDetail, handleButtonDone ,handleDelete })}
+          columns={columns({ handleEdit, handleDetail, handleButtonDone, handleDelete })}
           dataSource={NewTodoList}
           pagination={false}
           scroll={{ x: true, y: '420px' }}
           bordered
         />
-        {/* {TodoList.map((todo) => {
-          return (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              handleDetail={handleDetail}
-              setOpenDetail={setOpenDetail}
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
-            />
-          );
-        })} */}
       </ContainerList>
     </>
   );

@@ -1,14 +1,26 @@
 import { Form, Input } from 'antd';
 import React from 'react';
+import Times from '~/views/component/Times/times.jsx';
 
-const InputSearch = ({ label, name, handleChangeSearch }) => {
+const InputSearch = ({ label, name, handleChangeSearch, value }) => {
   const handleChangeInput = (e) => {
     handleChangeSearch(e.target.name, e.target.value);
   };
+
+  const handleDeleteSearchInput = () => {
+    handleChangeSearch(name, '');
+  };
   return (
     <Form.Item label={label} style={{ marginBottom: '14px' }}>
-      <Input name={name} onChange={handleChangeInput} />
+      <Input
+        name={name}
+        onChange={handleChangeInput}
+        value={value}
+        // suffix={value && <Times handleDeleteSearchInput={handleDeleteSearchInput} />}
+      />
     </Form.Item>
+
+    
   );
 };
 
