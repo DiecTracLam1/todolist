@@ -17,6 +17,7 @@ import EditTable from './EditTable';
 import ErrorLog from './ErrorLog';
 import List from './List';
 import PaginatedItems from './Pagingnation';
+import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
 
 const Container = styled.div`
   width: 800px;
@@ -250,25 +251,23 @@ const TodoList = () => {
                 placement="bottomRight"
                 dropdownRender={(menu) => (
                   <div className="dropdown">
-                    <Typography.Title className="dropdown_topic" level={5}>
+                    <Typography.Title
+                      style={{ color: '#fff' }}
+                      className="dropdown_topic"
+                      level={5}
+                    >
                       Search
                     </Typography.Title>
                     <div>
-                      <Form layout="vertical">
-                        <Form.Item label="ID Todo">
-                          <Input placeholder="input placeholder" />
-                        </Form.Item>
-                        <Form.Item label="Owner">
-                          <Input placeholder="input placeholder" />
-                        </Form.Item>
-                        <Form.Item label="Date">
-                          <Input type="date" placeholder="input placeholder" />
-                        </Form.Item>
+                      <Form layout="vertical" size="" style={{ padding: '0px 12px' }}>
+                        <InputSearchContainer/>
                       </Form>
                     </div>
                     <Divider style={{ margin: 0 }} />
-                    <Space style={{ padding: 8 }}>
-                      <Button type="primary">Click me!</Button>
+                    <Space style={{ padding: 12 }} align="end" direction="horizontal">
+                      <Space.Compact>
+                        <Button type="primary">Apply</Button>
+                      </Space.Compact>
                     </Space>
                   </div>
                 )}
