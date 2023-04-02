@@ -6,8 +6,8 @@ import InputSearch from './InputSearch';
 const InputSearchContainer = ({searchParams, setSearchParams}) => {
 
   const [searchField, setSearchField] = useState({
-    id: searchParams.id,
-    fullname: '',
+    id: searchParams.id?? "",
+    fullname: searchParams.fullname?? "",
     createdAt: '',
   });
 

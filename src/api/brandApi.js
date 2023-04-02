@@ -3,12 +3,21 @@ import { fetchApiTodo } from '../features/api/fetchApiTodo';
 const url = '/sys/brands';
 
 const brandApi = {
-  async getAll(offset = 5, limit = 5, searchList=[]) {
-    const searchlist = searchList.map(search => ({
-      code: search.key,
-      operator: 'contains_case_insensitive',
-      value: search.value,
-    })) 
+  async getAll(offset = 5, limit = 5, searchList = []) {
+    const searchlist = searchList.map((search) => {
+      if (search.key === 'fullname') {
+        return {
+          code: 'BrandEmployeeCreate.fullName',
+          operator: 'contains_case_insensitive',
+          value: search.value,
+        };
+      }
+      return {
+        code: search.key,
+        operator: 'contains_case_insensitive',
+        value: search.value,
+      };
+    });
 
     let params = {
       filters: JSON.stringify(searchlist),

@@ -16,11 +16,9 @@ const InputSearch = ({ label, name, handleChangeSearch, value }) => {
         name={name}
         onChange={handleChangeInput}
         value={value}
-        // suffix={value && <Times handleDeleteSearchInput={handleDeleteSearchInput} />}
+        suffix={<Times handleDeleteSearchInput={handleDeleteSearchInput} />}
       />
     </Form.Item>
-
-    
   );
 };
 

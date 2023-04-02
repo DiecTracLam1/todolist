@@ -18,6 +18,7 @@ import EditTable from './EditTable';
 import ErrorLog from './ErrorLog';
 import List from './List';
 import PaginatedItems from './Pagingnation';
+import { BiSearch } from 'react-icons/bi';
 
 const Container = styled.div`
   width: 800px;
@@ -94,7 +95,7 @@ const Button = styled.button`
   border: none;
   border-radius: 6px;
   margin-left: 2px;
-  font-size: 10px;
+  font-size: 16px;
   cursor: pointer;
 `;
 
@@ -261,7 +262,7 @@ const TodoList = () => {
                 </Space>
               </Dropdown>
             </InputContainer>
-            <Button onClick={handleSearchButton}>Search</Button>
+            <Button onClick={handleSearchButton}><BiSearch/></Button>
           </SearchContainer>
 
           <List
