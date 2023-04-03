@@ -18,22 +18,27 @@ export const columns = (props) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
+      filterKey : 'id'
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      filterKey : 'name'
+
     },
     {
       title: 'Owner',
       dataIndex: 'BrandEmployeeCreate',
       key: 'BrandEmployeeCreate',
-      render: (_, { BrandEmployeeCreate }) => <p>{BrandEmployeeCreate.fullName}</p>,
+      filterKey : "fullName",
+      render: (_, { BrandEmployeeCreate }) => <p>{BrandEmployeeCreate?.fullName}</p>,
     },
     {
       title: 'Date',
       key: 'createdAt',
       dataIndex: 'createdAt',
+      filterKey : 'createdAt'
     },
     {
       title: 'Action',

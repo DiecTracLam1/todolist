@@ -103,7 +103,7 @@ const List = (props) => {
           searchText: [
             { value: searchParams._searchText, key: 'name' },
             { value: searchParams.id, key: 'id' },
-            { value: searchParams.fullname, key: 'fullname' },
+            { value: searchParams.fullname, key: 'fullName' },
             { value: searchParams.createdAt, key: 'createdAt' },
           ],
         })

@@ -1,6 +1,6 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Form, Space, Typography } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
 import Times from '../../component/Times/times';
@@ -19,6 +19,7 @@ import ErrorLog from './ErrorLog';
 import List from './List';
 import PaginatedItems from './Pagingnation';
 import { BiSearch } from 'react-icons/bi';
+import { columns } from '~/features/antd/tableColumn';
 
 const Container = styled.div`
   width: 800px;
@@ -85,7 +86,6 @@ const Input = styled.input`
   flex: 1;
 `;
 
-
 const Button = styled.button`
   padding: 6px 10px;
   text-transform: uppercase;
@@ -148,6 +148,7 @@ const TodoList = () => {
   const pageTotal = useMemo(() => Math.ceil(totalList / limit), [totalList, limit]);
   const [detailTodo, setDetailTodo] = useState();
   const navigate = useNavigate();
+  const column = useRef(columns())
 
   useEffect(() => {
     if (!localStorage.getItem('user_token')) {
@@ -209,6 +210,7 @@ const TodoList = () => {
     navigate('/login');
   };
 
+  console.log(column)
   return (
     <>
       <Container>
@@ -233,9 +235,7 @@ const TodoList = () => {
                 onChange={handleChangeSearchInput}
                 onKeyUp={(e) => e.key === 'Enter' && handleSearchButton()}
               />
-              {searchText && (
-                <Times handleDeleteSearchInput={handleDeleteSearchInput}/>
-              )}
+              {searchText && <Times handleDeleteSearchInput={handleDeleteSearchInput} />}
               <Dropdown
                 menu={{ items }}
                 placement="bottomRight"
@@ -250,9 +250,13 @@ const TodoList = () => {
                     </Typography.Title>
                     <div>
                       <Form layout="vertical" size="" style={{ padding: '0px 12px' }}>
-                        <InputSearchContainer searchParams={searchParams} setSearchParams={setSearchParams}/>
+                        <InputSearchContainer
+                          searchParams={searchParams}
+                          setSearchParams={setSearchParams}
+                          ref={column}
+                        />
                       </Form>
-                    </div>               
+                    </div>
                   </div>
                 )}
                 trigger={['click']}
@@ -262,7 +266,9 @@ const TodoList = () => {
                 </Space>
               </Dropdown>
             </InputContainer>
-            <Button onClick={handleSearchButton}><BiSearch/></Button>
+            <Button onClick={handleSearchButton}>
+              <BiSearch />
+            </Button>
           </SearchContainer>
 
           <List

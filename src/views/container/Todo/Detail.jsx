@@ -73,6 +73,7 @@ const Detail = ({ setOpenDetail, todo }) => {
     setOpenDetail(false);
   };
 
+  console.log(todo)
   return (
     <LayoutContainer>
       <ContainerTable>
@@ -114,7 +115,7 @@ const Detail = ({ setOpenDetail, todo }) => {
           <Input
             id="description"
             name="description"
-            value={new Date(todo.createdAt).toLocaleDateString()}
+            value={todo.createdAt}
             disabled
           />
         </ContainerInput>
