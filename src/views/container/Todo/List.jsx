@@ -101,9 +101,9 @@ const List = (props) => {
           limit,
           offset,
           searchText: [
-            { value: searchParams._searchText, key: 'name' },
+            { value: searchParams.name, key: 'name' },
             { value: searchParams.id, key: 'id' },
-            { value: searchParams.fullname, key: 'fullName' },
+            { value: searchParams.fullName, key: 'fullName' },
             { value: searchParams.createdAt, key: 'createdAt' },
           ],
         })
@@ -119,9 +119,9 @@ const List = (props) => {
     limit,
     offset,
     navigate,
-    searchParams?._searchText,
+    searchParams?.name,
     searchParams.id,
-    searchParams.fullname,
+    searchParams.fullName,
     searchParams.createdAt,
   ]);
 

@@ -2,7 +2,7 @@ import { Form, Input } from 'antd';
 import React from 'react';
 import Times from '~/views/component/Times/times.jsx';
 
-const InputSearch = ({ label, name, handleChangeSearch, value , handleDelSearchFields}) => {
+const InputSearch = React.forwardRef(({ label, name, handleChangeSearch, value , handleDelSearchFields },ref) => {
   const handleChangeInput = (e) => {
     handleChangeSearch(e.target.name, e.target.value);
   };
@@ -17,9 +17,10 @@ const InputSearch = ({ label, name, handleChangeSearch, value , handleDelSearchF
         onChange={handleChangeInput}
         value={value}
         suffix={<Times handleDeleteSearchInput={handleDeleteSearchInput} />}
+        ref={ref}
       />
     </Form.Item>
   );
-};
+});
 
 export default InputSearch;

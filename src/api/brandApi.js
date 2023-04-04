@@ -5,7 +5,7 @@ const url = '/sys/brands';
 const brandApi = {
   async getAll(offset = 5, limit = 5, searchList = []) {
     const searchlist = searchList.map((search) => {
-      if (search.key === 'fullname') {
+      if (search.key === 'fullName') {
         return {
           code: 'BrandEmployeeCreate.fullName',
           operator: 'contains_case_insensitive',

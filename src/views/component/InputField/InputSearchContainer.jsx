@@ -1,55 +1,71 @@
 import { Button, Divider, Space } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import InputFieldDate from './InputFieldDate';
 import InputSearch from './InputSearch';
+import { columns } from '~/features/antd/tableColumn';
+import { useMemo } from 'react';
+import { createRef } from 'react';
 
-const InputSearchContainer = ({ searchParams, setSearchParams, ref }) => {
+const InputSearchContainer = ({ searchParams, setSearchParams }) => {
   const [searchField, setSearchField] = useState({
     id: searchParams.id ?? '',
+    name: '',
     fullName: searchParams.fullName ?? '',
-    createdAt: '',
+    createdAt: searchParams.createdAt ?? '',
   });
 
+  const table = useRef([]);
+  table.current = useMemo(() => {
+    return columns().map((_, i) => table.current[i] ?? createRef());
+  }, [table]);
   const handleChangeSearchFields = (name, value) => {
     setSearchField({ ...searchField, [name]: value });
   };
 
   const handleDelSearchFields = (name, value) => {
     setSearchField({ ...searchField, [name]: value });
-    if (searchParams[name]) setSearchParams({ ...searchParams, [name]:value });
+    if (searchParams[name]) setSearchParams({ ...searchParams, [name]: value });
   };
 
   const handleButtonSearch = () => {
-    const { id, fullName, createdAt } = searchField;
-    if (!id && !fullName && !createdAt) return;
+    const { id, name, fullName, createdAt } = searchField;
+    if (!id && !name && !fullName && !createdAt) return;
     setSearchParams({ ...searchParams, ...searchField });
   };
 
-  console.log(ref);
+  console.log(searchField)
 
   return (
     <>
-      <InputSearch
-        handleChangeSearch={handleChangeSearchFields}
-        handleDelSearchFields={handleDelSearchFields}
-        name="id"
-        label="ID Todo"
-        value={searchField.id}
-      />
-      <InputSearch
-        handleChangeSearch={handleChangeSearchFields}
-        handleDelSearchFields={handleDelSearchFields}
-        name="fullname"
-        label="Owner"
-        value={searchField.fullname}
-      />
-      <InputFieldDate
-        handleChangeSearch={handleChangeSearchFields}
-        handleDelSearchFields={handleDelSearchFields}
-        name="createdAt"
-        label="Date"
-        value={searchField.createdAt}
-      />
+      {columns().map((column, i) => {
+        if (column.filterKey) {
+          if (column.filterKey === 'createdAt') {
+            return (
+              <InputFieldDate
+                key={column.key}
+                handleChangeSearch={handleChangeSearchFields}
+                handleDelSearchFields={handleDelSearchFields}
+                name="createdAt"
+                label={column.title}
+                value={searchField.createdAt}
+                ref={table.current[i]}
+              />
+            );
+          }
+          return (
+            <InputSearch
+              key={column.key}
+              handleChangeSearch={handleChangeSearchFields}
+              handleDelSearchFields={handleDelSearchFields}
+              name={column.filterKey}
+              label={column.title}
+              value={searchField[column.filterKey]}
+              ref={table.current[i]}
+            />
+          );
+        }
+        return '';
+      })}
       <Divider style={{ margin: 0 }} />
       <Space style={{ padding: '12px 0' }} align="end" direction="horizontal">
         <Space.Compact>

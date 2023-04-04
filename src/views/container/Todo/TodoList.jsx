@@ -1,9 +1,9 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Form, Space, Typography } from 'antd';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { BiSearch } from 'react-icons/bi';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
-import Times from '../../component/Times/times';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,14 +12,13 @@ import { editTodoThunk } from '~/features/todo/todoSlice';
 import { logout } from '~/features/user/userSlice';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
 import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
+import Times from '../../component/Times/times';
 import AddTable from './AddTable';
 import Detail from './Detail';
 import EditTable from './EditTable';
 import ErrorLog from './ErrorLog';
 import List from './List';
 import PaginatedItems from './Pagingnation';
-import { BiSearch } from 'react-icons/bi';
-import { columns } from '~/features/antd/tableColumn';
 
 const Container = styled.div`
   width: 800px;
@@ -148,7 +147,6 @@ const TodoList = () => {
   const pageTotal = useMemo(() => Math.ceil(totalList / limit), [totalList, limit]);
   const [detailTodo, setDetailTodo] = useState();
   const navigate = useNavigate();
-  const column = useRef(columns())
 
   useEffect(() => {
     if (!localStorage.getItem('user_token')) {
@@ -210,7 +208,7 @@ const TodoList = () => {
     navigate('/login');
   };
 
-  console.log(column)
+
   return (
     <>
       <Container>
@@ -253,7 +251,6 @@ const TodoList = () => {
                         <InputSearchContainer
                           searchParams={searchParams}
                           setSearchParams={setSearchParams}
-                          ref={column}
                         />
                       </Form>
                     </div>
