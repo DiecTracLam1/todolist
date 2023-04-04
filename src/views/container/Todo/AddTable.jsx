@@ -82,7 +82,7 @@ const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
 
-const AddTable = ({ setOpen, limit, searchParams }) => {
+const AddTable = ({ setOpen, limit, searchParams, setPageCount, setSearchParams }) => {
   const dispatch = useDispatch();
   const [todo, setTodo] = useState({
     name: '',
@@ -104,8 +104,13 @@ const AddTable = ({ setOpen, limit, searchParams }) => {
       return;
     }
     await dispatch(addTodoThunk(todo));
-    await dispatch(getDataThunk(getAllParams(limit, searchParams._offset, searchParams)));
-
+    if (Number(searchParams._page) === 1) {
+      console.log("dasdas")
+      await dispatch(getDataThunk(getAllParams(limit, 0, searchParams)));
+    } else {
+      setPageCount(0);
+      setSearchParams({ ...searchParams, _page: 1 });
+    }
     setOpen(false);
   };
   const handleCloseTable = () => {

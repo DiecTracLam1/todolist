@@ -9,7 +9,7 @@ import { createRef } from 'react';
 const InputSearchContainer = ({ searchParams, setSearchParams }) => {
   const [searchField, setSearchField] = useState({
     id: searchParams.id ?? '',
-    name: '',
+    name: searchParams.name ?? '',
     fullName: searchParams.fullName ?? '',
     createdAt: searchParams.createdAt ?? '',
   });
@@ -29,11 +29,21 @@ const InputSearchContainer = ({ searchParams, setSearchParams }) => {
 
   const handleButtonSearch = () => {
     const { id, name, fullName, createdAt } = searchField;
-    if (!id && !name && !fullName && !createdAt) return;
+    if (
+      !id &&
+      !name &&
+      !fullName &&
+      !createdAt &&
+      !searchParams.id &&
+      !searchParams.name &&
+      !searchParams.fullName &&
+      !searchParams.createdAt
+    )
+      return;
     setSearchParams({ ...searchParams, ...searchField });
   };
 
-  console.log(searchField)
+  console.log(searchField);
 
   return (
     <>

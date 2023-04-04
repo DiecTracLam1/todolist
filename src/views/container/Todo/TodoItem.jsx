@@ -75,7 +75,7 @@ const DetailButton = styled(Button)`
   background-color: #0da8bd;
 `;
 
-const TodoItem = ({ todo, handleDelete, handleEdit, handleDone, handleDetail, setOpenDetail }) => {
+const TodoItem = ({ todo, handleDelete, handleEdit, handleDetail, setOpenDetail }) => {
   const dispatch = useDispatch();
   const handleCLickLogDetail = () => {
     setOpenDetail(true);
@@ -83,7 +83,6 @@ const TodoItem = ({ todo, handleDelete, handleEdit, handleDone, handleDetail, se
   };
   const handleButtonDone = async () => {
     const newTodo = { ...todo };
-    console.log(newTodo);
     newTodo.status = Number(!newTodo.status);
     await dispatch(editTodoThunk(newTodo));
   };

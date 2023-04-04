@@ -6,7 +6,6 @@ const {
 } = require('@ant-design/icons');
 const { Space, Button } = require('antd');
 
-
 export const columns = (props) => {
   const columns = [
     {
@@ -18,27 +17,32 @@ export const columns = (props) => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      filterKey : 'id'
+      filterKey: 'id',
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      filterKey : 'name'
-
+      filterKey: 'name',
     },
     {
       title: 'Owner',
       dataIndex: 'BrandEmployeeCreate',
       key: 'BrandEmployeeCreate',
-      filterKey : "fullName",
+      filterKey: 'fullName',
       render: (_, { BrandEmployeeCreate }) => <p>{BrandEmployeeCreate?.fullName}</p>,
     },
     {
       title: 'Date',
       key: 'createdAt',
       dataIndex: 'createdAt',
-      filterKey : 'createdAt'
+      filterKey: 'createdAt',
+    },
+    {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      render: (_, { status }) => <p  style={{color: status?'blue' : "red"}}>{status ? 'Progressing' : 'Not Progress'}</p>,
     },
     {
       title: 'Action',

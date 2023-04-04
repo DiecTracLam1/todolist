@@ -4,20 +4,15 @@ const url = '/sys/brands';
 
 const brandApi = {
   async getAll(offset = 5, limit = 5, searchList = []) {
-    const searchlist = searchList.map((search) => {
-      if (search.key === 'fullName') {
+    const searchlist = searchList
+      .filter((search) => search.value)
+      .map((search) => {
         return {
-          code: 'BrandEmployeeCreate.fullName',
+          code: search.key,
           operator: 'contains_case_insensitive',
-          value: search.value,
+          value: search.key === 'createdAt' ? new Date(search.value).toISOString() : search.value,
         };
-      }
-      return {
-        code: search.key,
-        operator: 'contains_case_insensitive',
-        value: search.value,
-      };
-    });
+      });
 
     let params = {
       filters: JSON.stringify(searchlist),

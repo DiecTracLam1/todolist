@@ -21,7 +21,7 @@ import List from './List';
 import PaginatedItems from './Pagingnation';
 
 const Container = styled.div`
-  width: 800px;
+  width: 860px;
   margin: auto;
 `;
 const ContainerHeader = styled.div`
@@ -275,6 +275,8 @@ const TodoList = () => {
             limit={limit}
             handleDetail={handleDetail}
             handleEdit={handleEdit}
+            setPageCount={setPageCount}
+            pageCount={pageCount}
           />
 
           <ContainerPagingnation>
@@ -297,7 +299,7 @@ const TodoList = () => {
           </ContainerPagingnation>
         </TodoContainer>
       </Container>
-      {openAddLog && <AddTable searchParams={searchParams} setOpen={setOpenAddLog} limit={limit} />}
+      {openAddLog && <AddTable searchParams={searchParams} setOpen={setOpenAddLog} limit={limit} setSearchParams={setSearchParams} setPageCount={setPageCount}/>}
       {openErrorLog && <ErrorLog setOpenErrorLog={setOpenErrorLog} />}
       {openEdit && (
         <EditTable setOpen={setOpen} editTodo={editTodo} handleSaveTodo={handleSaveTodo} />

@@ -3,8 +3,8 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { columns } from '~/features/antd/tableColumn';
 import '~/assets/css/TodoList.css';
+import { columns } from '~/features/antd/tableColumn';
 import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 
@@ -73,27 +73,30 @@ const ButtonUnDone = styled(ButtonSelector)`
 `;
 
 const List = (props) => {
-  const { searchParams, setSearchParams, limit, handleDetail, handleEdit } = props;
+  const {
+    searchParams,
+    setSearchParams,
+    limit,
+    handleDetail,
+    handleEdit,
+    pageCount,
+  } = props;
+  const offset = useMemo(() => Number(limit) * Number(pageCount), [limit, pageCount]);
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
   const NewTodoList = useMemo(
     () =>
       TodoList.map((todo, i) => {
-        const offset = searchParams._offset ? Number(searchParams._offset) : 0;
         return {
           num: i + 1 + offset,
           ...todo,
           createdAt: new Date(todo.createdAt).toLocaleDateString(),
         };
       }),
-    [TodoList, searchParams._offset]
+    [TodoList, offset]
   );
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const offset = useMemo(
-    () => (searchParams._offset ? Number(searchParams._offset) : 0),
-    [searchParams._offset]
-  );
 
   useEffect(() => {
     const getApi = async () => {
@@ -104,12 +107,12 @@ const List = (props) => {
           searchText: [
             { value: searchParams.name, key: 'name' },
             { value: searchParams.id, key: 'id' },
-            { value: searchParams.fullName, key: 'fullName' },
+            { value: searchParams.fullName, key: 'BrandEmployeeCreate.fullName' },
             { value: searchParams.createdAt, key: 'createdAt' },
           ],
         })
       );
-      if (!!result.payload.errorCode) {
+      if (!!result.payload?.errorCode) {
         localStorage.removeItem('user_token');
         navigate('/login');
       }
@@ -127,7 +130,6 @@ const List = (props) => {
   ]);
 
   const handleDelete = async (id) => {
-    setSearchParams({ ...searchParams, _page: 1 });
     await dispatch(deleTodoThunk(id));
     await dispatch(getDataThunk(getAllParams(limit, offset, searchParams)));
   };
