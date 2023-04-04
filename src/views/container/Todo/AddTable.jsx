@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { addTodoThunk, getDataThunk } from '../../../features/todo/todoSlice';
 import InputField from '../../component/InputField/InputField';
 import TextareaField from '../../component/TextareaField/TextareaField';
+import { getAllParams } from '~/ultis/getAllParams';
 
 const LayoutContainer = styled.div`
   position: fixed;
@@ -103,7 +104,8 @@ const AddTable = ({ setOpen, limit, searchParams }) => {
       return;
     }
     await dispatch(addTodoThunk(todo));
-    await dispatch(getDataThunk({ limit, offset: searchParams._offset }));
+    await dispatch(getDataThunk(getAllParams(limit, searchParams._offset, searchParams)));
+
     setOpen(false);
   };
   const handleCloseTable = () => {

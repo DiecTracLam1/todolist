@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { columns } from '~/features/antd/tableColumn';
 import '~/assets/css/TodoList.css';
 import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
+import { getAllParams } from '~/ultis/getAllParams';
 
 const ContainerList = styled.div`
   padding: 0 8px 0 0;
@@ -128,7 +129,7 @@ const List = (props) => {
   const handleDelete = async (id) => {
     setSearchParams({ ...searchParams, _page: 1 });
     await dispatch(deleTodoThunk(id));
-    await dispatch(getDataThunk({ limit, offset: offset, searchText: searchParams._searchText }));
+    await dispatch(getDataThunk(getAllParams(limit, offset, searchParams)));
   };
 
   const handleChangeActionLog = (e) => {
