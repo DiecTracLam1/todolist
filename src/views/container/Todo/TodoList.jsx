@@ -1,6 +1,6 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Form, Space, Typography } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
@@ -13,12 +13,10 @@ import { logout } from '~/features/user/userSlice';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
 import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
 import Times from '../../component/Times/times';
-import AddTable from './AddTable';
-import Detail from './Detail';
-import EditTable from './EditTable';
-import ErrorLog from './ErrorLog';
 import List from './List';
 import PaginatedItems from './Pagingnation';
+import TodoTable from './TodoTable';
+import { columns } from '~/features/antd/tableColumn';
 
 const Container = styled.div`
   width: 860px;
@@ -131,12 +129,9 @@ const TodoList = () => {
   const totalList = useSelector((state) => state.todo.data.total);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useCustomSearchParams();
-  const [searchText, setSearchText] = useState(searchParams._searchText || '');
-  const [openEdit, setOpen] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
-  const [openErrorLog, setOpenErrorLog] = useState(false);
-  const [openAddLog, setOpenAddLog] = useState(false);
-  const [editTodo, setEditTodo] = useState('');
+  const [searchText, setSearchText] = useState(searchParams.name || '');
+  const [openTable, setOpenTable] = useState('');
+  const [currentTodo, setCurrentTodo] = useState('');
   const searchLimit = useMemo(() => {
     return searchParams._limit > 20 ? 20 : searchParams._limit;
   }, [searchParams._limit]);
@@ -145,8 +140,11 @@ const TodoList = () => {
     !!(searchParams._page - 1) ? searchParams._page - 1 : 0
   );
   const pageTotal = useMemo(() => Math.ceil(totalList / limit), [totalList, limit]);
-  const [detailTodo, setDetailTodo] = useState();
   const navigate = useNavigate();
+  const searchRef = useRef(null);
+  searchRef.current = useMemo(() => {
+    return columns().filter((_, i) => columns()[i].filterSearch);
+  }, []);
 
   useEffect(() => {
     if (!localStorage.getItem('user_token')) {
@@ -168,27 +166,32 @@ const TodoList = () => {
 
   function handleSearchButton() {
     if (!searchText) {
-      setSearchParams({ ...searchParams, _searchText: '' });
+      setSearchParams({ ...searchParams, name: '' });
       return;
     }
-    setSearchParams({ ...searchParams, _searchText: searchText, _offset: 0, _page: 1 });
+    setSearchParams({ ...searchParams, name: searchText, _offset: 0, _page: 1 });
     setPageCount(0);
   }
 
   const handleDeleteSearchInput = () => {
     setSearchText('');
-    setSearchParams({ ...searchParams, _searchText: '' });
+    setSearchParams({ ...searchParams, name: '' });
   };
 
   const handleDetail = (todo) => {
-    setDetailTodo(todo);
-    setOpenDetail(true);
+    console.log(todo);
+    setCurrentTodo(todo);
+    setOpenTable('Detail');
   };
 
   const handleEdit = (todo) => {
-    console.log(todo);
-    setEditTodo(todo);
-    setOpen(true);
+    setCurrentTodo(todo);
+    setOpenTable('Edit');
+  };
+
+  const handleAddTable = () => {
+    setCurrentTodo({});
+    setOpenTable('Add');
   };
 
   const handleChangeLimit = (e) => {
@@ -208,14 +211,13 @@ const TodoList = () => {
     navigate('/login');
   };
 
-
   return (
     <>
       <Container>
         <ContainerHeader>
           <Title>Todo List</Title>
           <ContainerHeaderButton>
-            <ButtonAdd onClick={() => setOpenAddLog(true)}>
+            <ButtonAdd onClick={handleAddTable}>
               <IoMdAddCircle />
             </ButtonAdd>
             <ButtonLogOut onClick={handleLogout}>
@@ -232,12 +234,13 @@ const TodoList = () => {
                 value={searchText}
                 onChange={handleChangeSearchInput}
                 onKeyUp={(e) => e.key === 'Enter' && handleSearchButton()}
+                ref={searchRef}
               />
               {searchText && <Times handleDeleteSearchInput={handleDeleteSearchInput} />}
               <Dropdown
                 menu={{ items }}
                 placement="bottomRight"
-                dropdownRender={(menu) => (
+                dropdownRender={() => (
                   <div className="dropdown">
                     <Typography.Title
                       style={{ color: '#fff' }}
@@ -251,6 +254,8 @@ const TodoList = () => {
                         <InputSearchContainer
                           searchParams={searchParams}
                           setSearchParams={setSearchParams}
+                          searchText={searchText}
+                          setSearchText={setSearchText}
                         />
                       </Form>
                     </div>
@@ -269,7 +274,6 @@ const TodoList = () => {
           </SearchContainer>
 
           <List
-            setOpenDetail={setOpenDetail}
             searchParams={searchParams}
             setSearchParams={setSearchParams}
             limit={limit}
@@ -299,12 +303,18 @@ const TodoList = () => {
           </ContainerPagingnation>
         </TodoContainer>
       </Container>
-      {openAddLog && <AddTable searchParams={searchParams} setOpen={setOpenAddLog} limit={limit} setSearchParams={setSearchParams} setPageCount={setPageCount}/>}
-      {openErrorLog && <ErrorLog setOpenErrorLog={setOpenErrorLog} />}
-      {openEdit && (
-        <EditTable setOpen={setOpen} editTodo={editTodo} handleSaveTodo={handleSaveTodo} />
+      {openTable !== '' && (
+        <TodoTable
+          setOpenTable={setOpenTable}
+          openTable={openTable}
+          currentTodo={currentTodo}
+          handleSaveTodo={handleSaveTodo}
+          searchParams={searchParams}
+          limit={limit}
+          setSearchParams={setSearchParams}
+          setPageCount={setPageCount}
+        />
       )}
-      {openDetail && <Detail setOpenDetail={setOpenDetail} todo={detailTodo} />}
     </>
   );
 };

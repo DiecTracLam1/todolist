@@ -1,15 +1,14 @@
 import { Button, Divider, Space } from 'antd';
-import { useRef, useState } from 'react';
+import { createRef, useMemo, useRef, useState } from 'react';
+import { columns } from '~/features/antd/tableColumn';
 import InputFieldDate from './InputFieldDate';
 import InputSearch from './InputSearch';
-import { columns } from '~/features/antd/tableColumn';
-import { useMemo } from 'react';
-import { createRef } from 'react';
 
-const InputSearchContainer = ({ searchParams, setSearchParams }) => {
+const InputSearchContainer = ({ searchParams, setSearchParams , searchText , setSearchText }) => {
+  console.log(searchText)
   const [searchField, setSearchField] = useState({
     id: searchParams.id ?? '',
-    name: searchParams.name ?? '',
+    name: searchText ?? '',
     fullName: searchParams.fullName ?? '',
     createdAt: searchParams.createdAt ?? '',
   });

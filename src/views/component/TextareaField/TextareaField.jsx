@@ -8,17 +8,18 @@ const TextArea = styled.textarea`
   outline: none;
   border-radius: 6px;
 `;
-const TextareaField = ({todo , handleChangeInput}) => {
+const TextareaField = ({isdisabled , handleChangeInput , value , name }) => {
     return (
         <TextArea
         id="description"
-        name="note"
+        name={name}
         rows="4"
         cols="50"
         type="text"
         placeholder="Fill Note ... "
-        value={todo?.note}
+        value={value}
         onChange={handleChangeInput}
+        disabled = {isdisabled}
       />
     );
 };
