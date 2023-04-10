@@ -142,9 +142,7 @@ const TodoList = () => {
   const pageTotal = useMemo(() => Math.ceil(totalList / limit), [totalList, limit]);
   const navigate = useNavigate();
   const searchRef = useRef(null);
-  searchRef.current = useMemo(() => {
-    return columns().find((column, i) => column.defaultSearch);
-  }, []);
+  
 
   useEffect(() => {
     if (!localStorage.getItem('user_token')) {
@@ -166,6 +164,7 @@ const TodoList = () => {
   };
 
   function handleSearchButton() {
+    searchRef.current = columns().find((column, i) => column.defaultSearch);
     if (!searchText) {
       setSearchParams({ ...searchParams, name: '' });
       return;
