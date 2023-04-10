@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import '~/assets/css/TodoList.css';
 import SearchContainer from './SearchContainer';
-import List from './List';
 import ContainerPagingnation from './ContainerPagingnation';
 import styled from 'styled-components';
 import ContainerSelector from './ContainerSelector';
@@ -17,6 +17,10 @@ const Container = styled.div`
   margin-top: 10px;
   border-radius: 6px;
 `;
+const ContainerList = styled.div`
+  padding-right: 8px;
+  margin-top: 18px;
+`;
 const TodoContainer = ({
   setCurrentTodo,
   setOpenTable,
@@ -27,8 +31,11 @@ const TodoContainer = ({
   pageCount,
   setLimit,
 }) => {
-  const dispatch = useDispatch();
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
+  const loading = useSelector((state) => state.todo.loading);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const offset = useMemo(() => Number(limit) * Number(pageCount), [limit, pageCount]);
   const NewTodoList = useMemo(
@@ -42,7 +49,6 @@ const TodoContainer = ({
       }),
     [TodoList, offset]
   );
-  const navigate = useNavigate();
 
   useEffect(() => {
     const getApi = async () => {
@@ -97,36 +103,31 @@ const TodoContainer = ({
 
   const table = useRef(null);
   const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete });
+
+  if (loading) return;
+
   return (
     <Container>
       <SearchContainer
         searchParams={searchParams}
         setSearchParams={setSearchParams}
         setPageCount={setPageCount}
-        columns = {columns}
+        columns={columns}
       />
 
       {/* <ContainerSelector /> */}
-      {/* 
-      <List
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-        limit={limit}
-        handleDetail={handleDetail}
-        handleEdit={handleEdit}
-        setPageCount={setPageCount}
-        pageCount={pageCount}
-      /> */}
 
-      <Table
-        rowKey="id"
-        columns={column}
-        dataSource={NewTodoList}
-        pagination={false}
-        scroll={{ x: true, y: '420px' }}
-        bordered
-        ref={table => console.log(table)}
-      />
+      <ContainerList>
+        <Table
+          rowKey="id"
+          columns={column}
+          dataSource={NewTodoList}
+          pagination={false}
+          scroll={{ x: true, y: '420px' }}
+          bordered
+          ref={table}
+        />
+      </ContainerList>
 
       <ContainerPagingnation
         pageCount={pageCount}
