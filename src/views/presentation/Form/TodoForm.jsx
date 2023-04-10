@@ -146,6 +146,7 @@ const TodoTable = (props) => {
         <Times onClick={handleCloseTable}>
           <TiTimes />
         </Times>
+        
         <ContainerInput>
           <Label htmlFor="editText">Content</Label>
           <InputField

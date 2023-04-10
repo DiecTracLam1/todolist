@@ -3,7 +3,7 @@ import "../../../assets/css/pagingnation.css"
 import ReactPaginate from "react-paginate";
 import { FcPrevious, FcNext } from 'react-icons/fc';
 
-function PaginatedItems({ pageTotalCount ,setPagecount , pageCount , setSearchparams , searchParams ,limit}) {
+function PaginatedItems({ pageTotalCount ,setPagecount , pageCount , setSearchparams , searchParams}) {
   const handlePageClick = (event) => {
     setPagecount(event.selected) ;
     setSearchparams({...searchParams , _page : event.selected + 1 });

@@ -85,7 +85,9 @@ const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSe
         }
         return '';
       })}
+
       <Divider style={{ margin: 0 }} />
+      
       <div style={{ textAlign: 'end' }}>
         <Space style={{ padding: '12px 0' }} direction="horizontal">
           <Space.Compact>
