@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const TimesWrapper = styled.div`
   cursor: pointer;
   opacity: 0.4;
-  margin-right: 4px;
+  margin: 2px 4px 0 0;
 
   &:hover {
     opacity: 1;

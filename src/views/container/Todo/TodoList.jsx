@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { items } from '~/features/antd/dropdownItems';
+import { columns } from '~/features/antd/tableColumn';
 import { editTodoThunk } from '~/features/todo/todoSlice';
 import { logout } from '~/features/user/userSlice';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
@@ -15,8 +16,7 @@ import InputSearchContainer from '~/views/component/InputField/InputSearchContai
 import Times from '../../component/Times/times';
 import List from './List';
 import PaginatedItems from './Pagingnation';
-import TodoTable from './TodoTable';
-import { columns } from '~/features/antd/tableColumn';
+import TodoTable from './TodoForm';
 
 const Container = styled.div`
   width: 860px;
@@ -143,7 +143,7 @@ const TodoList = () => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
   searchRef.current = useMemo(() => {
-    return columns().filter((_, i) => columns()[i].filterSearch);
+    return columns().find((column, i) => column.defaultSearch);
   }, []);
 
   useEffect(() => {
@@ -161,6 +161,7 @@ const TodoList = () => {
   }, [totalList]);
 
   const handleChangeSearchInput = (e) => {
+    console.log(e)
     setSearchText(e.target.value);
   };
 
@@ -230,7 +231,7 @@ const TodoList = () => {
           <SearchContainer>
             <InputContainer>
               <Input
-                placeholder="Search"
+                placeholder="Search name ..."
                 value={searchText}
                 onChange={handleChangeSearchInput}
                 onKeyUp={(e) => e.key === 'Enter' && handleSearchButton()}

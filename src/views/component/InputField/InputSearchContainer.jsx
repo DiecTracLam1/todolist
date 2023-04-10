@@ -1,28 +1,37 @@
 import { Button, Divider, Space } from 'antd';
-import { createRef, useMemo, useRef, useState } from 'react';
+import { createRef, useEffect, useMemo, useRef, useState } from 'react';
 import { columns } from '~/features/antd/tableColumn';
 import InputFieldDate from './InputFieldDate';
 import InputSearch from './InputSearch';
 
-const InputSearchContainer = ({ searchParams, setSearchParams , searchText , setSearchText }) => {
-  console.log(searchText)
-  const [searchField, setSearchField] = useState({
-    id: searchParams.id ?? '',
-    name: searchText ?? '',
-    fullName: searchParams.fullName ?? '',
-    createdAt: searchParams.createdAt ?? '',
-  });
+const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSearchText }) => {
+  console.log(searchParams);
+  const [searchField, setSearchField] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const { id, name, fullName, createdAt } = searchParams;
+    setSearchField({
+      id: id ?? '',
+      name: name ?? '',
+      fullName: fullName ?? '',
+      createdAt: createdAt ?? '',
+    });
+    setLoading(false);
+  }, [searchParams]);
 
   const table = useRef([]);
   table.current = useMemo(() => {
     return columns().map((_, i) => table.current[i] ?? createRef());
   }, [table]);
+
   const handleChangeSearchFields = (name, value) => {
     setSearchField({ ...searchField, [name]: value });
   };
 
   const handleDelSearchFields = (name, value) => {
     setSearchField({ ...searchField, [name]: value });
+    if (name === 'name') setSearchText('');
     if (searchParams[name]) setSearchParams({ ...searchParams, [name]: value });
   };
 
@@ -40,9 +49,10 @@ const InputSearchContainer = ({ searchParams, setSearchParams , searchText , set
     )
       return;
     setSearchParams({ ...searchParams, ...searchField });
+    setSearchText(name);
   };
 
-  console.log(searchField);
+  if (loading) return;
 
   return (
     <>
@@ -56,7 +66,7 @@ const InputSearchContainer = ({ searchParams, setSearchParams , searchText , set
                 handleDelSearchFields={handleDelSearchFields}
                 name="createdAt"
                 label={column.title}
-                value={searchField.createdAt}
+                value={searchField?.createdAt}
                 ref={table.current[i]}
               />
             );
@@ -76,13 +86,15 @@ const InputSearchContainer = ({ searchParams, setSearchParams , searchText , set
         return '';
       })}
       <Divider style={{ margin: 0 }} />
-      <Space style={{ padding: '12px 0' }} align="end" direction="horizontal">
-        <Space.Compact>
-          <Button onClick={handleButtonSearch} type="primary">
-            Apply
-          </Button>
-        </Space.Compact>
-      </Space>
+      <div style={{ textAlign: 'end' }}>
+        <Space style={{ padding: '12px 0' }} direction="horizontal">
+          <Space.Compact>
+            <Button onClick={handleButtonSearch} type="primary">
+              Apply
+            </Button>
+          </Space.Compact>
+        </Space>
+      </div>
     </>
   );
 };

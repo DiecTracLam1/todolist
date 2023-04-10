@@ -24,7 +24,7 @@ export const columns = (props) => {
       dataIndex: 'name',
       key: 'name',
       filterKey: 'name',
-      filterSearch : 'name'
+      defaultSearch : 'name'
     },
     {
       title: 'Owner',

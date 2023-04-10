@@ -101,13 +101,13 @@ const TodoTable = (props) => {
     setSearchParams,
   } = props;
 
-  console.log(currentTodo);
   const [todo, setTodo] = useState({
     ...currentTodo,
     status: currentTodo?.status ?? 1,
   });
-  const dispatch = useDispatch();
   const [textError, setTextError] = useState('');
+  const dispatch = useDispatch();
+
   const handleSaveButton = async () => {
     if (!todo?.name) {
       setTextError('Please type a name todo');
@@ -126,6 +126,7 @@ const TodoTable = (props) => {
     }
     setOpenTable('');
   };
+  
   const handleCloseTable = () => {
     setOpenTable('');
   };
