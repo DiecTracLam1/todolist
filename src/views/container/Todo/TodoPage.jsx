@@ -118,20 +118,20 @@ const TodoList = () => {
           pageCount={pageCount}
           setLimit={setLimit}
         />
-      </Container>
 
-      {openTable !== '' && (
-        <TodoTable
-          setOpenTable={setOpenTable}
-          openTable={openTable}
-          currentTodo={currentTodo}
-          handleSaveTodo={handleSaveTodo}
-          searchParams={searchParams}
-          limit={limit}
-          setSearchParams={setSearchParams}
-          setPageCount={setPageCount}
-        />
-      )}
+        {openTable !== '' && (
+          <TodoTable
+            setOpenTable={setOpenTable}
+            openTable={openTable}
+            currentTodo={currentTodo}
+            handleSaveTodo={handleSaveTodo}
+            searchParams={searchParams}
+            limit={limit}
+            setSearchParams={setSearchParams}
+            setPageCount={setPageCount}
+          />
+        )}
+      </Container>
     </>
   );
 };

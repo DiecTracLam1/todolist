@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import '~/assets/css/TodoList.css';
-import SearchContainer from './SearchContainer';
-import ContainerPagingnation from './ContainerPagingnation';
+import { createRef, useEffect, useMemo, useRef, useState } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ContainerSelector from './ContainerSelector';
-import { useDispatch, useSelector } from 'react-redux';
+import '~/assets/css/TodoList.css';
 import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
 import { getAllParams } from '~/ultis/getAllParams';
-import { columns } from '~/features/antd/tableColumn';
-import { Table } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import ContainerPagingnation from './ContainerPagingnation';
+import ContainerSelector from './ContainerSelector';
+import SearchContainer from './SearchContainer';
+import ComponentTable from './ComponentTable';
 
 const Container = styled.div`
   background-color: lightgray;
@@ -33,7 +32,6 @@ const TodoContainer = ({
 }) => {
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
   const loading = useSelector((state) => state.todo.loading);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -101,8 +99,13 @@ const TodoContainer = ({
     await dispatch(editTodoThunk(newTodo));
   };
 
-  const table = useRef(null);
-  const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete });
+  // const ReduxTable = connect(null,null,null, { forwardRef: true })(Table)
+
+  const table = createRef();
+  useEffect(() => {
+    console.log(table.current);
+  });
+  // console.log(table.current);
 
   if (loading) return;
 
@@ -112,19 +115,22 @@ const TodoContainer = ({
         searchParams={searchParams}
         setSearchParams={setSearchParams}
         setPageCount={setPageCount}
-        columns={columns}
+        table={table.current}
       />
 
-      {/* <ContainerSelector /> */}
+      <ContainerSelector
+        setSearchParams={setSearchParams}
+        searchParams={searchParams}
+        TodoList={NewTodoList}
+      />
 
       <ContainerList>
-        <Table
-          rowKey="id"
-          columns={column}
-          dataSource={NewTodoList}
-          pagination={false}
-          scroll={{ x: true, y: '420px' }}
-          bordered
+        <ComponentTable
+          NewTodoList={NewTodoList}
+          handleEdit={handleEdit}
+          handleDetail={handleDetail}
+          handleButtonDone={handleButtonDone}
+          handleDelete={handleDelete}
           ref={table}
         />
       </ContainerList>

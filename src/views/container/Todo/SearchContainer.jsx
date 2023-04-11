@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Form, Space, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
+import styled from 'styled-components';
 import { items } from '~/features/antd/dropdownItems';
 import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
 import Times from '../../component/Times/times';
@@ -39,11 +39,16 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table }) => {
+const SearchContainer = ({ searchParams, setSearchParams, setPageCount , table}) => {
   const [searchText, setSearchText] = useState(searchParams.name || '');
-  console.log(table && table?.getWrappedInstance()?.getFilterColumns());
-  // console.log(table && table?.getWrappedInstance)
-  // console.log(table)
+  const [tableState, setTable] = useState(table);
+
+  console.log(table )
+
+  useEffect(()=>{
+    setTable(table)
+  },[table])
+
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
   };
@@ -87,6 +92,7 @@ const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table })
                     setSearchParams={setSearchParams}
                     searchText={searchText}
                     setSearchText={setSearchText}
+                    fields={table?.current.getFilter() ?? []}
                   />
                 </Form>
               </div>

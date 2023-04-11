@@ -4,7 +4,7 @@ import { columns } from '~/features/antd/tableColumn';
 import InputFieldDate from './InputFieldDate';
 import InputSearch from './InputSearch';
 
-const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSearchText }) => {
+const InputSearchContainer = ({ searchParams, setSearchParams, fields = [], setSearchText }) => {
   console.log(searchParams);
   const [searchField, setSearchField] = useState();
   const [loading, setLoading] = useState(true);
@@ -20,10 +20,6 @@ const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSe
     setLoading(false);
   }, [searchParams]);
 
-  const table = useRef([]);
-  table.current = useMemo(() => {
-    return columns().map((_, i) => table.current[i] ?? createRef());
-  }, [table]);
 
   const handleChangeSearchFields = (name, value) => {
     setSearchField({ ...searchField, [name]: value });
@@ -56,7 +52,7 @@ const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSe
 
   return (
     <>
-      {columns().map((column, i) => {
+      {fields.map((column, i) => {
         if (column.filterKey) {
           if (column.filterKey === 'createdAt') {
             return (
@@ -67,7 +63,6 @@ const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSe
                 name="createdAt"
                 label={column.title}
                 value={searchField?.createdAt}
-                ref={table.current[i]}
               />
             );
           }
@@ -79,7 +74,6 @@ const InputSearchContainer = ({ searchParams, setSearchParams, searchText, setSe
               name={column.filterKey}
               label={column.title}
               value={searchField[column.filterKey]}
-              ref={table.current[i]}
             />
           );
         }
