@@ -1,4 +1,4 @@
-import { createRef, useEffect, useMemo, useRef, useState } from 'react';
+import { createRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,6 +9,7 @@ import ContainerPagingnation from './ContainerPagingnation';
 import ContainerSelector from './ContainerSelector';
 import SearchContainer from './SearchContainer';
 import ComponentTable from './ComponentTable';
+import { columns } from '~/features/antd/tableColumn';
 
 const Container = styled.div`
   background-color: lightgray;
@@ -34,6 +35,7 @@ const TodoContainer = ({
   const loading = useSelector((state) => state.todo.loading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const tableRef = useRef();
 
   const offset = useMemo(() => Number(limit) * Number(pageCount), [limit, pageCount]);
   const NewTodoList = useMemo(
@@ -99,13 +101,16 @@ const TodoContainer = ({
     await dispatch(editTodoThunk(newTodo));
   };
 
-  // const ReduxTable = connect(null,null,null, { forwardRef: true })(Table)
+  const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete });
 
-  const table = createRef();
-  useEffect(() => {
-    console.log(table.current);
-  });
-  // console.log(table.current);
+  useImperativeHandle(tableRef, () => ({
+    getFilter() {
+      return column.filter((coloumn) => coloumn.filterKey);
+    },
+    getDefaultSearch() {
+      return column.find((coloumn) => coloumn.defaultSearch);
+    },
+  }));
 
   if (loading) return;
 
@@ -115,23 +120,21 @@ const TodoContainer = ({
         searchParams={searchParams}
         setSearchParams={setSearchParams}
         setPageCount={setPageCount}
-        table={table.current}
+        table={tableRef}
       />
 
       <ContainerSelector
         setSearchParams={setSearchParams}
         searchParams={searchParams}
         TodoList={NewTodoList}
+
       />
 
       <ContainerList>
         <ComponentTable
           NewTodoList={NewTodoList}
-          handleEdit={handleEdit}
-          handleDetail={handleDetail}
-          handleButtonDone={handleButtonDone}
-          handleDelete={handleDelete}
-          ref={table}
+          ref={tableRef}
+          column={column}
         />
       </ContainerList>
 

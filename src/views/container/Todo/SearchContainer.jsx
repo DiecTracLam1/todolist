@@ -39,16 +39,9 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const SearchContainer = ({ searchParams, setSearchParams, setPageCount , table}) => {
+const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table }) => {
   const [searchText, setSearchText] = useState(searchParams.name || '');
-  const [tableState, setTable] = useState(table);
-
-  console.log(table )
-
-  useEffect(()=>{
-    setTable(table)
-  },[table])
-
+  
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
   };
