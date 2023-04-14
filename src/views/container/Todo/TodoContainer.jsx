@@ -83,8 +83,6 @@ const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable })
     searchParams.createdAt,
   ]);
 
-  if (loading) return;
-
   return (
     <Container>
       <SearchContainer
@@ -109,6 +107,7 @@ const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable })
           limit={limit}
           offset={offset}
           searchParams={searchParams}
+          loading={loading}
         />
       </ContainerList>
 

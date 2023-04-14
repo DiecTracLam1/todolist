@@ -6,7 +6,7 @@ import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todo
 import { getAllParams } from '~/ultis/getAllParams';
 
 const ComponentTable = forwardRef(
-  ({ NewTodoList, setOpenTable, setCurrentTodo, limit, offset, searchParams }, ref) => {
+  ({ NewTodoList, setOpenTable, setCurrentTodo, limit, offset, searchParams , loading }, ref) => {
     
     const dispatch = useDispatch();
 
@@ -55,6 +55,7 @@ const ComponentTable = forwardRef(
         scroll={{ x: true, y: '420px' }}
         bordered
         ref={ref}
+        loading={loading}
       />
     );
   }
