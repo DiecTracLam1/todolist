@@ -1,6 +1,5 @@
-import { forwardRef, useImperativeHandle } from 'react';
 import { Table } from 'antd';
-import { columns } from '~/features/antd/tableColumn';
+import { forwardRef } from 'react';
 
 const ComponentTable = forwardRef(({ NewTodoList, column }, ref) => {
   console.log(column)

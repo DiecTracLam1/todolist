@@ -1,15 +1,15 @@
-import { createRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '~/assets/css/TodoList.css';
+import { columns } from '~/features/antd/tableColumn';
 import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
 import { getAllParams } from '~/ultis/getAllParams';
+import ComponentTable from './ComponentTable';
 import ContainerPagingnation from './ContainerPagingnation';
 import ContainerSelector from './ContainerSelector';
 import SearchContainer from './SearchContainer';
-import ComponentTable from './ComponentTable';
-import { columns } from '~/features/antd/tableColumn';
 
 const Container = styled.div`
   background-color: lightgray;

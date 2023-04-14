@@ -1,6 +1,6 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Form, Space, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import styled from 'styled-components';
 import { items } from '~/features/antd/dropdownItems';
@@ -41,7 +41,7 @@ const Button = styled.button`
 
 const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table }) => {
   const [searchText, setSearchText] = useState(searchParams.name || '');
-  
+
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
   };
