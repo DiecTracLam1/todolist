@@ -77,7 +77,8 @@ export const todoSlice = createSlice({
 
     builder.addCase(addTodoThunk.fulfilled, (state, action) => {
       const data = action.payload;
-      console.log(data)
+      const fullName = localStorage.getItem('fullname')
+      data.BrandEmployeeCreate = {fullName}
       const newArray = [data, ...state.data.docs];
       state.data.docs = newArray;
     });

@@ -137,7 +137,7 @@ const TodoTable = (props) => {
   };
 
   const handleChangeInput = (e) => {
-    if (e.target.name === 'name' || !todo?.name.length) {
+    if (e.target.name === 'name' || !todo.name?.length) {
       setTextError('');
     }
     const newContent = { ...todo, [e.target.name]: e.target.value };
@@ -156,7 +156,7 @@ const TodoTable = (props) => {
           <Label htmlFor="editText">Content</Label>
           <InputField
             name="name"
-            value={todo?.name}
+            value={todo?.name ?? ""}
             textError={textError}
             setTodo={setTodo}
             handleChangeInput={handleChangeInput}
@@ -169,7 +169,7 @@ const TodoTable = (props) => {
           <Label htmlFor="note">Note</Label>
           <TextareaField
             name="note"
-            value={todo?.note}
+            value={todo?.note ?? ""}
             handleChangeInput={handleChangeInput}
             isdisabled={openTable === 'Detail'}
           />
