@@ -22,6 +22,8 @@ export const columns = (props) => {
     {
       title: 'Name',
       dataIndex: 'name',
+      width:90,
+      minWidth: 80,
       key: 'name',
       filterKey: 'name',
       defaultSearch : 'name'
