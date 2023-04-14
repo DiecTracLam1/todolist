@@ -1,15 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { editTodoThunk } from '~/features/todo/todoSlice';
 import { logout } from '~/features/user/userSlice';
-import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
-
-import TodoTable from '../../presentation/Form/TodoForm';
 import TodoContainer from './TodoContainer';
 
 const Container = styled.div`
@@ -60,16 +55,8 @@ const ButtonLogOut = styled(ButtonHeader)`
 
 const TodoList = () => {
   const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useCustomSearchParams();
   const [openTable, setOpenTable] = useState('');
   const [currentTodo, setCurrentTodo] = useState('');
-  const [pageCount, setPageCount] = useState(
-    !!(searchParams._page - 1) ? searchParams._page - 1 : 0
-  );
-  const searchLimit = useMemo(() => {
-    return searchParams._limit > 20 ? 20 : searchParams._limit;
-  }, [searchParams._limit]);
-  const [limit, setLimit] = useState(searchLimit || 5);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,11 +68,6 @@ const TodoList = () => {
   const handleAddTable = () => {
     setCurrentTodo({});
     setOpenTable('Add');
-  };
-
-  const handleSaveTodo = async (editedTodo) => {
-    await dispatch(editTodoThunk(editedTodo));
-    setSearchParams({ ...searchParams, _page: 1 });
   };
 
   const handleLogout = () => {
@@ -111,26 +93,9 @@ const TodoList = () => {
         <TodoContainer
           setCurrentTodo={setCurrentTodo}
           setOpenTable={setOpenTable}
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
-          setPageCount={setPageCount}
-          limit={limit}
-          pageCount={pageCount}
-          setLimit={setLimit}
+          openTable={openTable}
+          currentTodo={currentTodo}
         />
-
-        {openTable !== '' && (
-          <TodoTable
-            setOpenTable={setOpenTable}
-            openTable={openTable}
-            currentTodo={currentTodo}
-            handleSaveTodo={handleSaveTodo}
-            searchParams={searchParams}
-            limit={limit}
-            setSearchParams={setSearchParams}
-            setPageCount={setPageCount}
-          />
-        )}
       </Container>
     </>
   );

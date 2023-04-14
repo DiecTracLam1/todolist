@@ -1,15 +1,15 @@
-import { createRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '~/assets/css/TodoList.css';
-import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
-import { getAllParams } from '~/ultis/getAllParams';
+import { getDataThunk } from '~/features/todo/todoSlice';
+import ComponentTable from './ComponentTable';
 import ContainerPagingnation from './ContainerPagingnation';
 import ContainerSelector from './ContainerSelector';
 import SearchContainer from './SearchContainer';
-import ComponentTable from './ComponentTable';
-import { columns } from '~/features/antd/tableColumn';
+import TodoTable from '../../presentation/Form/TodoForm';
+import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
 
 const Container = styled.div`
   background-color: lightgray;
@@ -21,23 +21,25 @@ const ContainerList = styled.div`
   padding-right: 8px;
   margin-top: 18px;
 `;
-const TodoContainer = ({
-  setCurrentTodo,
-  setOpenTable,
-  searchParams,
-  setSearchParams,
-  setPageCount,
-  limit,
-  pageCount,
-  setLimit,
-}) => {
+const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable }) => {
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
   const loading = useSelector((state) => state.todo.loading);
+  const [searchParams, setSearchParams] = useCustomSearchParams();
+
+  const searchLimit = useMemo(() => {
+    return searchParams._limit > 20 ? 20 : searchParams._limit;
+  }, [searchParams._limit]);
+
+  const [limit, setLimit] = useState(searchLimit || 5);
+  const [pageCount, setPageCount] = useState(
+    !!(searchParams._page - 1) ? searchParams._page - 1 : 0
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const tableRef = useRef();
-
   const offset = useMemo(() => Number(limit) * Number(pageCount), [limit, pageCount]);
+
   const NewTodoList = useMemo(
     () =>
       TodoList.map((todo, i) => {
@@ -80,37 +82,6 @@ const TodoContainer = ({
     searchParams.fullName,
     searchParams.createdAt,
   ]);
-  const handleDetail = (todo) => {
-    setCurrentTodo(todo);
-    setOpenTable('Detail');
-  };
-
-  const handleEdit = (todo) => {
-    setCurrentTodo(todo);
-    setOpenTable('Edit');
-  };
-
-  const handleDelete = async (id) => {
-    await dispatch(deleTodoThunk(id));
-    await dispatch(getDataThunk(getAllParams(limit, offset, searchParams)));
-  };
-
-  const handleButtonDone = async (todo) => {
-    const newTodo = { ...todo };
-    newTodo.status = Number(!newTodo.status);
-    await dispatch(editTodoThunk(newTodo));
-  };
-
-  const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete });
-
-  useImperativeHandle(tableRef, () => ({
-    getFilter() {
-      return column.filter((coloumn) => coloumn.filterKey);
-    },
-    getDefaultSearch() {
-      return column.find((coloumn) => coloumn.defaultSearch);
-    },
-  }));
 
   if (loading) return;
 
@@ -127,14 +98,17 @@ const TodoContainer = ({
         setSearchParams={setSearchParams}
         searchParams={searchParams}
         TodoList={NewTodoList}
-
       />
 
       <ContainerList>
         <ComponentTable
           NewTodoList={NewTodoList}
+          setOpenTable={setOpenTable}
+          setCurrentTodo={setCurrentTodo}
           ref={tableRef}
-          column={column}
+          limit={limit}
+          offset={offset}
+          searchParams={searchParams}
         />
       </ContainerList>
 
@@ -146,6 +120,18 @@ const TodoContainer = ({
         setSearchParams={setSearchParams}
         setPageCount={setPageCount}
       />
+
+      {openTable !== '' && (
+        <TodoTable
+          setOpenTable={setOpenTable}
+          openTable={openTable}
+          currentTodo={currentTodo}
+          searchParams={searchParams}
+          limit={limit}
+          setSearchParams={setSearchParams}
+          setPageCount={setPageCount}
+        />
+      )}
     </Container>
   );
 };

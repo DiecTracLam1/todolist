@@ -1,6 +1,6 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Form, Space, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import styled from 'styled-components';
 import { items } from '~/features/antd/dropdownItems';
@@ -41,23 +41,25 @@ const Button = styled.button`
 
 const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table }) => {
   const [searchText, setSearchText] = useState(searchParams.name || '');
-  
+
   const handleChangeSearchInput = (e) => {
     setSearchText(e.target.value);
   };
 
   function handleSearchButton() {
+    const field = table.current?.getDefaultSearch();
     if (!searchText) {
-      setSearchParams({ ...searchParams, name: '' });
+      setSearchParams({ ...searchParams, [field.filterKey]: '' });
       return;
     }
-    setSearchParams({ ...searchParams, name: searchText, _offset: 0, _page: 1 });
+    setSearchParams({ ...searchParams, [field.filterKey]: searchText, _offset: 0, _page: 1 });
     setPageCount(0);
   }
 
   const handleDeleteSearchInput = () => {
+    const field = table.current?.getDefaultSearch();
     setSearchText('');
-    setSearchParams({ ...searchParams, name: '' });
+    setSearchParams({ ...searchParams, [field.filterKey]: '' });
   };
   return (
     <Container>
@@ -68,6 +70,7 @@ const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table })
           onChange={handleChangeSearchInput}
           onKeyUp={(e) => e.key === 'Enter' && handleSearchButton()}
         />
+
         {searchText && <Times handleDeleteSearchInput={handleDeleteSearchInput} />}
 
         <Dropdown
@@ -85,7 +88,7 @@ const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table })
                     setSearchParams={setSearchParams}
                     searchText={searchText}
                     setSearchText={setSearchText}
-                    fields={table?.current.getFilter() ?? []}
+                    fields={table.current?.getFilter() ?? []}
                   />
                 </Form>
               </div>

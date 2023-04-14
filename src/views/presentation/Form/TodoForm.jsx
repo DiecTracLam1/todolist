@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import InputField from '../../component/InputField/InputField';
 import TextareaField from '../../component/TextareaField/TextareaField';
-import { addTodoThunk, getDataThunk } from '../../../features/todo/todoSlice';
+import { addTodoThunk, getDataThunk , editTodoThunk } from '../../../features/todo/todoSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 import { useDispatch } from 'react-redux';
 import { TiTimes } from 'react-icons/ti';
@@ -93,7 +93,6 @@ const TodoTable = (props) => {
   const {
     setOpenTable,
     currentTodo = {},
-    handleSaveTodo,
     openTable,
     limit,
     searchParams,
@@ -126,6 +125,12 @@ const TodoTable = (props) => {
     }
     setOpenTable('');
   };
+
+  const handleSaveTodo = async (editedTodo) => {
+    await dispatch(editTodoThunk(editedTodo));
+    setSearchParams({ ...searchParams, _page: 1 });
+  };
+
   
   const handleCloseTable = () => {
     setOpenTable('');
