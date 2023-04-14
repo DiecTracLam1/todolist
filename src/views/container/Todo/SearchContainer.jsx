@@ -59,7 +59,7 @@ const SearchContainer = ({ searchParams, setSearchParams, setPageCount, table })
   const handleDeleteSearchInput = () => {
     const field = table.current?.getDefaultSearch();
     setSearchText('');
-    setSearchParams({ ...searchParams, [field.filterKey]: '' });
+    if (searchParams[field.filterKey]) setSearchParams({ ...searchParams, [field.filterKey]: '' });
   };
   return (
     <Container>
