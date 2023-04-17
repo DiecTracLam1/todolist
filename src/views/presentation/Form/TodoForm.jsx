@@ -224,7 +224,7 @@ const TodoTable = (props) => {
         {openTable !== 'Detail' && (
           <ContainerButton>
             <CancelButton onClick={handleCloseTable}>Cancel</CancelButton>
-            <SaveButton onClick={handleSaveButton}>Save</SaveButton>
+            <SaveButton onClick={handleSaveButton}>{openTable === 'Add' ? "Add" : "Update"}</SaveButton>
           </ContainerButton>
         )}
       </ContainerTable>
