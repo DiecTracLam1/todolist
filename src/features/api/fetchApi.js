@@ -5,14 +5,9 @@ const getAuthorizationHeader = () => {
   return { Authorization: `Bearer ${token}` };
 };
 
-export const fetchApiTodo = async (url, { id = '', params = '', ...option }) => {
+export const fetchApi = async (url, { id = '', params = '', ...option }) => {
   id = id && '/' + id;
   params = params && '?' + params;
   return axiosClient(`${url}${id}${params}`, { headers: getAuthorizationHeader(), ...option });
 };
 
-export const fetchApiUser = async (url, { id = '', params = '', ...option }) => {
-  id = id && '/' + id;
-  params = params && '?' + params;
-  return axiosClient(`${url}${id}${params}`, { ...option });
-};
