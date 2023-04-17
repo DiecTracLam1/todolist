@@ -107,21 +107,6 @@ const TodoTable = (props) => {
   const [textError, setTextError] = useState('');
   const dispatch = useDispatch();
 
-  const handleSaveTodo = async () => {
-    await dispatch(editTodoThunk(todo));
-    setSearchParams({ ...searchParams, _page: 1 });
-  };
-
-  const handleAddTodo = async () => {
-    await dispatch(addTodoThunk(todo));
-    if (Number(searchParams._page) === 1) {
-      await dispatch(getDataThunk(getAllParams(limit, 0, searchParams))); // if page = 0 , run this function
-    } else { // if pageCount is in others page  
-      setPageCount(0);
-      setSearchParams({ ...searchParams, _page: 1 });
-    }
-  };
-
   const handleSaveButton = async () => {
     // check if field todo's name is empty
     if (!todo?.name) {
@@ -129,8 +114,20 @@ const TodoTable = (props) => {
       return;
     }
 
-    if (openTable === 'Edit') handleSaveTodo(); // if table is edit
-    else if (openTable === 'Add') handleAddTodo();
+    if (openTable === 'Edit') {
+      await dispatch(editTodoThunk(todo));
+      setSearchParams({ ...searchParams, _page: 1 });
+    } else if (openTable === 'Add') {
+      await dispatch(addTodoThunk(todo));
+      if (Number(searchParams._page) === 1) {
+        await dispatch(getDataThunk(getAllParams(limit, 0, searchParams))); // if page = 0 , run this function
+      } else {
+        // if pageCount is in others page
+        setPageCount(0);
+        setSearchParams({ ...searchParams, _page: 1 });
+      }
+    }
+    
     setOpenTable('');
   };
 
@@ -224,7 +221,9 @@ const TodoTable = (props) => {
         {openTable !== 'Detail' && (
           <ContainerButton>
             <CancelButton onClick={handleCloseTable}>Cancel</CancelButton>
-            <SaveButton onClick={handleSaveButton}>{openTable === 'Add' ? "Add" : "Update"}</SaveButton>
+            <SaveButton onClick={handleSaveButton}>
+              {openTable === 'Add' ? 'Add' : 'Update'}
+            </SaveButton>
           </ContainerButton>
         )}
       </ContainerTable>
