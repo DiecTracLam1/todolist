@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import InputField from '../../component/InputField/InputField';
 import TextareaField from '../../component/TextareaField/TextareaField';
-import { addTodoThunk, getDataThunk , editTodoThunk } from '../../../features/todo/todoSlice';
+import { addTodoThunk, getDataThunk, editTodoThunk } from '../../../features/todo/todoSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 import { useDispatch } from 'react-redux';
 import { TiTimes } from 'react-icons/ti';
@@ -107,32 +107,29 @@ const TodoTable = (props) => {
   const [textError, setTextError] = useState('');
   const dispatch = useDispatch();
 
-  const handleSaveButton = async () => {
-    if (!todo?.name) {
-      setTextError('Please type a name todo');
-      return;
-    }
-
-    if (openTable === 'Edit') handleSaveTodo(todo);
-    else if (openTable === 'Add') {
-      await dispatch(addTodoThunk(todo));
-      if (Number(searchParams._page) === 1) {
-        await dispatch(getDataThunk(getAllParams(limit, 0, searchParams)));
-      } else {
-        setPageCount(0);
-        setSearchParams({ ...searchParams, _page: 1 });
-      }
-    }
-    setOpenTable('');
-  };
-
-  const handleSaveTodo = async (editedTodo) => {
-    await dispatch(editTodoThunk(editedTodo));
+  const handleSaveTodo = async () => {
+    await dispatch(editTodoThunk(todo));
     setSearchParams({ ...searchParams, _page: 1 });
   };
 
-  
-  const handleCloseTable = () => {
+  const handleAddTodo = async () => {
+    await dispatch(addTodoThunk(todo));
+    if (Number(searchParams._page) === 1) {
+      await dispatch(getDataThunk(getAllParams(limit, 0, searchParams)));
+    } else {
+      setPageCount(0);
+      setSearchParams({ ...searchParams, _page: 1 });
+    }
+  };
+
+  const handleSaveButton = async () => {
+    if (!todo?.name) {
+      setTextError('Please type a todo name');
+      return;
+    }
+
+    if (openTable === 'Edit') handleSaveTodo();
+    else if (openTable === 'Add') handleAddTodo();
     setOpenTable('');
   };
 
@@ -144,6 +141,10 @@ const TodoTable = (props) => {
     setTodo(newContent);
   };
 
+  const handleCloseTable = () => {
+    setOpenTable('');
+  };
+
   return (
     <LayoutContainer>
       <ContainerTable>
@@ -151,12 +152,12 @@ const TodoTable = (props) => {
         <Times onClick={handleCloseTable}>
           <TiTimes />
         </Times>
-        
+
         <ContainerInput>
           <Label htmlFor="editText">Content</Label>
           <InputField
             name="name"
-            value={todo?.name ?? ""}
+            value={todo?.name ?? ''}
             textError={textError}
             setTodo={setTodo}
             handleChangeInput={handleChangeInput}
@@ -169,7 +170,7 @@ const TodoTable = (props) => {
           <Label htmlFor="note">Note</Label>
           <TextareaField
             name="note"
-            value={todo?.note ?? ""}
+            value={todo?.note ?? ''}
             handleChangeInput={handleChangeInput}
             isdisabled={openTable === 'Detail'}
           />
@@ -200,7 +201,7 @@ const TodoTable = (props) => {
                 id="description"
                 onChange={handleChangeInput}
                 name="description"
-                value={todo.createdAt}
+                value={new Date(todo.createdAt).toLocaleDateString()}
                 isdisabled={true}
               />
             </ContainerInput>

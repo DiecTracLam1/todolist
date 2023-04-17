@@ -20,7 +20,6 @@ export const getDetailThunk = createAsyncThunk('todoSlice/getDetail', async (pay
 export const addTodoThunk = createAsyncThunk('todoSlice/addTodo', async (payload) => {
   try {
     const data = await brandApi.add(payload);
-    console.log(data)
     return data.data.data.doc;
   } catch (error) {}
 });
@@ -36,13 +35,6 @@ export const deleTodoThunk = createAsyncThunk('todoSlice/deleteTodo', async (pay
   try {
     await brandApi.delete(payload);
     return payload;
-  } catch (error) {}
-});
-
-export const searchTodoThunk = createAsyncThunk('todoSlice/search', async (payload) => {
-  try {
-    const data = await brandApi.search();
-    return data.data.data.docs;
   } catch (error) {}
 });
 
@@ -87,10 +79,6 @@ export const todoSlice = createSlice({
       const id = action.payload;
       const newArray = state.data.docs.filter((todo) => todo.id !== id);
       state.data.docs = newArray;
-    });
-
-    builder.addCase(searchTodoThunk.fulfilled, (state, action) => {
-      state.data.docs = action.payload;
     });
   },
 });

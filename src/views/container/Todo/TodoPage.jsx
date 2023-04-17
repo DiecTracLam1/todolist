@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { logout } from '~/features/user/userSlice';
 import TodoContainer from './TodoContainer';
-import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
-
 
 const Container = styled.div`
   width: 860px;
@@ -55,11 +53,10 @@ const ButtonLogOut = styled(ButtonHeader)`
   }
 `;
 
-const TodoList = () => {
+const TodoList = ({searchParams , setSearchParams}) => {
   const dispatch = useDispatch();
   const [openTable, setOpenTable] = useState('');
   const [currentTodo, setCurrentTodo] = useState('');
-  const [searchParams, setSearchParams] = useCustomSearchParams();
 
   const navigate = useNavigate();
 
