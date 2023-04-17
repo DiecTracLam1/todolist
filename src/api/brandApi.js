@@ -1,4 +1,4 @@
-import { fetchApiTodo } from '../features/api/fetchApiTodo';
+import { fetchApiTodo } from '../features/api/fetchApi';
 
 const url = '/sys/brands';
 

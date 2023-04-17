@@ -1,4 +1,4 @@
-import { fetchApiUser } from "../features/api/fetchApiUser";
+import { fetchApiUser } from "../features/api/fetchApi";
     
 const userApi = {
     login(data){

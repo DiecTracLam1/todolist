@@ -1,4 +1,4 @@
-import {  useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,7 +9,7 @@ import ContainerPagingnation from './ContainerPagingnation';
 import ContainerSelector from './ContainerSelector';
 import SearchContainer from './SearchContainer';
 import TodoTable from '../../presentation/Form/TodoForm';
-import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
+import { getAllParams } from '~/ultis/getAllParams';
 
 const Container = styled.div`
   background-color: lightgray;
@@ -21,10 +21,16 @@ const ContainerList = styled.div`
   padding-right: 8px;
   margin-top: 18px;
 `;
-const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable }) => {
+const TodoContainer = ({
+  openTable,
+  currentTodo,
+  setCurrentTodo,
+  setOpenTable,
+  searchParams,
+  setSearchParams,
+}) => {
   const TodoList = useSelector((state) => state.todo.data.docs ?? []);
   const loading = useSelector((state) => state.todo.loading);
-  const [searchParams, setSearchParams] = useCustomSearchParams();
 
   const searchLimit = useMemo(() => {
     return searchParams._limit > 20 ? 20 : searchParams._limit;
@@ -42,34 +48,14 @@ const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable })
 
   useLayoutEffect(() => {
     const getApi = async () => {
-      const result = await dispatch(
-        getDataThunk({
-          limit,
-          offset,
-          searchText: [
-            { value: searchParams.name, key: 'name' },
-            { value: searchParams.id, key: 'id' },
-            { value: searchParams.fullName, key: 'BrandEmployeeCreate.fullName' },
-            { value: searchParams.createdAt, key: 'createdAt' },
-          ],
-        })
-      );
+      const result = await dispatch(getDataThunk(getAllParams(limit, offset, searchParams)));
       if (!!result.payload?.errorCode) {
         localStorage.removeItem('user_token');
         navigate('/login');
       }
     };
     getApi();
-  }, [
-    dispatch,
-    limit,
-    offset,
-    navigate,
-    searchParams?.name,
-    searchParams.id,
-    searchParams.fullName,
-    searchParams.createdAt,
-  ]);
+  }, [dispatch, limit, offset, navigate, searchParams]);
 
   return (
     <Container>
