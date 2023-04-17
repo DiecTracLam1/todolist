@@ -12,6 +12,7 @@ export const columns = (props) => {
       title: '#',
       dataIndex: 'num',
       key: 'num',
+      render: (value, item, index) => index + 1 + props.offset,
     },
     {
       title: 'ID',
@@ -22,11 +23,11 @@ export const columns = (props) => {
     {
       title: 'Name',
       dataIndex: 'name',
-      width:90,
+      width: 90,
       minWidth: 80,
       key: 'name',
       filterKey: 'name',
-      defaultSearch : 'name'
+      defaultSearch: 'name',
     },
     {
       title: 'Owner',
@@ -40,12 +41,15 @@ export const columns = (props) => {
       key: 'createdAt',
       dataIndex: 'createdAt',
       filterKey: 'createdAt',
+      render: (_, { createdAt }) => <p>{new Date(createdAt).toLocaleDateString()}</p>,
     },
     {
       title: 'Status',
       key: 'status',
       dataIndex: 'status',
-      render: (_, { status }) => <p  style={{color: status?'blue' : "red"}}>{status ? 'Progressing' : 'Not Progress'}</p>,
+      render: (_, { status }) => (
+        <p style={{ color: status ? 'blue' : 'red' }}>{status ? 'Progressing' : 'Not Progress'}</p>
+      ),
     },
     {
       title: 'Action',

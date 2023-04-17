@@ -6,8 +6,7 @@ import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todo
 import { getAllParams } from '~/ultis/getAllParams';
 
 const ComponentTable = forwardRef(
-  ({ NewTodoList, setOpenTable, setCurrentTodo, limit, offset, searchParams , loading }, ref) => {
-    
+  ({ TodoList, setOpenTable, setCurrentTodo, limit, offset, searchParams, loading }, ref) => {
     const dispatch = useDispatch();
 
     const handleDetail = (todo) => {
@@ -31,7 +30,7 @@ const ComponentTable = forwardRef(
       await dispatch(editTodoThunk(newTodo));
     };
 
-    const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete });
+    const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete, offset });
 
     useImperativeHandle(
       ref,
@@ -50,7 +49,7 @@ const ComponentTable = forwardRef(
       <Table
         rowKey="id"
         columns={column}
-        dataSource={NewTodoList}
+        dataSource={TodoList}
         pagination={false}
         scroll={{ x: true, y: '420px' }}
         bordered

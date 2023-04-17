@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {  useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -34,25 +34,13 @@ const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable })
   const [pageCount, setPageCount] = useState(
     !!(searchParams._page - 1) ? searchParams._page - 1 : 0
   );
+  const offset = useMemo(() => Number(limit) * Number(pageCount), [limit, pageCount]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const tableRef = useRef();
-  const offset = useMemo(() => Number(limit) * Number(pageCount), [limit, pageCount]);
 
-  const NewTodoList = useMemo(
-    () =>
-      TodoList.map((todo, i) => {
-        return {
-          num: i + 1 + offset,
-          ...todo,
-          createdAt: new Date(todo.createdAt).toLocaleDateString(),
-        };
-      }),
-    [TodoList, offset]
-  );
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const getApi = async () => {
       const result = await dispatch(
         getDataThunk({
@@ -95,12 +83,12 @@ const TodoContainer = ({ openTable, currentTodo, setCurrentTodo, setOpenTable })
       <ContainerSelector
         setSearchParams={setSearchParams}
         searchParams={searchParams}
-        TodoList={NewTodoList}
+        TodoList={TodoList}
       />
 
       <ContainerList>
         <ComponentTable
-          NewTodoList={NewTodoList}
+          TodoList={TodoList}
           setOpenTable={setOpenTable}
           setCurrentTodo={setCurrentTodo}
           ref={tableRef}
