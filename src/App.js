@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './views/container/Login/Login';
-import TodoList from './views/container/Brand/BrandPage';
+import RootPage from '~/views/container/Page';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<TodoList searchParams={searchParams} setSearchParams={setSearchParams} />}
+          element={<RootPage searchParams={searchParams} setSearchParams={setSearchParams} />}
         />
         <Route path="/login" element={<Login />} />
       </Routes>
