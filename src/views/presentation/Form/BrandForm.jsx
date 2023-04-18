@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import InputField from '../../component/InputField/InputField';
 import TextareaField from '../../component/TextareaField/TextareaField';
-import { addTodoThunk, getDataThunk, editTodoThunk } from '../../../features/todo/todoSlice';
+import { addBrandThunk, getDataThunk, editBrandThunk } from '../../../features/brand/brandSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 import { useDispatch } from 'react-redux';
 import { TiTimes } from 'react-icons/ti';
@@ -89,7 +89,7 @@ const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
 
-const TodoTable = (props) => {
+const BrandForm = (props) => {
   const {
     setOpenTable,
     currentTodo = {},
@@ -115,10 +115,10 @@ const TodoTable = (props) => {
     }
 
     if (openTable === 'Edit') {
-      await dispatch(editTodoThunk(todo));
+      await dispatch(editBrandThunk(todo));
       setSearchParams({ ...searchParams, _page: 1 });
     } else if (openTable === 'Add') {
-      await dispatch(addTodoThunk(todo));
+      await dispatch(addBrandThunk(todo));
       if (Number(searchParams._page) === 1) {
         await dispatch(getDataThunk(getAllParams(limit, 0, searchParams))); // if page = 0 , run this function
       } else {
@@ -127,7 +127,7 @@ const TodoTable = (props) => {
         setSearchParams({ ...searchParams, _page: 1 });
       }
     }
-    
+
     setOpenTable('');
   };
 
@@ -231,4 +231,4 @@ const TodoTable = (props) => {
   );
 };
 
-export default TodoTable;
+export default BrandForm;

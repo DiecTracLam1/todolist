@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '~/assets/css/TodoList.css';
-import { getDataThunk } from '~/features/todo/todoSlice';
-import ComponentTable from './ComponentTable';
-import ContainerPagingnation from './ContainerPagingnation';
-import ContainerSelector from './ContainerSelector';
-import SearchContainer from './SearchContainer';
-import TodoTable from '../../presentation/Form/TodoForm';
+import { getDataThunk } from '~/features/brand/brandSlice';
+import ComponentTable from './BrandList';
+import ContainerPagingnation from '~/views/component/Pagingnation/ContainerPagingnation';
+import ContainerSelector from '../../component/Selector/ContainerSelector';
+import SearchContainer from '../../component/Search/SearchContainer';
+import TodoTable from '../../presentation/Form/BrandForm';
 import { getAllParams } from '~/ultis/getAllParams';
 
 const Container = styled.div`

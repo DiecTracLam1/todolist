@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { logout } from '~/features/user/userSlice';
-import TodoContainer from './TodoContainer';
+import TodoContainer from './BrandContainer';
 
 const Container = styled.div`
   width: 860px;

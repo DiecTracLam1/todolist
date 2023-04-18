@@ -1,8 +1,8 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { Table } from 'antd';
-import { columns } from '~/features/antd/tableColumn';
+import { columns } from './BrandColumn';
 import { useDispatch } from 'react-redux';
-import { deleTodoThunk, editTodoThunk, getDataThunk } from '~/features/todo/todoSlice';
+import { deleBrandThunk, editBrandThunk, getDataThunk } from '~/features/brand/brandSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 
 const ComponentTable = forwardRef(
@@ -20,14 +20,14 @@ const ComponentTable = forwardRef(
     };
 
     const handleDelete = async (id) => {
-      await dispatch(deleTodoThunk(id));
+      await dispatch(deleBrandThunk(id));
       await dispatch(getDataThunk(getAllParams(limit, offset, searchParams)));
     };
 
     const handleButtonDone = async (todo) => {
       const newTodo = { ...todo };
       newTodo.status = Number(!newTodo.status);
-      await dispatch(editTodoThunk(newTodo));
+      await dispatch(editBrandThunk(newTodo));
     };
 
     const column = columns({ handleEdit, handleDetail, handleButtonDone, handleDelete, offset });

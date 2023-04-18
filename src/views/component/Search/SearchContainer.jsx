@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import styled from 'styled-components';
 import { items } from '~/features/antd/dropdownItems';
-import InputSearchContainer from '~/views/component/InputField/InputSearchContainer';
-import Times from '../../component/Times/times';
+import InputSearchContainer from './InputSearchContainer';
+import Times from '../Times/times';
 
 const Container = styled.div`
   display: flex;

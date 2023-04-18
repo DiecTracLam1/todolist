@@ -1,7 +1,7 @@
 import { Button, Divider, Space } from 'antd';
 import { useEffect, useState } from 'react';
-import InputFieldDate from './InputFieldDate';
-import InputSearch from './InputSearch';
+import InputFieldDate from '../InputField/InputFieldDate';
+import InputSearch from '../InputField/InputFieldSearch';
 
 const InputSearchContainer = ({ searchParams, setSearchParams, fields = [], setSearchText }) => {
   const [searchField, setSearchField] = useState();
