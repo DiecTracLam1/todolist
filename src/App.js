@@ -11,7 +11,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route
-          path="/"
+          path="/timesheet"
           element={<RootPage searchParams={searchParams} setSearchParams={setSearchParams} />}
         />
         <Route path="/login" element={<Login />} />

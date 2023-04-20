@@ -4,27 +4,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getTimesheetThunk } from '~/features/timesheet/timesheetSlice.js';
 import { columns } from './Column.jsx';
 
-const TimeSheet = ({searchParams , setSearchParams}) => {
+const TimeSheet = ({ searchParams, setSearchParams }) => {
   const TimeSheetList = useSelector((state) => state.timesheet.data.docs);
   const total = useSelector((state) => state.timesheet.data.total);
   const loading = useSelector((state) => state.timesheet.loading);
-  const [page, setPage] = useState(searchParams._page ?? 1);
-  const [pageSize , setPageSize] = useState(searchParams._limit ?? 10);
+  const [page, setPage] = useState(Number(searchParams._page ?? 1));
+  const [pageSize, setPageSize] = useState(searchParams._limit ?? 10);
   const dispatch = useDispatch();
+
   useEffect(() => {
     const getApi = async () => {
-        console.log(page , pageSize)
-      const result = await dispatch(getTimesheetThunk({page : page, pageSize : pageSize }));
-      console.log(result);
+      await dispatch(getTimesheetThunk({ page: page, pageSize: pageSize }));
     };
     getApi();
-  }, [dispatch , page , pageSize]);
+  }, [dispatch, page, pageSize]);
 
-  const handleChangePage = ({current , pageSize}) => {
-    setPage(current)
-    setPageSize(pageSize)
-    setSearchParams({...searchParams , _page : current , _limit : pageSize})
+  const handleChangePage = ({ current, pageSize }) => {
+    setPage(current);
+    setPageSize(pageSize);
+    setSearchParams({ ...searchParams, _page: current, _limit: pageSize });
   };
+
+  const handleDetail = (todo) => {};
+
+  const handleEdit = (todo) => {};
+
+  const handleDelete = async (id) => {};
+
+  const handleButtonDone = async (todo) => {};
   return (
     <div>
       <Typography.Title
@@ -42,16 +49,17 @@ const TimeSheet = ({searchParams , setSearchParams}) => {
       <Table
         style={{ boxShadow: '5px 4px 4px 2px #d4d4d4' }}
         rowKey="id"
-        columns={columns()}
+        columns={columns(handleDetail, handleEdit, handleDelete, handleButtonDone)}
         dataSource={TimeSheetList}
-        scroll={{ x: true, y: '720px' }}
+        scroll={{ x: true, y: '70vh' }}
         bordered
         pagination={{
-          total: total ?? 10,
+          total: total ?? 1,
           defaultCurrent: page,
           defaultPageSize: pageSize,
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '30'],
+          style: { marginRight: '10px' },
         }}
         // ref={ref}
         loading={loading}

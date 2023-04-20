@@ -6,10 +6,10 @@ import BrandList from '../../container/Brand/BrandPage';
 import MenuComponent from '~/views/component/Menu';
 import TimeSheet from '~/views/container/TimeSheet';
 
-const RootPage = (searchParams, setSearchParams) => {
+const RootPage = ({searchParams, setSearchParams}) => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <MenuComponent />
+      <MenuComponent searchParams={searchParams}/>
       <Layout className="site-layout">
         <Content style={{ margin: '0 16px' }}>
           <div
