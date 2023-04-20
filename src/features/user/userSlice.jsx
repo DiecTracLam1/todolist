@@ -21,7 +21,8 @@ export const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem('user_token');
-      state.data = { code: 123 };
+      localStorage.removeItem('fullname');
+      state.data = {};
     },
   },
   extraReducers: (builder) => {
@@ -30,7 +31,9 @@ export const userSlice = createSlice({
     });
     builder.addCase(loginThunk.fulfilled, (state, action) => {
       state.data = action.payload;
-      state.error = {}
+      console.log(state.data);
+      localStorage.setItem('fullname', state.data.data.doc.employee.fullName);
+      state.error = {};
       state.loading = false;
     });
     builder.addCase(loginThunk.rejected, (state, action) => {

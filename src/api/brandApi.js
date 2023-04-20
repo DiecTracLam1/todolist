@@ -1,4 +1,4 @@
-import { fetchApiTodo } from '../features/api/fetchApiTodo';
+import { fetchApi } from '../features/api/fetchApi';
 
 const url = '/sys/brands';
 
@@ -20,24 +20,24 @@ const brandApi = {
       offset: offset,
     };
     params = new URLSearchParams(params).toString();
-    return fetchApiTodo(url, { method: 'GET', params });
+    return fetchApi(url, { method: 'GET', params });
   },
 
   async getDetail(params) {
-    return fetchApiTodo(url, { method: 'GET', params });
+    return fetchApi(url, { method: 'GET', params });
   },
 
   async add(data) {
-    return fetchApiTodo(url, { method: 'POST', data });
+    return fetchApi(url, { method: 'POST', data });
   },
 
   async edit(data) {
     const id = data.id;
-    return fetchApiTodo(url, { id, method: 'PUT', data });
+    return fetchApi(url, { id, method: 'PUT', data });
   },
 
   async delete(id) {
-    return fetchApiTodo(url, { id, method: 'DELETE' });
+    return fetchApi(url, { id, method: 'DELETE' });
   },
 };
 export default brandApi;

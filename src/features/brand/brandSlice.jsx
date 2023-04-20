@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import brandApi from '~/api/brandApi';
 
-export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload, thunkAPI) => {
+export const getDataThunk = createAsyncThunk('brandSlice/getData', async (payload, thunkAPI) => {
   try {
     const data = await brandApi.getAll(payload?.offset, payload.limit, payload.searchText);
     return data.data.data;
@@ -10,44 +10,36 @@ export const getDataThunk = createAsyncThunk('todoSlice/getData', async (payload
   }
 });
 
-export const getDetailThunk = createAsyncThunk('todoSlice/getDetail', async (payload) => {
+export const getDetailThunk = createAsyncThunk('brandSlice/getDetail', async (payload) => {
   try {
     const data = await brandApi.getDetail(payload);
     return data.data.data.docs;
   } catch (error) {}
 });
 
-export const addTodoThunk = createAsyncThunk('todoSlice/addTodo', async (payload) => {
+export const addBrandThunk = createAsyncThunk('brandSlice/addBrand', async (payload) => {
   try {
     const data = await brandApi.add(payload);
-    console.log(data)
     return data.data.data.doc;
   } catch (error) {}
 });
 
-export const editTodoThunk = createAsyncThunk('todoSlice/editTodo', async (payload) => {
+export const editBrandThunk = createAsyncThunk('brandSlice/editBrand', async (payload) => {
   try {
     const data = await brandApi.edit(payload);
     return data.data.data.doc;
   } catch (error) {}
 });
 
-export const deleTodoThunk = createAsyncThunk('todoSlice/deleteTodo', async (payload) => {
+export const deleBrandThunk = createAsyncThunk('brandSlice/deleteBrand', async (payload) => {
   try {
     await brandApi.delete(payload);
     return payload;
   } catch (error) {}
 });
 
-export const searchTodoThunk = createAsyncThunk('todoSlice/search', async (payload) => {
-  try {
-    const data = await brandApi.search();
-    return data.data.data.docs;
-  } catch (error) {}
-});
-
-export const todoSlice = createSlice({
-  name: 'todoSlice',
+export const brandSlice = createSlice({
+  name: 'brandSlice',
   initialState: {
     data: { docs: [], total: 0 },
     loading: true,
@@ -69,29 +61,26 @@ export const todoSlice = createSlice({
       state.error = action.payload;
     });
 
-    builder.addCase(editTodoThunk.fulfilled, (state, action) => {
+    builder.addCase(editBrandThunk.fulfilled, (state, action) => {
       const data = action.payload;
       const index = state.data.docs.findIndex((todo) => todo.id === data.id);
       state.data.docs[index] = {...state.data.docs[index] , ...data};
     });
 
-    builder.addCase(addTodoThunk.fulfilled, (state, action) => {
+    builder.addCase(addBrandThunk.fulfilled, (state, action) => {
       const data = action.payload;
-      console.log(data)
+      const fullName = localStorage.getItem('fullname')
+      data.BrandEmployeeCreate = {fullName}
       const newArray = [data, ...state.data.docs];
       state.data.docs = newArray;
     });
 
-    builder.addCase(deleTodoThunk.fulfilled, (state, action) => {
+    builder.addCase(deleBrandThunk.fulfilled, (state, action) => {
       const id = action.payload;
       const newArray = state.data.docs.filter((todo) => todo.id !== id);
       state.data.docs = newArray;
     });
-
-    builder.addCase(searchTodoThunk.fulfilled, (state, action) => {
-      state.data.docs = action.payload;
-    });
   },
 });
 
-export default todoSlice.reducer;
+export default brandSlice.reducer;

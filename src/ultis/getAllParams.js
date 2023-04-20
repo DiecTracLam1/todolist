@@ -1,7 +1,7 @@
 export function getAllParams(limit, offset, searchParams = {}) {
   return {
     limit,
-    offset: offset,
+    offset,
     searchText: [
       { value: searchParams?.name, key: 'name' },
       { value: searchParams?.id, key: 'id' },

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import InputField from '../../component/InputField/InputField';
 import TextareaField from '../../component/TextareaField/TextareaField';
-import { addTodoThunk, getDataThunk } from '../../../features/todo/todoSlice';
+import { addBrandThunk, getDataThunk, editBrandThunk } from '../../../features/brand/brandSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 import { useDispatch } from 'react-redux';
 import { TiTimes } from 'react-icons/ti';
@@ -89,11 +89,10 @@ const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
 
-const TodoTable = (props) => {
+const BrandForm = (props) => {
   const {
     setOpenTable,
     currentTodo = {},
-    handleSaveTodo,
     openTable,
     limit,
     searchParams,
@@ -109,34 +108,39 @@ const TodoTable = (props) => {
   const dispatch = useDispatch();
 
   const handleSaveButton = async () => {
+    // check if field todo's name is empty
     if (!todo?.name) {
-      setTextError('Please type a name todo');
+      setTextError('Please type a todo name');
       return;
     }
 
-    if (openTable === 'Edit') handleSaveTodo(todo);
-    else if (openTable === 'Add') {
-      await dispatch(addTodoThunk(todo));
+    if (openTable === 'Edit') {
+      await dispatch(editBrandThunk(todo));
+      setSearchParams({ ...searchParams, _page: 1 });
+    } else if (openTable === 'Add') {
+      await dispatch(addBrandThunk(todo));
       if (Number(searchParams._page) === 1) {
-        await dispatch(getDataThunk(getAllParams(limit, 0, searchParams)));
+        await dispatch(getDataThunk(getAllParams(limit, 0, searchParams))); // if page = 0 , run this function
       } else {
+        // if pageCount is in others page
         setPageCount(0);
         setSearchParams({ ...searchParams, _page: 1 });
       }
     }
-    setOpenTable('');
-  };
-  
-  const handleCloseTable = () => {
+
     setOpenTable('');
   };
 
   const handleChangeInput = (e) => {
-    if (e.target.name === 'name' || !todo?.name.length) {
+    if (e.target.name === 'name' || !todo.name?.length) {
       setTextError('');
     }
     const newContent = { ...todo, [e.target.name]: e.target.value };
     setTodo(newContent);
+  };
+
+  const handleCloseTable = () => {
+    setOpenTable('');
   };
 
   return (
@@ -146,12 +150,12 @@ const TodoTable = (props) => {
         <Times onClick={handleCloseTable}>
           <TiTimes />
         </Times>
-        
+
         <ContainerInput>
           <Label htmlFor="editText">Content</Label>
           <InputField
             name="name"
-            value={todo?.name}
+            value={todo?.name ?? ''}
             textError={textError}
             setTodo={setTodo}
             handleChangeInput={handleChangeInput}
@@ -164,7 +168,7 @@ const TodoTable = (props) => {
           <Label htmlFor="note">Note</Label>
           <TextareaField
             name="note"
-            value={todo?.note}
+            value={todo?.note ?? ''}
             handleChangeInput={handleChangeInput}
             isdisabled={openTable === 'Detail'}
           />
@@ -195,7 +199,7 @@ const TodoTable = (props) => {
                 id="description"
                 onChange={handleChangeInput}
                 name="description"
-                value={todo.createdAt}
+                value={new Date(todo.createdAt).toLocaleDateString()}
                 isdisabled={true}
               />
             </ContainerInput>
@@ -217,7 +221,9 @@ const TodoTable = (props) => {
         {openTable !== 'Detail' && (
           <ContainerButton>
             <CancelButton onClick={handleCloseTable}>Cancel</CancelButton>
-            <SaveButton onClick={handleSaveButton}>Save</SaveButton>
+            <SaveButton onClick={handleSaveButton}>
+              {openTable === 'Add' ? 'Add' : 'Update'}
+            </SaveButton>
           </ContainerButton>
         )}
       </ContainerTable>
@@ -225,4 +231,4 @@ const TodoTable = (props) => {
   );
 };
 
-export default TodoTable;
+export default BrandForm;
