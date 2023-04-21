@@ -12,7 +12,7 @@ const {
         title: '#',
         dataIndex: 'num',
         key: 'num',
-        render: (value, item, index) => index + 1 ,
+        render: (value, item, index) => index + 1 + Number((props.page -1)  * props.pageSize),
       },
       {
         title: 'Số Phiếu',

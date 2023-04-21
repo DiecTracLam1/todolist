@@ -49,7 +49,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
       <Table
         style={{ boxShadow: '5px 4px 4px 2px #d4d4d4' }}
         rowKey="id"
-        columns={columns(handleDetail, handleEdit, handleDelete, handleButtonDone)}
+        columns={columns({handleDetail, handleEdit, handleDelete, handleButtonDone , page ,pageSize})}
         dataSource={TimeSheetList}
         scroll={{ x: true, y: '70vh' }}
         bordered

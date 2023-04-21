@@ -21,7 +21,7 @@ const MenuComponent = () => {
   
   return (
     <Sider
-      width={300}
+      width={260}
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
