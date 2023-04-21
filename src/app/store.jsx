@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import todoSlice from '../features/brand/brandSlice';
 import userSlice from '../features/user/userSlice';
-import timesheetSlice from '../features/timesheet/timesheetSlice';
+import timesheetSlice from '../features/timesheet/employSheetSlice';
 
 export default configureStore({
   reducer: {

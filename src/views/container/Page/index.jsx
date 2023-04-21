@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import BrandList from '../../container/Brand/BrandPage';
 import MenuComponent from '~/views/component/Menu';
 import TimeSheet from '~/views/container/TimeSheet';
+import AddPage from '~/views/container/TimeSheet/AddPage';
 
 const RootPage = ({searchParams, setSearchParams}) => {
   return (
@@ -23,7 +24,9 @@ const RootPage = ({searchParams, setSearchParams}) => {
                 path="/"
                 element={
                   // <BrandList searchParams={searchParams} setSearchParams={setSearchParams} />
-                  <TimeSheet searchParams={searchParams} setSearchParams={setSearchParams} />
+                  // <TimeSheet searchParams={searchParams} setSearchParams={setSearchParams} />
+                  <AddPage />
+                
                 }
               />
 

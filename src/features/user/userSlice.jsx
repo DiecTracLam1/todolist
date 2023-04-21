@@ -31,8 +31,8 @@ export const userSlice = createSlice({
     });
     builder.addCase(loginThunk.fulfilled, (state, action) => {
       state.data = action.payload;
-      console.log(state.data);
       localStorage.setItem('fullname', state.data.data.doc.employee.fullName);
+      localStorage.setItem('id', state.data.data.doc.employee.id);
       state.error = {};
       state.loading = false;
     });

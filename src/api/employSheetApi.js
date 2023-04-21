@@ -1,10 +1,15 @@
 import { fetchApi } from '../features/api/fetchApi';
 
-const url = '/hr/timesheet-masters';
+const url = '/hr/adjust-employee-timesheets';
 
-const timeSheetApi = {
-  async getAll() {
-    return fetchApi(url, { method: 'GET'});
+const employSheetApi = {
+  async getAll({page , pageSize}) {
+    let params = {
+      limit: pageSize,
+      offset: Number(page - 1) * pageSize,
+    };
+    params = new URLSearchParams(params).toString();
+    return fetchApi(url, { method: 'GET' , params});
   },
 
   async getDetail(params) {
@@ -24,4 +29,4 @@ const timeSheetApi = {
     return fetchApi(url, { id, method: 'DELETE' });
   },
 };
-export default timeSheetApi;
+export default employSheetApi;

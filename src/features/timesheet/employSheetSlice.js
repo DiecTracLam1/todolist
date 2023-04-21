@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import timesheetApi from '~/api/timesheetApi';
+import timesheetApi from '~/api/employSheetApi';
 
-export const getTimesheetThunk = createAsyncThunk('timesheet/getTimesheet', async (payload, thunkAPI) => {
+export const getEmploySheetThunk = createAsyncThunk('employSheet/getEmploySheet', async (payload, thunkAPI) => {
   try {
     const data = await timesheetApi.getAll(payload);
     return data.data.data;
@@ -10,28 +10,28 @@ export const getTimesheetThunk = createAsyncThunk('timesheet/getTimesheet', asyn
   }
 });
 
-export const getDetailTimesheetThunk = createAsyncThunk('timesheet/getDetail', async (payload) => {
+export const getDetailEmploySheetThunk = createAsyncThunk('employSheet/getDetail', async (payload) => {
   try {
     const data = await timesheetApi.getDetail(payload);
     return data.data.data.docs;
   } catch (error) {}
 });
 
-export const addBrandThunk = createAsyncThunk('timesheet/addBrand', async (payload) => {
+export const addBrandThunk = createAsyncThunk('employSheet/addBrand', async (payload) => {
   try {
     const data = await timesheetApi.add(payload);
     return data.data.data.doc;
   } catch (error) {}
 });
 
-export const editBrandThunk = createAsyncThunk('timesheet/editBrand', async (payload) => {
+export const editBrandThunk = createAsyncThunk('employSheet/editBrand', async (payload) => {
   try {
     const data = await timesheetApi.edit(payload);
     return data.data.data.doc;
   } catch (error) {}
 });
 
-export const deleBrandThunk = createAsyncThunk('timesheet/deleteBrand', async (payload) => {
+export const deleBrandThunk = createAsyncThunk('employSheet/deleteBrand', async (payload) => {
   try {
     await timesheetApi.delete(payload);
     return payload;
@@ -39,7 +39,7 @@ export const deleBrandThunk = createAsyncThunk('timesheet/deleteBrand', async (p
 });
 
 export const timesheetSlice = createSlice({
-  name: 'timesheetSlice',
+  name: 'employSheetSlice',
   initialState: {
     data: { docs: [], total: 0 },
     loading: true,
@@ -47,15 +47,15 @@ export const timesheetSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getTimesheetThunk.pending, (state) => {
+    builder.addCase(getEmploySheetThunk.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(getTimesheetThunk.fulfilled, (state, action) => {
+    builder.addCase(getEmploySheetThunk.fulfilled, (state, action) => {
       state.data = action.payload;
       state.loading = false;
       state.error = {};
     });
-    builder.addCase(getTimesheetThunk.rejected, (state, action) => {
+    builder.addCase(getEmploySheetThunk.rejected, (state, action) => {
       state.data = {};
       state.loading = false;
       state.error = action.payload;

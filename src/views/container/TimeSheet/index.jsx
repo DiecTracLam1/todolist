@@ -1,7 +1,7 @@
 import { Table, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTimesheetThunk } from '~/features/timesheet/timesheetSlice.js';
+import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
 import { columns } from './Column.jsx';
 
 const TimeSheet = ({ searchParams, setSearchParams }) => {
@@ -14,7 +14,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
 
   useEffect(() => {
     const getApi = async () => {
-      await dispatch(getTimesheetThunk({ page: page, pageSize: pageSize }));
+      await dispatch(getEmploySheetThunk({ page: page, pageSize: pageSize }));
     };
     getApi();
   }, [dispatch, page, pageSize]);
@@ -44,7 +44,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
           margin: '0 0 16px 0',
         }}
       >
-        TimeSheet
+        Thời gian biểu
       </Typography.Title>
       <Table
         style={{ boxShadow: '5px 4px 4px 2px #d4d4d4' }}
