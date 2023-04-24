@@ -1,8 +1,10 @@
-import { Table, Typography } from 'antd';
+import { Layout, Table, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
 import { columns } from './Column.jsx';
+import { Content } from 'antd/es/layout/layout.js';
+import { useNavigate } from 'react-router-dom';
 
 const TimeSheet = ({ searchParams, setSearchParams }) => {
   const TimeSheetList = useSelector((state) => state.timesheet.data.docs);
@@ -10,6 +12,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   const loading = useSelector((state) => state.timesheet.loading);
   const [page, setPage] = useState(Number(searchParams._page ?? 1));
   const [pageSize, setPageSize] = useState(searchParams._limit ?? 10);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,7 +28,10 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
     setSearchParams({ ...searchParams, _page: current, _limit: pageSize });
   };
 
-  const handleDetail = (todo) => {};
+  const handleDetail = (timesheet) => {
+    navigate('/timesheet/add', { state: { timesheet: timesheet, type: 'detail' } });
+    console.log(timesheet);
+  };
 
   const handleEdit = (todo) => {};
 
@@ -33,7 +39,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
 
   const handleButtonDone = async (todo) => {};
   return (
-    <div>
+    <>
       <Typography.Title
         level={2}
         style={{
@@ -49,7 +55,14 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
       <Table
         style={{ boxShadow: '5px 4px 4px 2px #d4d4d4' }}
         rowKey="id"
-        columns={columns({handleDetail, handleEdit, handleDelete, handleButtonDone , page ,pageSize})}
+        columns={columns({
+          handleDetail,
+          handleEdit,
+          handleDelete,
+          handleButtonDone,
+          page,
+          pageSize,
+        })}
         dataSource={TimeSheetList}
         scroll={{ x: true, y: '70vh' }}
         bordered
@@ -66,7 +79,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         sticky
         onChange={handleChangePage}
       />
-    </div>
+    </>
   );
 };
 

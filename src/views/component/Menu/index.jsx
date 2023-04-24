@@ -38,7 +38,7 @@ const MenuComponent = () => {
       >
         Menu
       </Typography.Title>
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={[selectedItem.key]} items={items}/>
+      <Menu theme="dark" mode="inline" defaultSelectedKeys={[selectedItem?.key ?? "1"]} items={items}/>
     </Sider>
   );
 };

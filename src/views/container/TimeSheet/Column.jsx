@@ -68,26 +68,26 @@ const {
       {
         title: 'Action',
         key: 'action',
-        render: (_, todo) => {
+        render: (_, timesheet) => {
           return (
             <Space size="small">
               <Button
-                onClick={() => props.handleButtonDone(todo)}
+                onClick={() => props.handleButtonDone(timesheet)}
                 style={{ backgroundColor: '#a0d911' }}
                 icon={<CheckOutlined />}
               ></Button>
               <Button
-                onClick={() => props.handleDetail(todo)}
+                onClick={() => props.handleDetail(timesheet)}
                 style={{ backgroundColor: '#1677ff' }}
                 icon={<FileTextOutlined />}
               ></Button>
               <Button
-                onClick={() => props.handleEdit(todo)}
+                onClick={() => props.handleEdit(timesheet)}
                 style={{ backgroundColor: '#fadb14' }}
                 icon={<FormOutlined />}
               ></Button>
               <Button
-                onClick={() => props.handleDelete(todo?.id)}
+                onClick={() => props.handleDelete(timesheet?.id)}
                 style={{ backgroundColor: '#f5222d' }}
                 icon={<DeleteOutlined />}
               ></Button>
