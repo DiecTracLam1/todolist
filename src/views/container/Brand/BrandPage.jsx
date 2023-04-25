@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoMdAddCircle } from 'react-icons/io';
 import { useDispatch } from 'react-redux';
@@ -60,11 +60,7 @@ const TodoList = ({searchParams , setSearchParams}) => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!localStorage.getItem('user_token')) {
-      navigate('/login');
-    }
-  }, [navigate]);
+
 
   const handleAddTable = () => {
     setCurrentTodo({});

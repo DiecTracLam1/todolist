@@ -5,9 +5,9 @@ const userApi = {
     const url = '/auth/login';
     return fetchApi(url, { method: 'POST', data });
   },
-  getUser(id = "APG01096") {
+  getUser(id = '') {
     const url = '/employees';
-    const params = { hasEm: true };
+    const params = new URLSearchParams({ hasEm: true }).toString();
     return fetchApi(url, { id, method: 'GET', params });
   },
 };

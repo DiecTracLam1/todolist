@@ -1,4 +1,3 @@
-import axios from 'axios';
 import axiosClient from '../../api/axiosClient';
 
 const getAuthorizationHeader = () => {
@@ -9,12 +8,5 @@ const getAuthorizationHeader = () => {
 export const fetchApi = async (url, { id = '', params = '', ...option }) => {
   id = id && '/' + id;
   params = params && '?' + params;
-  // 123480 
-  // console.log(
-  //   await axios.get('http://newerp.apggroup.vn:5001/api/employees/APG00004?hasEm=true', {
-  //     headers: getAuthorizationHeader(),
-  //   })
-  // );
-
   return axiosClient(`${url}${id}${params}`, { headers: getAuthorizationHeader(), ...option });
 };

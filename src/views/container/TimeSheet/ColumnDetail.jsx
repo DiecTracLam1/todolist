@@ -4,7 +4,6 @@ export const columns = (props) => {
   const columns = [
     {
       title: 'Dữ liệu',
-      key: 'data',
       children: [
         {
           title: 'Thứ - Ngày',
@@ -62,7 +61,6 @@ export const columns = (props) => {
     },
     {
       title: 'Điểu chỉnh',
-      key: 'Edditing',
       children: [
         {
           title: 'Hành chính',

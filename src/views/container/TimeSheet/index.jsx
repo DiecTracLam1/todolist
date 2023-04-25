@@ -1,11 +1,29 @@
-import { Layout, Table, Typography } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Table, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
 import { columns } from './Column.jsx';
-import { Content } from 'antd/es/layout/layout.js';
-import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { PlusOutlined } from '@ant-design/icons';
 
+const AddButtonContainer = styled.div`
+  position: fixed;
+  top: 92%;
+  left: 55%;
+  right: 42%;
+  bottom: 2%;
+  background-color: rgba(6, 197, 47, 0.897);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  &:hover{
+    opacity: 0.8;
+  }
+`;
 const TimeSheet = ({ searchParams, setSearchParams }) => {
   const TimeSheetList = useSelector((state) => state.timesheet.data.docs);
   const total = useSelector((state) => state.timesheet.data.total);
@@ -79,6 +97,9 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         sticky
         onChange={handleChangePage}
       />
+      <AddButtonContainer>
+        <PlusOutlined style={{fontSize:"30px"}}/>
+      </AddButtonContainer>
     </>
   );
 };

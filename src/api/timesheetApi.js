@@ -11,7 +11,7 @@ const timeSheetApi = {
   async getDetail(timesheetID = "" ,enrollnumber=""  ) {
     timesheetID = timesheetID && "/"+timesheetID
     enrollnumber = enrollnumber && "/"+enrollnumber
-    const url = `hr/employer-timesheet-details${timesheetID}/4`
+    const url = `hr/employer-timesheet-details${timesheetID}${enrollnumber}`
     return fetchApi(url, { method: 'GET' });
   },
 

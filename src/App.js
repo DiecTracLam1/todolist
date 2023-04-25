@@ -1,13 +1,13 @@
+import Layout from 'antd/es/layout/layout';
 import { Route, Routes } from 'react-router-dom';
-import './App.css';
-import Login from './views/container/Login/Login';
-import RootPage from '~/views/container/Page';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
-import Layout, { Content } from 'antd/es/layout/layout';
-import TimeSheet from '~/views/container/TimeSheet';
-import AddPage from '~/views/container/TimeSheet/AddPage';
 import LayoutComponent from '~/views/component/Layout/Layout';
 import BrandList from '~/views/container/Brand/BrandPage';
+import RootPage from '~/views/container/Page';
+import TimeSheet from '~/views/container/TimeSheet';
+import AddPage from '~/views/container/TimeSheet/AddPage';
+import './App.css';
+import Login from './views/container/Login/Login';
 
 function App() {
   const [searchParams, setSearchParams] = useCustomSearchParams();
@@ -20,6 +20,15 @@ function App() {
             path="/"
             element={<RootPage searchParams={searchParams} setSearchParams={setSearchParams} />}
           >
+            <Route
+              index
+              element={
+                <LayoutComponent>
+                  <BrandList searchParams={searchParams} setSearchParams={setSearchParams} />
+                </LayoutComponent>
+              }
+            />
+
             <Route
               path="/brand"
               element={

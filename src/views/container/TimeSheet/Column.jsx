@@ -53,6 +53,7 @@ const {
         title: 'Người duyệt',
         key: 'AdjustEmployerAppDetail',
         dataIndex: 'AdjustEmployerAppDetail',
+        width:120,
         render: (_, { AdjustEmployerAppDetail }) => (
           <p >{AdjustEmployerAppDetail.ProAppDetailEmployeeApprover.fullName}</p>
         ),
