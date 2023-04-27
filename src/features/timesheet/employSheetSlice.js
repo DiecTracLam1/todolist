@@ -17,9 +17,10 @@ export const getDetailEmploySheetThunk = createAsyncThunk('employSheet/getDetail
   } catch (error) {}
 });
 
-export const addBrandThunk = createAsyncThunk('employSheet/addBrand', async (payload) => {
+export const addEmploySheetThunk = createAsyncThunk('employSheet/addBrand', async (payload) => {
   try {
     const data = await timesheetApi.add(payload);
+    console.log(data)
     return data.data.data.doc;
   } catch (error) {}
 });
@@ -67,7 +68,7 @@ export const timesheetSlice = createSlice({
       state.data.docs[index] = {...state.data.docs[index] , ...data};
     });
 
-    builder.addCase(addBrandThunk.fulfilled, (state, action) => {
+    builder.addCase(addEmploySheetThunk.fulfilled, (state, action) => {
       const data = action.payload;
       const fullName = localStorage.getItem('fullname')
       data.BrandEmployeeCreate = {fullName}

@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { TiTimes } from 'react-icons/ti';
+import InputField from '../../component/InputField/InputField';
+import { Spin } from 'antd';
+import userApi from '~/api/userApi';
+import { useDispatch } from 'react-redux';
+import { addEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
 
 const LayoutContainer = styled.div`
   position: fixed;
@@ -18,7 +24,8 @@ const ContainerTable = styled.div`
   /* height: 500px; */
   background-color: #fff;
   padding: 12px 14px;
-  margin-top: 10%;
+  margin: 10% 0 0 300px;
+  z-index: 10;
 `;
 const Title = styled.h1`
   text-transform: uppercase;
@@ -42,7 +49,7 @@ const Times = styled.div`
 const ContainerInput = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 16px 0;
+  margin: 8px 0;
 `;
 
 const Label = styled.label`
@@ -74,12 +81,107 @@ const Button = styled.button`
     opacity: 0.8;
   }
 `;
-const TimesheetForm = () => {
-    return (
-        <div>
-            
-        </div>
-    );
+
+const SaveButton = styled(Button)`
+  background-color: #1baa1b;
+`;
+const CancelButton = styled(Button)`
+  background-color: #312e2ec9;
+`;
+const TimesheetForm = ({ openForm, setOpenForm }) => {
+  const [employee, setEmployee] = useState();
+  const [content, setContent] = useState("");
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getTimeSheet = async () => {
+      const employStorage = JSON.parse(localStorage.getItem('employee'));
+      const employeeApi = await userApi.getUser(employStorage.id);
+      setEmployee(employeeApi.data.data.doc.employee);
+      setLoading(false);
+    };
+    getTimeSheet();
+  }, []);
+  const handleCloseTable = () => {
+    setOpenForm('');
+  };
+
+  const handleChangeContent = (e) => {
+    setContent(e.target.value);
+  };
+
+  const handleButtonDone = async() => {
+    const monthList = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const date = new Date();
+    const currentMonth = monthList[date.getMonth()];
+    const data = {
+      employeeId: employee.id,
+      positionId: employee.positionId,
+      departmentId: employee.departmentId,
+      month: currentMonth,
+      year: date.getFullYear(),
+      content: content ?? '',
+    };
+    console.log(data);
+    await dispatch(addEmploySheetThunk(data))
+  };
+
+  return (
+    <LayoutContainer>
+      <ContainerTable>
+        <Title>{openForm} Table</Title>
+        <Times onClick={handleCloseTable}>
+          <TiTimes />
+        </Times>
+
+        <ContainerInput>
+          <Label>Mã nhân viên</Label>
+          <InputField name="employID" value={employee?.id ?? ''} isdisabled={true} />
+        </ContainerInput>
+
+        <ContainerInput>
+          <Label>Mã chức danh</Label>
+          <InputField name="positionID" value={employee?.positionId ?? ''} isdisabled={true} />
+        </ContainerInput>
+
+        <ContainerInput>
+          <Label>Mã bộ phận</Label>
+          <InputField name="departmentID" value={employee?.departmentId ?? ''} isdisabled={true} />
+        </ContainerInput>
+
+        <ContainerInput>
+          <Label>Nội dung</Label>
+          <InputField
+            name="content"
+            value={content}
+            handleChangeInput={handleChangeContent}
+            isdisabled={openForm === 'Detail'}
+          />
+        </ContainerInput>
+
+        <ContainerButton>
+          <CancelButton onClick={handleCloseTable}>Hủy</CancelButton>
+          <SaveButton onClick={handleButtonDone}>
+            {openForm === 'Add' ? 'Thêm' : 'Cập nhật'}
+          </SaveButton>
+        </ContainerButton>
+      </ContainerTable>
+    </LayoutContainer>
+  );
 };
 
 export default TimesheetForm;

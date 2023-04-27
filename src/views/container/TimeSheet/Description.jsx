@@ -1,7 +1,7 @@
 import { DatePicker, Descriptions, Input, Select, Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
-import timeSheetApi from '~/api/timeSheetApi';
+import timeSheetApi from '~/api/timesheetApi';
 import fieldlist from './FieldList';
 import userApi from '~/api/userApi';
 import { useLocation } from 'react-router-dom';
@@ -13,6 +13,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable }) => {
   const [loading, setLoading] = useState(true);
   const [employee, setEmployee] = useState();
   const [timesheetList, setTimesheetList] = useState([]);
+  console.log(timesheetLocation)
 
   const timesheetName = useMemo(
     () =>
@@ -21,6 +22,8 @@ const Description = ({ setTimeSheetTable, setLoadingTable }) => {
       }),
     [timesheetList]
   );
+
+  // console.log(employee)
 
   useEffect(() => {
     const getTimeSheet = async () => {

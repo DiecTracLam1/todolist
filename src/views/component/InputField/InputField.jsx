@@ -16,20 +16,26 @@ const TextError = styled.p`
   font-weight: 600;
 `;
 
-const InputField = ({ name, textError , handleChangeInput , placeholder , isdisabled , value }) => {
-  
+const InputField = ({
+  name,
+  textError,
+  handleChangeInput,
+  placeholder,
+  isdisabled,
+  value,
+  isRequired = false,
+}) => {
   return (
     <>
       <Input
-        id="editText"
         name={name}
         type="text"
         textError={textError}
         placeholder={placeholder}
         value={value}
         onChange={handleChangeInput}
-        disabled = {isdisabled}
-        required
+        disabled={isdisabled}
+        required={isRequired}
       />
 
       <TextError>{textError}</TextError>

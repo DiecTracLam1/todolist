@@ -4,6 +4,7 @@ import userApi from '~/api/userApi';
 export const loginThunk = createAsyncThunk('user/login', async (data, thunkAPI) => {
   try {
     const response = await userApi.login(data);
+    console.log(response);
     localStorage.setItem('user_token', response.data.data.doc.token);
     return response.data;
   } catch (error) {
@@ -21,7 +22,7 @@ export const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem('user_token');
-      localStorage.removeItem('fullname');
+      localStorage.removeItem('employee');
       state.data = {};
     },
   },
@@ -31,8 +32,7 @@ export const userSlice = createSlice({
     });
     builder.addCase(loginThunk.fulfilled, (state, action) => {
       state.data = action.payload;
-      localStorage.setItem('fullname', state.data.data.doc.employee.fullName);
-      localStorage.setItem('id', state.data.data.doc.employee.id);
+      localStorage.setItem('employee', JSON.stringify(state.data.data.doc.employee));
       state.error = {};
       state.loading = false;
     });

@@ -2,25 +2,28 @@ import { Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
-import { columns } from './Column.jsx';
 import styled from 'styled-components';
-import { PlusOutlined } from '@ant-design/icons';
-
+import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
+import TimesheetForm from '../../presentation/Form/TimesheetForm.jsx';
+import { columns } from './Column.jsx';
+import { AiFillPlusCircle} from 'react-icons/ai'
 const AddButtonContainer = styled.div`
   position: fixed;
-  top: 92%;
+  top: 88%;
   left: 55%;
   right: 42%;
   bottom: 2%;
-  background-color: rgba(6, 197, 47, 0.897);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: rgba(6, 197, 47, 0.897);
+  font-size: 46px;
+`;
+
+const AddButton = styled.div`
   border-radius: 50%;
+  padding: 4px 8px;
   color: white;
+  height: 100%;
   cursor: pointer;
-  &:hover{
+  &:hover {
     opacity: 0.8;
   }
 `;
@@ -30,8 +33,11 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   const loading = useSelector((state) => state.timesheet.loading);
   const [page, setPage] = useState(Number(searchParams._page ?? 1));
   const [pageSize, setPageSize] = useState(searchParams._limit ?? 10);
+  const [openForm, setOpenForm] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  console.log(TimeSheetList)
 
   useEffect(() => {
     const getApi = async () => {
@@ -49,6 +55,11 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   const handleDetail = (timesheet) => {
     navigate('/timesheet/add', { state: { timesheet: timesheet, type: 'detail' } });
     console.log(timesheet);
+  };
+
+  const handleAddTable = () => {
+    // setCurrentTodo({});
+    setOpenForm('Add');
   };
 
   const handleEdit = (todo) => {};
@@ -71,7 +82,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         Thời gian biểu
       </Typography.Title>
       <Table
-        style={{ boxShadow: '5px 4px 4px 2px #d4d4d4' }}
+        style={{ boxShadow: '5px 4px 4px 2px #d4d4d4', zIndex: 0 }}
         rowKey="id"
         columns={columns({
           handleDetail,
@@ -98,8 +109,9 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         onChange={handleChangePage}
       />
       <AddButtonContainer>
-        <PlusOutlined style={{fontSize:"30px"}}/>
+        <AiFillPlusCircle onClick={handleAddTable} style={{cursor:'pointer'}} />
       </AddButtonContainer>
+      {openForm != '' && <TimesheetForm openForm={openForm} setOpenForm={setOpenForm} />}
     </>
   );
 };
