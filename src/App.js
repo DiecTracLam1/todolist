@@ -8,6 +8,7 @@ import TimeSheet from '~/views/container/TimeSheet';
 import AddPage from '~/views/container/TimeSheet/AddPage';
 import './App.css';
 import Login from './views/container/Login/Login';
+import Error from '~/views/container/Page/Error';
 
 function App() {
   const [searchParams, setSearchParams] = useCustomSearchParams();
@@ -30,7 +31,7 @@ function App() {
             />
 
             <Route
-              path="/brand"
+              path="brand"
               element={
                 <LayoutComponent>
                   <BrandList searchParams={searchParams} setSearchParams={setSearchParams} />
@@ -38,23 +39,28 @@ function App() {
               }
             />
             <Route
-              path="/timesheet"
+              path="timesheet"
               element={
                 <LayoutComponent>
                   <TimeSheet searchParams={searchParams} setSearchParams={setSearchParams} />
                 </LayoutComponent>
               }
             />
-            <Route
-              path="/timesheet/*"
-              element={
-                <LayoutComponent>
-                  <AddPage />
-                </LayoutComponent>
-              }
-            />
+
+            {['add', 'edit', 'detail'].map((path,index) => (
+              <Route
+                key={index}
+                path={`timesheet/${path}`}
+                element={
+                  <LayoutComponent>
+                    <AddPage />
+                  </LayoutComponent>
+                }
+              />
+            ))}
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Error />} />
         </Routes>
       </Layout>
     </div>

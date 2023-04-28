@@ -1,3 +1,6 @@
+.ant-table-header{
+  position: unset !important;
+}
 .ant-table-thead .ant-table-cell {
   background-color: #13c2c2 !important;
 }

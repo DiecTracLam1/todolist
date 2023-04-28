@@ -1,12 +1,31 @@
-import { Table, Typography } from 'antd';
+import { Button, Result, Table, Typography } from 'antd';
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { columns } from './ColumnDetail.jsx';
 import Description from './Description.jsx';
 
 const AddPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [timeSheetTable, setTimeSheetTable] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
-  console.log(timeSheetTable);
+
+  console.log(timeSheetTable)
+
+  if (!location.state && location.pathname !== '/timesheet/add') {
+    return (
+      <Result
+        status="error"
+        title="Tải trang thất bại"
+        subTitle="Vui lòng hãy chọn chi tiết thời gian biểu ."
+        extra={[
+          <Button onClick={() => navigate('/timesheet')} type="primary" key="console">
+            Trở lại
+          </Button>,
+        ]}
+      ></Result>
+    );
+  }
   return (
     <div>
       <Typography.Title

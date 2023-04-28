@@ -21,7 +21,6 @@ const LayoutContainer = styled.div`
 const ContainerTable = styled.div`
   position: absolute;
   width: 600px;
-  /* height: 500px; */
   background-color: #fff;
   padding: 12px 14px;
   margin: 10% 0 0 300px;
@@ -88,9 +87,9 @@ const SaveButton = styled(Button)`
 const CancelButton = styled(Button)`
   background-color: #312e2ec9;
 `;
-const TimesheetForm = ({ openForm, setOpenForm }) => {
+const TimesheetForm = ({ openForm, setOpenForm , currentContent='' }) => {
   const [employee, setEmployee] = useState();
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(currentContent);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
@@ -111,74 +110,65 @@ const TimesheetForm = ({ openForm, setOpenForm }) => {
     setContent(e.target.value);
   };
 
-  const handleButtonDone = async() => {
-    const monthList = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
+  const handleButtonDone = async () => {
     const date = new Date();
-    const currentMonth = monthList[date.getMonth()];
     const data = {
       employeeId: employee.id,
       positionId: employee.positionId,
       departmentId: employee.departmentId,
-      month: currentMonth,
+      month: date.getMonth(),
       year: date.getFullYear(),
       content: content ?? '',
     };
     console.log(data);
-    await dispatch(addEmploySheetThunk(data))
+    await dispatch(addEmploySheetThunk(data));
   };
 
   return (
     <LayoutContainer>
       <ContainerTable>
-        <Title>{openForm} Table</Title>
-        <Times onClick={handleCloseTable}>
-          <TiTimes />
-        </Times>
+        <Spin spinning={loading}>
+          <Title>{openForm} Table</Title>
+          <Times onClick={handleCloseTable}>
+            <TiTimes />
+          </Times>
 
-        <ContainerInput>
-          <Label>Mã nhân viên</Label>
-          <InputField name="employID" value={employee?.id ?? ''} isdisabled={true} />
-        </ContainerInput>
+          <ContainerInput>
+            <Label>Mã nhân viên</Label>
+            <InputField name="employID" value={employee?.id ?? ''} isdisabled={true} />
+          </ContainerInput>
 
-        <ContainerInput>
-          <Label>Mã chức danh</Label>
-          <InputField name="positionID" value={employee?.positionId ?? ''} isdisabled={true} />
-        </ContainerInput>
+          <ContainerInput>
+            <Label>Mã chức danh</Label>
+            <InputField name="positionID" value={employee?.positionId ?? ''} isdisabled={true} />
+          </ContainerInput>
 
-        <ContainerInput>
-          <Label>Mã bộ phận</Label>
-          <InputField name="departmentID" value={employee?.departmentId ?? ''} isdisabled={true} />
-        </ContainerInput>
+          <ContainerInput>
+            <Label>Mã bộ phận</Label>
+            <InputField
+              name="departmentID"
+              value={employee?.departmentId ?? ''}
+              isdisabled={true}
+            />
+          </ContainerInput>
 
-        <ContainerInput>
-          <Label>Nội dung</Label>
-          <InputField
-            name="content"
-            value={content}
-            handleChangeInput={handleChangeContent}
-            isdisabled={openForm === 'Detail'}
-          />
-        </ContainerInput>
+          <ContainerInput>
+            <Label>Nội dung</Label>
+            <InputField
+              name="content"
+              value={content}
+              handleChangeInput={handleChangeContent}
+              isdisabled={openForm === 'Detail'}
+            />
+          </ContainerInput>
 
-        <ContainerButton>
-          <CancelButton onClick={handleCloseTable}>Hủy</CancelButton>
-          <SaveButton onClick={handleButtonDone}>
-            {openForm === 'Add' ? 'Thêm' : 'Cập nhật'}
-          </SaveButton>
-        </ContainerButton>
+          <ContainerButton>
+            <CancelButton onClick={handleCloseTable}>Hủy</CancelButton>
+            <SaveButton onClick={handleButtonDone}>
+              {openForm === 'Add' ? 'Thêm' : 'Cập nhật'}
+            </SaveButton>
+          </ContainerButton>
+        </Spin>
       </ContainerTable>
     </LayoutContainer>
   );
