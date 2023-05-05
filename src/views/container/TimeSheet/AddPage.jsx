@@ -10,7 +10,11 @@ const AddPage = () => {
   const [timeSheetTable, setTimeSheetTable] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
 
-  console.log(timeSheetTable)
+  console.log(timeSheetTable);
+
+  const handleSubmit = (employee) => {
+    console.log(employee)
+  };
 
   if (!location.state && location.pathname !== '/timesheet/add') {
     return (
@@ -41,7 +45,11 @@ const AddPage = () => {
         Thời gian biểu
       </Typography.Title>
 
-      <Description setTimeSheetTable={setTimeSheetTable} setLoadingTable={setLoadingTable} />
+      <Description
+        setTimeSheetTable={setTimeSheetTable}
+        setLoadingTable={setLoadingTable}
+        handleSubmit={handleSubmit}
+      />
 
       <Table
         size="small"
