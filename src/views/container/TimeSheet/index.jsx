@@ -1,12 +1,12 @@
 import { Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
-import TimesheetForm from '../../presentation/Form/TimesheetForm.jsx';
-import { columns } from './Column.jsx';
 import { AiFillPlusCircle } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { deleEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
+import { getEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
+import { columns } from './Column.jsx';
 const AddButtonContainer = styled.div`
   position: fixed;
   top: 88%;
@@ -25,7 +25,6 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   const [pageSize, setPageSize] = useState(searchParams._limit ?? 10);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(useLocation())
 
   useEffect(() => {
     const getApi = async () => {
@@ -41,6 +40,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   };
 
   const handleDetail = (timesheet) => {
+    console.log(timesheet);
     navigate('/timesheet/detail', { state: { timesheet: timesheet, type: 'detail' } });
   };
 
@@ -50,10 +50,11 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
 
   const handleEdit = (timesheet) => {
     navigate('/timesheet/edit', { state: { timesheet: timesheet, type: 'edit' } });
-
   };
 
-  const handleDelete = async (id) => {};
+  const handleDelete = async (id) => {
+    dispatch(deleEmploySheetThunk(id));
+  };
 
   const handleButtonDone = async (todo) => {};
   return (
@@ -70,7 +71,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
       >
         Thời gian biểu
       </Typography.Title>
-      
+
       <Table
         style={{ boxShadow: '5px 4px 4px 2px #d4d4d4', zIndex: 0 }}
         rowKey="id"

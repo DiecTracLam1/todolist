@@ -7,9 +7,11 @@ const timeSheetApi = {
     return fetchApi(url, { method: 'GET'});
   },
 
-  async getDetail(timesheetID = "" ,enrollnumber=""  ) {
+  async getDetail(timesheetID = "" ,enrollnumber=""  , id = "" ) {
     timesheetID = timesheetID && "/"+timesheetID
     enrollnumber = enrollnumber && "/"+enrollnumber
+    id = id && "/"+id
+
     const newUrl = `hr/employer-timesheet-details${timesheetID}${enrollnumber}`
     return fetchApi(newUrl, { method: 'GET' });
   },
@@ -18,13 +20,5 @@ const timeSheetApi = {
     return fetchApi(url, { method: 'POST', data });
   },
 
-  // async edit(data) {
-  //   const id = data.id;
-  //   return fetchApi(url, { id, method: 'PUT', data });
-  // },
-
-  // async delete(id) {
-  //   return fetchApi(url, { id, method: 'DELETE' });
-  // },
 };
 export default timeSheetApi;

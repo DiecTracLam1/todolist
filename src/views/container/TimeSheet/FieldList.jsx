@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 const fieldlist = ({ timesheetLocation, employee, timesheetDate }) => [
-  { label: 'Số phiếu', name: 'note', value: timesheetLocation?.id, type: 'input', disabled: true },
+  { label: 'Số phiếu', name: 'noteId', value: timesheetLocation?.id, type: 'input', disabled: true },
   { label: 'Mã nhân viên', name: 'employeeId', value: employee?.id, type: 'input', disabled: true },
   {
     label: 'Tên nhân viên',
@@ -12,7 +12,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate }) => [
   },
   {
     label: 'Phòng ban',
-    name: 'department',
+    name: 'departmentId',
     value: employee?.departmentId,
     type: 'select',
     options: [
@@ -50,7 +50,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate }) => [
   {
     label: 'Ngày lập',
     name: 'createDate',
-    value: dayjs(new Date(timesheetLocation?.createdAt)),
+    value: timesheetLocation?.createdAt ? dayjs(new Date(timesheetLocation?.createdAt)) : "",
     type: 'date',
     disabled: true,
   },

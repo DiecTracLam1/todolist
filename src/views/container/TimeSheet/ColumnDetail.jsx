@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import { InputNumber } from 'antd';
 
 export const columns = (props) => {
   const columns = [
@@ -67,14 +67,14 @@ export const columns = (props) => {
           dataIndex: 'workingHourEdit',
           key: 'workingHourEdit',
           width: '110px',
-          render: () => <Input style={{ width: '100px' }} />,
+          render: (_, timesheet, index) => <InputNumber max={24} onChange={(values)=>props.handleWorkingHour(values,index)} style={{ width: '100px' }} />,
         },
         {
           title: 'Tăng ca',
           dataIndex: 'overtimeEdit',
           key: 'overtimeEdit',
           width: '110px',
-          render: () => <Input style={{ width: '100px' }} />,
+          render: (_, timesheet, index) => <InputNumber max={24} onChange={(values)=>props.handleOvertime(values,index)} style={{ width: '100px' }} />,
         },
       ],
     },

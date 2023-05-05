@@ -23,9 +23,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
       }),
     [timesheetList]
   );
-
-  // console.log(location);
-  // console.log(employee)
+  console.log(timesheetDate)
 
   useEffect(() => {
     const getTimeSheet = async () => {
@@ -48,9 +46,9 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   useEffect(() => {
     const getDataTable = async () => {
       if (employee?.enrollNumber && timesheetID) {
+        console.log(timesheetID);
         const respone = await timeSheetApi.getDetail(timesheetID, employee?.enrollNumber);
         setTimeSheetTable(respone.data.data.doc.employerTimesheets);
-        console.log(respone.data.data.doc);
         setLoadingTable(false);
       }
     };
@@ -69,7 +67,6 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
       timesheetDate,
     });
     fieldList.forEach((field) => {
-      console.log(field);
       form.setFieldsValue({ [field.name]: field.value });
     });
   }, [form, employee, timesheetLocation, timesheetDate]);
@@ -86,7 +83,14 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   };
 
   const handleSubmitButton = (values) => {
-    handleSubmit(values);
+    const month = values.dateIn.$D;
+    const year = values.dateIn.$y;
+    const newValues = { ...values, month, year };
+    const reduantObjects = ['dateIn', 'noteId', 'timesheetDate', 'employName'];
+    reduantObjects.forEach((element) => {
+      delete newValues[element];
+    });
+    handleSubmit(newValues);
   };
 
   return (
@@ -97,7 +101,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
             if (field.type === 'input') {
               return (
                 <Descriptions.Item label={field.label} key={index}>
-                  <Form.Item name={field.name}>
+                  <Form.Item style={{ marginBottom: 0 }} name={field.name}>
                     <Input disabled={field.disabled ?? false} />
                   </Form.Item>
                 </Descriptions.Item>
@@ -106,6 +110,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
               return (
                 <Descriptions.Item label={field.label} key={index}>
                   <Form.Item
+                    style={{ marginBottom: 0 }}
                     name={field.name}
                     rules={[
                       {
@@ -124,10 +129,9 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
                 </Descriptions.Item>
               );
             } else {
-              console.log();
               return (
                 <Descriptions.Item label={field.label} key={index}>
-                  <Form.Item name={field.name}>
+                  <Form.Item name={field.name} style={{ marginBottom: 0 }}>
                     <DatePicker style={{ width: '100%' }} disabled={field.disabled ?? false} />
                   </Form.Item>
                 </Descriptions.Item>

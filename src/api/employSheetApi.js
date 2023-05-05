@@ -17,12 +17,14 @@ const employSheetApi = {
   },
 
   async add(data) {
-    return fetchApi(url, { method: 'POST', data });
+    const newData = {...data.detailValues , ...data.adjustTimesheet}
+    return fetchApi(url, { method: 'POST', data:newData });
   },
 
   async edit(data) {
+    const newData = {...data.detailValues , ...data.adjustTimesheet}
     const id = data.id;
-    return fetchApi(url, { id, method: 'PUT', data });
+    return fetchApi(url, { id, method: 'PUT', data : newData });
   },
 
   async delete(id) {

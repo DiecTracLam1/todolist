@@ -5,7 +5,7 @@ import LayoutComponent from '~/views/component/Layout/Layout';
 import BrandList from '~/views/container/Brand/BrandPage';
 import RootPage from '~/views/container/Page';
 import TimeSheet from '~/views/container/TimeSheet';
-import AddPage from '~/views/container/TimeSheet/AddPage';
+import Detail from '~/views/container/TimeSheet/Detail';
 import './App.css';
 import Login from './views/container/Login/Login';
 import Error from '~/views/container/Page/Error';
@@ -53,7 +53,7 @@ function App() {
                 path={`timesheet/${path}`}
                 element={
                   <LayoutComponent>
-                    <AddPage />
+                    <Detail />
                   </LayoutComponent>
                 }
               />
