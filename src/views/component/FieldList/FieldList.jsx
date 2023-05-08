@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const fieldlist = ({ timesheetLocation, employee, timesheetDate, type }) => [
+const fieldlist = ({ timesheetLocation, employee, timesheetDate , defaultSelected}) => [
   {
     label: 'Số phiếu',
     name: 'noteId',
@@ -48,6 +48,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate, type }) => [
   {
     label: 'Chọn bảng công',
     name: 'timesheetDate',
+    value : defaultSelected ?? "" ,
     options: timesheetDate,
     type: 'select',
   },

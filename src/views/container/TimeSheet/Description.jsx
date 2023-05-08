@@ -4,8 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import timeSheetApi from '~/api/timesheetApi';
 import userApi from '~/api/userApi';
 import fieldlist from '../../component/FieldList/FieldList';
-import { getDetailEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
-import { useDispatch } from 'react-redux';
 import employSheetApi from '~/api/employSheetApi';
 
 const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
@@ -16,9 +14,9 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const [loading, setLoading] = useState(true);
   const [employee, setEmployee] = useState();
   const [timesheetList, setTimesheetList] = useState([]);
+  const [defaultSelected, setDefaultSelected] = useState("")
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   console.log(timesheetList);
   const timesheetDate = useMemo(
@@ -35,31 +33,33 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
         timesheetLocation,
         employee,
         timesheetDate,
+        defaultSelected,
       }),
-    [timesheetLocation, employee, timesheetDate]
+    [timesheetLocation, employee, timesheetDate , defaultSelected]
   );
 
   useEffect(() => {
     const getTimeSheet = async () => {
-      const timesheetlist= await timeSheetApi.getAll();
+      const timesheetlist = await timeSheetApi.getAll();
       setTimesheetList(timesheetlist.data.data.docs);
+      let employeeId = '';
 
       if (type === 'add') {
         const employStorage = JSON.parse(localStorage.getItem('employee'));
-        const employeeId = employStorage.id;
-        const employeeApi = await userApi.getUser(employeeId);
-        setEmployee(employeeApi.data.data.doc.employee);
+        employeeId = employStorage.id;
       } else {
-        // api get detail timesheet by id
-        //hr/adjust-employee-timesheets/${timesheetLocation}
         const respone = await employSheetApi.getDetail(timesheetLocation.id);
         setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
-        console.log('values:::', respone);
+        setDefaultSelected(respone?.data?.data.doc?.timesheetsMasterId)
+        employeeId = respone?.data?.data.doc?.AdjustEmployerEmployee.id;
       }
+
+      const employeeApi = await userApi.getUser(employeeId);
+      setEmployee(employeeApi.data.data.doc.employee);
       setLoading(false);
     };
     getTimeSheet();
-  }, [timesheetLocation?.AdjustEmployerEmployee?.employeeId, type]);
+  }, [timesheetLocation.id, type , setTimeSheetTable ]);
 
   useEffect(() => {
     const getDataTable = async () => {
@@ -113,7 +113,6 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
                 <Descriptions.Item label={field.label} key={index}>
                   <Form.Item style={{ marginBottom: 0 }} name={field.name}>
                     <Select
-                      defaultValue="BC032023"
                       onChange={handleSelectTimeSheet}
                       style={{ width: '100%' }}
                       options={field.options}
