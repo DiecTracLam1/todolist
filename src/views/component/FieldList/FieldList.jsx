@@ -1,7 +1,13 @@
 import dayjs from 'dayjs';
 
-const fieldlist = ({ timesheetLocation, employee, timesheetDate }) => [
-  { label: 'Số phiếu', name: 'noteId', value: timesheetLocation?.id, type: 'input', disabled: true },
+const fieldlist = ({ timesheetLocation, employee, timesheetDate, type }) => [
+  {
+    label: 'Số phiếu',
+    name: 'noteId',
+    value: timesheetLocation?.id,
+    type: 'input',
+    disabled: true,
+  },
   { label: 'Mã nhân viên', name: 'employeeId', value: employee?.id, type: 'input', disabled: true },
   {
     label: 'Tên nhân viên',
@@ -35,7 +41,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate }) => [
   {
     label: 'Ngày vào làm',
     name: 'dateIn',
-    value: dayjs(new Date(employee?.createdAt)),
+    value: employee?.createdAt ? dayjs(new Date(employee?.createdAt)) : '',
     type: 'date',
     disabled: true,
   },
@@ -44,13 +50,12 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate }) => [
     name: 'timesheetDate',
     options: timesheetDate,
     type: 'select',
-    rules: { require: true, message: 'Vui lòng chọn bảng công' },
   },
   { label: 'Nội dụng', name: 'content', value: timesheetLocation?.content, type: 'input' },
   {
     label: 'Ngày lập',
     name: 'createDate',
-    value: timesheetLocation?.createdAt ? dayjs(new Date(timesheetLocation?.createdAt)) : "",
+    value: timesheetLocation?.createdAt ? dayjs(new Date(timesheetLocation?.createdAt)) : '',
     type: 'date',
     disabled: true,
   },

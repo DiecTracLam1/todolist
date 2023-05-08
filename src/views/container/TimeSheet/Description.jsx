@@ -3,11 +3,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import timeSheetApi from '~/api/timesheetApi';
 import userApi from '~/api/userApi';
-import fieldlist from './FieldList';
+import fieldlist from '../../component/FieldList/FieldList';
+import { getDetailEmploySheetThunk } from '~/features/timesheet/employSheetSlice.js';
+import { useDispatch } from 'react-redux';
+import employSheetApi from '~/api/employSheetApi';
 
 const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const location = useLocation();
-  const type = location.state?.type;
+  const type = location.state?.type ?? 'add';
   const timesheetLocation = location.state?.timesheet;
   const [timesheetID, setTimesheetID] = useState('');
   const [loading, setLoading] = useState(true);
@@ -15,29 +18,44 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const [timesheetList, setTimesheetList] = useState([]);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  console.log(timesheetList);
   const timesheetDate = useMemo(
     () =>
-      timesheetList.map((item) => {
+      timesheetList.map((item, index) => {
         return { label: item.name, value: item.id };
       }),
     [timesheetList]
   );
-  console.log(timesheetDate)
+
+  const fieldList = useMemo(
+    () =>
+      fieldlist({
+        timesheetLocation,
+        employee,
+        timesheetDate,
+      }),
+    [timesheetLocation, employee, timesheetDate]
+  );
 
   useEffect(() => {
     const getTimeSheet = async () => {
-      let employeeId = timesheetLocation?.AdjustEmployerEmployee?.employeeId;
-      if (type === 'add' || !type) {
+      const timesheetlist= await timeSheetApi.getAll();
+      setTimesheetList(timesheetlist.data.data.docs);
+
+      if (type === 'add') {
         const employStorage = JSON.parse(localStorage.getItem('employee'));
-        employeeId = employStorage.id;
+        const employeeId = employStorage.id;
+        const employeeApi = await userApi.getUser(employeeId);
+        setEmployee(employeeApi.data.data.doc.employee);
+      } else {
+        // api get detail timesheet by id
+        //hr/adjust-employee-timesheets/${timesheetLocation}
+        const respone = await employSheetApi.getDetail(timesheetLocation.id);
+        setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
+        console.log('values:::', respone);
       }
-      const [timesheetApi, employeeApi] = await Promise.all([
-        timeSheetApi.getAll(),
-        userApi.getUser(employeeId),
-      ]);
-      setTimesheetList(timesheetApi.data.data.docs);
-      setEmployee(employeeApi.data.data.doc.employee);
       setLoading(false);
     };
     getTimeSheet();
@@ -55,42 +73,26 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     getDataTable();
   }, [timesheetID, employee?.enrollNumber, setTimeSheetTable, setLoadingTable]);
 
+  useEffect(() => {
+    fieldList.forEach((field) => {
+      form.setFieldsValue({ [field.name]: field.value });
+    });
+  }, [form, fieldList]);
+
   const handleSelectTimeSheet = (e) => {
     setTimesheetID(e);
     setLoadingTable(true);
   };
 
-  useEffect(() => {
-    const fieldList = fieldlist({
-      timesheetLocation,
-      employee,
-      timesheetDate,
-    });
-    fieldList.forEach((field) => {
-      form.setFieldsValue({ [field.name]: field.value });
-    });
-  }, [form, employee, timesheetLocation, timesheetDate]);
-
-  const fieldList = fieldlist({
-    timesheetLocation,
-    employee,
-    timesheetDate,
-    handleSelectTimeSheet,
-  });
-
   const handleCancle = () => {
-    navigate('/timesheet', { state: { timesheet: {}, type: 'add' } });
+    navigate('/timesheet');
   };
 
   const handleSubmitButton = (values) => {
     const month = values.dateIn.$D;
     const year = values.dateIn.$y;
     const newValues = { ...values, month, year };
-    const reduantObjects = ['dateIn', 'noteId', 'timesheetDate', 'employName'];
-    reduantObjects.forEach((element) => {
-      delete newValues[element];
-    });
-    handleSubmit(newValues);
+    handleSubmit(newValues, type);
   };
 
   return (
@@ -109,17 +111,9 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
             } else if (field.type === 'select') {
               return (
                 <Descriptions.Item label={field.label} key={index}>
-                  <Form.Item
-                    style={{ marginBottom: 0 }}
-                    name={field.name}
-                    rules={[
-                      {
-                        required: field.rules?.require ?? false,
-                        message: field.rules?.message,
-                      },
-                    ]}
-                  >
+                  <Form.Item style={{ marginBottom: 0 }} name={field.name}>
                     <Select
+                      defaultValue="BC032023"
                       onChange={handleSelectTimeSheet}
                       style={{ width: '100%' }}
                       options={field.options}

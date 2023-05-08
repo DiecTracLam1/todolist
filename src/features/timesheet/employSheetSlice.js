@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import timesheetApi from '~/api/employSheetApi';
+import employsheetApi from '~/api/employSheetApi';
 
 export const getEmploySheetThunk = createAsyncThunk(
   'employSheet/getEmploySheet',
   async (payload, thunkAPI) => {
     try {
-      const data = await timesheetApi.getAll(payload);
+      const data = await employsheetApi.getAll(payload);
       return data.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -17,7 +17,7 @@ export const getDetailEmploySheetThunk = createAsyncThunk(
   'employSheet/getDetail',
   async (payload) => {
     try {
-      const data = await timesheetApi.getDetail(payload);
+      const data = await employsheetApi.getDetail(payload);
       return data.data.data.docs;
     } catch (error) {}
   }
@@ -27,7 +27,7 @@ export const addEmploySheetThunk = createAsyncThunk(
   'employSheet/addEmploySheet',
   async (payload) => {
     try {
-      const data = await timesheetApi.add(payload);
+      const data = await employsheetApi.add(payload);
       return data.data.data.doc;
     } catch (error) {}
   }
@@ -37,7 +37,7 @@ export const editEmploySheetThunk = createAsyncThunk(
   'employSheet/editEmploySheet',
   async (payload) => {
     try {
-      const data = await timesheetApi.edit(payload);
+      const data = await employsheetApi.edit(payload);
       return data.data.data.doc;
     } catch (error) {}
   }
@@ -47,7 +47,7 @@ export const deleEmploySheetThunk = createAsyncThunk(
   'employSheet/deleteEmploySheet',
   async (payload) => {
     try {
-      await timesheetApi.delete(payload);
+      await employsheetApi.delete(payload);
       return payload;
     } catch (error) {}
   }

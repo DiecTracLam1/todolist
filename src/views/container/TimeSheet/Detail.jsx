@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { columns } from './ColumnDetail.jsx';
 import Description from './Description.jsx';
 import { useDispatch } from 'react-redux';
-import { addEmploySheetThunk , editEmploySheetThunk} from '~/features/timesheet/employSheetSlice';
+import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
 
 const Detail = () => {
   const location = useLocation();
@@ -26,31 +26,14 @@ const Detail = () => {
     setTimeSheetTable(newTimeSheetTable);
   };
 
-  const handleSubmit = async (detailValues) => {
-    const adjustTimesheet = { adjustEmployeeTimesheets: [] };
-    const newTimesheetTable = [...timeSheetTable];
-    
-    newTimesheetTable.forEach((timesheet) => {
-      const reduantObjects = [
-        'earlyAnalysis',
-        'holidayAnalysisChar',
-        'lateAnalysis',
-        'overtimeAnalysis',
-        'timeInData',
-        'timeOutData',
-        'timesheetsMasterId',
-        'workingHourAnalysis',
-      ];
-      reduantObjects.forEach((element) => {
-        delete timesheet[element];
-      });
-      adjustTimesheet.adjustEmployeeTimesheets.push(timesheet);
-    });
+  const handleSubmit = async (detailValues, type) => {
+    const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
 
-    if (location.type === 'add')
-      await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
-    else 
-      await dispatch(editEmploySheetThunk({ detailValues, adjustTimesheet , id : location.state?.timesheet.id}))
+    if (type === 'add') await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
+    else
+      await dispatch(
+        editEmploySheetThunk({ detailValues, adjustTimesheet, id: location.state?.timesheet.id })
+      );
 
     navigate('/timesheet');
   };
@@ -92,7 +75,7 @@ const Detail = () => {
 
       <Table
         size="small"
-        rowKey="Id"
+        rowKey="eid"
         dataSource={timeSheetTable}
         columns={columns({ handleWorkingHour, handleOvertime })}
         bordered

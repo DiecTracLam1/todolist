@@ -9,13 +9,13 @@ export const columns = (props) => {
           title: 'Thứ - Ngày',
           dataIndex: 'timesheetsDetailDay',
           key: 'timesheetsDetailDay',
-          render: (_, timesheet) => {
+          render: (_, timesheet, index) => {
             const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
             const d = new Date(
               `${timesheet.timesheetsDetailMonth} ${timesheet.timesheetsDetailDay}, ${timesheet.timesheetsDetailYear}`
             );
             return (
-              <p style={{ color: !d.getDay() && 'red' }}>
+              <p key={index} style={{ color: !d.getDay() && 'red' }}>
                 {days[d.getDay()]} - {timesheet.timesheetsDetailDay}
               </p>
             );
@@ -67,14 +67,30 @@ export const columns = (props) => {
           dataIndex: 'workingHourEdit',
           key: 'workingHourEdit',
           width: '110px',
-          render: (_, timesheet, index) => <InputNumber max={24} onChange={(values)=>props.handleWorkingHour(values,index)} style={{ width: '100px' }} />,
+          render: (_, timesheet, index) => (
+            <InputNumber
+              value={timesheet?.workingHourEdit}
+              key={index}
+              max={24}
+              onChange={(values) => props.handleWorkingHour(values, index)}
+              style={{ width: '100px' }}
+            />
+          ),
         },
         {
           title: 'Tăng ca',
           dataIndex: 'overtimeEdit',
           key: 'overtimeEdit',
           width: '110px',
-          render: (_, timesheet, index) => <InputNumber max={24} onChange={(values)=>props.handleOvertime(values,index)} style={{ width: '100px' }} />,
+          render: (_, timesheet, index) => (
+            <InputNumber
+              value={timesheet?.overtimeEdit}
+              key={index}
+              max={24}
+              onChange={(values) => props.handleOvertime(values, index)}
+              style={{ width: '100px' }}
+            />
+          ),
         },
       ],
     },

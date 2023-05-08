@@ -49,7 +49,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   };
 
   const handleEdit = (timesheet) => {
-    navigate('/timesheet/edit', { state: { timesheet: timesheet, type: 'edit' } });
+    navigate(`/timesheet/edit/`, { state: { timesheet: timesheet, type: 'edit' } });
   };
 
   const handleDelete = async (id) => {

@@ -1,9 +1,7 @@
-import Layout from 'antd/es/layout/layout';
 import { Route, Routes } from 'react-router-dom';
 import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
-import LayoutComponent from '~/views/component/Layout/Layout';
 import BrandList from '~/views/container/Brand/BrandPage';
-import RootPage from '~/views/container/Page';
+import MainPage from '~/views/container/Page';
 import TimeSheet from '~/views/container/TimeSheet';
 import Detail from '~/views/container/TimeSheet/Detail';
 import './App.css';
@@ -15,54 +13,29 @@ function App() {
 
   return (
     <div className="App">
-      <Layout>
-        <Routes>
+      <Routes>
+        <Route path="/" element={<MainPage searchParams={searchParams} />}>
           <Route
-            path="/"
-            element={<RootPage searchParams={searchParams} setSearchParams={setSearchParams} />}
-          >
-            <Route
-              index
-              element={
-                <LayoutComponent>
-                  <BrandList searchParams={searchParams} setSearchParams={setSearchParams} />
-                </LayoutComponent>
-              }
-            />
+            index
+            element={<BrandList searchParams={searchParams} setSearchParams={setSearchParams} />}
+          />
 
-            <Route
-              path="brand"
-              element={
-                <LayoutComponent>
-                  <BrandList searchParams={searchParams} setSearchParams={setSearchParams} />
-                </LayoutComponent>
-              }
-            />
-            <Route
-              path="timesheet"
-              element={
-                <LayoutComponent>
-                  <TimeSheet searchParams={searchParams} setSearchParams={setSearchParams} />
-                </LayoutComponent>
-              }
-            />
+          <Route
+            path="brand"
+            element={<BrandList searchParams={searchParams} setSearchParams={setSearchParams} />}
+          />
+          <Route
+            path="timesheet"
+            element={<TimeSheet searchParams={searchParams} setSearchParams={setSearchParams} />}
+          />
 
-            {['add', 'edit', 'detail'].map((path,index) => (
-              <Route
-                key={index}
-                path={`timesheet/${path}`}
-                element={
-                  <LayoutComponent>
-                    <Detail />
-                  </LayoutComponent>
-                }
-              />
-            ))}
-          </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Error />} />
-        </Routes>
-      </Layout>
+          {['add', 'edit', 'detail'].map((path, index) => (
+            <Route key={index} path={`timesheet/${path}`} element={<Detail />} />
+          ))}
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Error />} />
+      </Routes>
     </div>
   );
 }
