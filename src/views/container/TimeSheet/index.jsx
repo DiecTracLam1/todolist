@@ -88,7 +88,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         pagination={{
           total: total ?? 1,
           current: page,
-          pageSize: pageSize,
+          pageSize: TimeSheetList.length,
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '30'],
           style: { marginRight: '10px' },

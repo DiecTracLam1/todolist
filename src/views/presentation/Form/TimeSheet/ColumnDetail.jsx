@@ -57,7 +57,7 @@ export const columns = (props) => {
       title: 'Vắng',
       dataIndex: 'holidayAnalysisChar',
       key: 'holidayAnalysisChar',
-      filterKey: 'id',
+
     },
     {
       title: 'Điểu chỉnh',

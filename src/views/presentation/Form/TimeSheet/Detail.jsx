@@ -74,7 +74,7 @@ const Detail = () => {
 
       <Table
         size="small"
-        rowKey="eid"
+        rowKey="timesheetsDetailDay"
         dataSource={timeSheetTable}
         columns={columns({ handleWorkingHour, handleOvertime })}
         bordered

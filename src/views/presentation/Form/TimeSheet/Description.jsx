@@ -52,7 +52,6 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
           setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           setDefaultSelected(respone?.doc?.timesheetsMasterId);
           employeeId = respone?.doc?.AdjustEmployerEmployee.id;
-          console.log(respone);
         } catch (error) {
           setError(true);
           return;
