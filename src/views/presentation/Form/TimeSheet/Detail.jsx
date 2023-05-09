@@ -11,7 +11,7 @@ const Detail = () => {
   const navigate = useNavigate();
   const [timeSheetTable, setTimeSheetTable] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
-  const { timesheetId } = useParams()
+  const { timesheetId } = useParams();
   const dispatch = useDispatch();
 
   const handleWorkingHour = (values, index) => {

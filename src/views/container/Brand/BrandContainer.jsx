@@ -8,7 +8,7 @@ import ComponentTable from './BrandList';
 import ContainerPagingnation from '~/views/component/Pagingnation/ContainerPagingnation';
 import ContainerSelector from '../../component/Selector/ContainerSelector';
 import SearchContainer from '../../component/Search/SearchContainer';
-import TodoTable from '../../presentation/Form/BrandForm';
+import TodoTable from '../../presentation/Form/Brand/BrandForm';
 import { getAllParams } from '~/ultis/getAllParams';
 
 const Container = styled.div`
