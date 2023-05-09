@@ -1,24 +1,25 @@
-import { Button, DatePicker, Descriptions, Form, Input, Select, Space, Spin } from 'antd';
+import { Alert, Button, DatePicker, Descriptions, Form, Input, Select, Space, Spin } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import employSheetApi from '~/api/employSheetApi';
 import timeSheetApi from '~/api/timesheetApi';
 import userApi from '~/api/userApi';
 import fieldlist from '../../component/FieldList/FieldList';
-import employSheetApi from '~/api/employSheetApi';
 
 const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const location = useLocation();
-  const type = location.state?.type ?? 'add';
+  const { timesheetId } = useParams();
+  const type = useMemo(() => location.pathname.split('/')[2], [location.pathname]);
   const timesheetLocation = location.state?.timesheet;
-  const [timesheetID, setTimesheetID] = useState('');
+  const [timesheetSelectedId, setTimesheetSelectedId] = useState('');
   const [loading, setLoading] = useState(true);
   const [employee, setEmployee] = useState();
   const [timesheetList, setTimesheetList] = useState([]);
-  const [defaultSelected, setDefaultSelected] = useState("")
+  const [defaultSelected, setDefaultSelected] = useState('');
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [error, setError] = useState(false);
 
-  console.log(timesheetList);
   const timesheetDate = useMemo(
     () =>
       timesheetList.map((item, index) => {
@@ -35,7 +36,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
         timesheetDate,
         defaultSelected,
       }),
-    [timesheetLocation, employee, timesheetDate , defaultSelected]
+    [timesheetLocation, employee, timesheetDate, defaultSelected]
   );
 
   useEffect(() => {
@@ -48,10 +49,14 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
         const employStorage = JSON.parse(localStorage.getItem('employee'));
         employeeId = employStorage.id;
       } else {
-        const respone = await employSheetApi.getDetail(timesheetLocation.id);
-        setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
-        setDefaultSelected(respone?.data?.data.doc?.timesheetsMasterId)
-        employeeId = respone?.data?.data.doc?.AdjustEmployerEmployee.id;
+        try {
+          const respone = await employSheetApi.getAdjustDetail(timesheetId);
+          setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
+          setDefaultSelected(respone?.data?.data.doc?.timesheetsMasterId);
+          employeeId = respone?.data?.data.doc?.AdjustEmployerEmployee.id;
+        } catch (error) {
+          setError(true);
+        }
       }
 
       const employeeApi = await userApi.getUser(employeeId);
@@ -59,19 +64,35 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
       setLoading(false);
     };
     getTimeSheet();
-  }, [timesheetLocation.id, type , setTimeSheetTable ]);
+  }, [timesheetId, type, setTimeSheetTable]);
 
+  // action when selected timesheet 
   useEffect(() => {
     const getDataTable = async () => {
-      if (employee?.enrollNumber && timesheetID) {
-        console.log(timesheetID);
-        const respone = await timeSheetApi.getDetail(timesheetID, employee?.enrollNumber);
-        setTimeSheetTable(respone.data.data.doc.employerTimesheets);
+      if (timesheetSelectedId) {
+        if (type !== 'add' && defaultSelected === timesheetSelectedId) {
+          const respone = await employSheetApi.getAdjustDetail(timesheetId);
+          setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
+        } else {
+          const respone = await timeSheetApi.getMasterDetail(
+            timesheetSelectedId,
+            employee?.enrollNumber
+          );
+          setTimeSheetTable(respone.data.data.doc.employerTimesheets);
+        }
         setLoadingTable(false);
       }
     };
     getDataTable();
-  }, [timesheetID, employee?.enrollNumber, setTimeSheetTable, setLoadingTable]);
+  }, [
+    timesheetSelectedId,
+    employee?.enrollNumber,
+    setTimeSheetTable,
+    setLoadingTable,
+    type,
+    timesheetId,
+    defaultSelected,
+  ]);
 
   useEffect(() => {
     fieldList.forEach((field) => {
@@ -80,7 +101,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   }, [form, fieldList]);
 
   const handleSelectTimeSheet = (e) => {
-    setTimesheetID(e);
+    setTimesheetSelectedId(e);
     setLoadingTable(true);
   };
 
@@ -96,56 +117,79 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   };
 
   return (
-    <Spin spinning={loading}>
-      <Form onFinish={handleSubmitButton} form={form}>
-        <Descriptions bordered>
-          {fieldList.map((field, index) => {
-            if (field.type === 'input') {
-              return (
-                <Descriptions.Item label={field.label} key={index}>
-                  <Form.Item style={{ marginBottom: 0 }} name={field.name}>
-                    <Input disabled={field.disabled ?? false} />
-                  </Form.Item>
-                </Descriptions.Item>
-              );
-            } else if (field.type === 'select') {
-              return (
-                <Descriptions.Item label={field.label} key={index}>
-                  <Form.Item style={{ marginBottom: 0 }} name={field.name}>
-                    <Select
-                      onChange={handleSelectTimeSheet}
-                      style={{ width: '100%' }}
-                      options={field.options}
-                      disabled={field.disabled ?? false}
-                    />
-                  </Form.Item>
-                </Descriptions.Item>
-              );
-            } else {
-              return (
-                <Descriptions.Item label={field.label} key={index}>
-                  <Form.Item name={field.name} style={{ marginBottom: 0 }}>
-                    <DatePicker style={{ width: '100%' }} disabled={field.disabled ?? false} />
-                  </Form.Item>
-                </Descriptions.Item>
-              );
-            }
-          })}
-          {type !== 'detail' && (
+    <>
+      {error && (
+        <Alert
+          message="Lỗi"
+          description="Mã số phiếu không tồn tại."
+          type="error"
+          showIcon
+          closable
+          action={
+            <Button
+              size="middle"
+              onClick={() => {
+                navigate('/timesheet');
+              }}
+              danger
+            >
+              Trở lại
+            </Button>
+          }
+        />
+      )}
+      <Spin spinning={loading}>
+        <Form onFinish={handleSubmitButton} form={form}>
+          <Descriptions bordered>
+            {fieldList.map((field, index) => {
+              if (field.type === 'input') {
+                return (
+                  <Descriptions.Item label={field.label} key={index}>
+                    <Form.Item style={{ marginBottom: 0 }} name={field.name}>
+                      <Input disabled={field.disabled ?? false} />
+                    </Form.Item>
+                  </Descriptions.Item>
+                );
+              } else if (field.type === 'select') {
+                return (
+                  <Descriptions.Item label={field.label} key={index}>
+                    <Form.Item style={{ marginBottom: 0 }} name={field.name}>
+                      <Select
+                        onChange={handleSelectTimeSheet}
+                        style={{ width: '100%' }}
+                        options={field.options}
+                        disabled={field.disabled ?? false}
+                      />
+                    </Form.Item>
+                  </Descriptions.Item>
+                );
+              } else {
+                return (
+                  <Descriptions.Item label={field.label} key={index}>
+                    <Form.Item name={field.name} style={{ marginBottom: 0 }}>
+                      <DatePicker style={{ width: '100%' }} disabled={field.disabled ?? false} />
+                    </Form.Item>
+                  </Descriptions.Item>
+                );
+              }
+            })}
+
             <Form.Item>
               <div style={{ float: 'right' }}>
                 <Space>
-                  <Button onClick={handleCancle}>Hủy</Button>
-                  <Button htmlType="submit" type="primary">
-                    {type === 'add' ? 'Thêm' : 'Cập nhật'}
-                  </Button>
+                  <Button onClick={handleCancle}>Trở lại</Button>
+                  {type !== 'detail' && (
+                    <Button htmlType="submit" type="primary">
+                      {type === 'add' ? 'Thêm' : 'Cập nhật'}
+                    </Button>
+                  )}
                 </Space>
               </div>
             </Form.Item>
-          )}
-        </Descriptions>
-      </Form>
-    </Spin>
+          </Descriptions>
+        </Form>
+      </Spin>
+    </>
   );
 };
 

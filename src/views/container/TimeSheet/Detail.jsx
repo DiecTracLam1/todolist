@@ -1,19 +1,18 @@
 import { Button, Result, Table, Typography } from 'antd';
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
 import { columns } from './ColumnDetail.jsx';
 import Description from './Description.jsx';
-import { useDispatch } from 'react-redux';
-import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
 
 const Detail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [timeSheetTable, setTimeSheetTable] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
+  const { timesheetId } = useParams()
   const dispatch = useDispatch();
-
-  console.log(timeSheetTable);
 
   const handleWorkingHour = (values, index) => {
     const newTimeSheetTable = [...timeSheetTable];
@@ -38,7 +37,7 @@ const Detail = () => {
     navigate('/timesheet');
   };
 
-  if (!location.state && location.pathname !== '/timesheet/add') {
+  if (location.pathname !== '/timesheet/add' && !timesheetId) {
     return (
       <Result
         status="error"

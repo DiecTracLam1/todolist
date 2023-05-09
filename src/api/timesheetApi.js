@@ -7,7 +7,7 @@ const timeSheetApi = {
     return fetchApi(url, { method: 'GET' });
   },
 
-  async getDetail(timesheetID = '', enrollnumber = '') {
+  async getMasterDetail(timesheetID = '', enrollnumber = '') {
     timesheetID = timesheetID && '/' + timesheetID;
     enrollnumber = enrollnumber && '/' + enrollnumber;
 

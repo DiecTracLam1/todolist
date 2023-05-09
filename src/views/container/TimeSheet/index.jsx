@@ -22,7 +22,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   const total = useSelector((state) => state.timesheet.data.total);
   const loading = useSelector((state) => state.timesheet.loading);
   const [page, setPage] = useState(Number(searchParams._page ?? 1));
-  const [pageSize, setPageSize] = useState(searchParams._limit ?? 10);
+  const [pageSize, setPageSize] = useState(Number(searchParams._limit ?? 10));
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -40,8 +40,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   };
 
   const handleDetail = (timesheet) => {
-    console.log(timesheet);
-    navigate('/timesheet/detail', { state: { timesheet: timesheet, type: 'detail' } });
+    navigate(`/timesheet/detail/${timesheet?.id}`, { state: { timesheet: timesheet, type: 'detail' } });
   };
 
   const handleAdd = () => {
@@ -49,7 +48,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   };
 
   const handleEdit = (timesheet) => {
-    navigate(`/timesheet/edit/`, { state: { timesheet: timesheet, type: 'edit' } });
+    navigate(`/timesheet/edit/${timesheet?.id}`, { state: { timesheet: timesheet, type: 'edit' } });
   };
 
   const handleDelete = async (id) => {
@@ -88,13 +87,12 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         bordered
         pagination={{
           total: total ?? 1,
-          defaultCurrent: page,
-          defaultPageSize: pageSize,
+          current: page,
+          pageSize: pageSize,
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '30'],
           style: { marginRight: '10px' },
         }}
-        // ref={ref}
         loading={loading}
         sticky
         onChange={handleChangePage}

@@ -12,7 +12,7 @@ const employSheetApi = {
     return fetchApi(url, { method: 'GET', params });
   },
 
-  async getDetail(id) {
+  async getAdjustDetail(id) {
     return fetchApi(url, { id, method: 'GET'});
   },
 

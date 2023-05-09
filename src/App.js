@@ -29,7 +29,7 @@ function App() {
             element={<TimeSheet searchParams={searchParams} setSearchParams={setSearchParams} />}
           />
 
-          {['add', 'edit', 'detail'].map((path, index) => (
+          {['add', 'edit/:timesheetId', 'detail/:timesheetId'].map((path, index) => (
             <Route key={index} path={`timesheet/${path}`} element={<Detail />} />
           ))}
         </Route>
