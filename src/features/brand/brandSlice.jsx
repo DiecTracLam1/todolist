@@ -4,7 +4,7 @@ import brandApi from '~/api/brandApi';
 export const getDataThunk = createAsyncThunk('brandSlice/getData', async (payload, thunkAPI) => {
   try {
     const data = await brandApi.getAll(payload?.offset, payload.limit, payload.searchText);
-    return data.data.data;
+    return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
   }
@@ -13,21 +13,21 @@ export const getDataThunk = createAsyncThunk('brandSlice/getData', async (payloa
 export const getDetailThunk = createAsyncThunk('brandSlice/getDetail', async (payload) => {
   try {
     const data = await brandApi.getDetail(payload);
-    return data.data.data.docs;
+    return data.docs;
   } catch (error) {}
 });
 
 export const addBrandThunk = createAsyncThunk('brandSlice/addBrand', async (payload) => {
   try {
     const data = await brandApi.add(payload);
-    return data.data.data.doc;
+    return data.doc;
   } catch (error) {}
 });
 
 export const editBrandThunk = createAsyncThunk('brandSlice/editBrand', async (payload) => {
   try {
     const data = await brandApi.edit(payload);
-    return data.data.data.doc;
+    return data.doc;
   } catch (error) {}
 });
 

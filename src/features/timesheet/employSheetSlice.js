@@ -6,7 +6,7 @@ export const getEmploySheetThunk = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const data = await employsheetApi.getAll(payload);
-      return data.data.data;
+      return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
@@ -18,7 +18,7 @@ export const getDetailEmploySheetThunk = createAsyncThunk(
   async (payload) => {
     try {
       const data = await employsheetApi.getDetail(payload);
-      return data.data.data.docs;
+      return data.docs;
     } catch (error) {}
   }
 );
@@ -28,7 +28,7 @@ export const addEmploySheetThunk = createAsyncThunk(
   async (payload) => {
     try {
       const data = await employsheetApi.add(payload);
-      return data.data.data.doc;
+      return data.doc;
     } catch (error) {}
   }
 );
@@ -38,7 +38,7 @@ export const editEmploySheetThunk = createAsyncThunk(
   async (payload) => {
     try {
       const data = await employsheetApi.edit(payload);
-      return data.data.data.doc;
+      return data.doc;
     } catch (error) {}
   }
 );
