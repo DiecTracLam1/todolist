@@ -42,15 +42,17 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   useEffect(() => {
     const getTimeSheet = async () => {
       let employeeId = '';
+
       if (type === 'add') {
         const employStorage = JSON.parse(localStorage.getItem('employee'));
         employeeId = employStorage.id;
       } else {
         try {
           const respone = await employSheetApi.getAdjustDetail(timesheetId);
-          setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
-          setDefaultSelected(respone?.data?.data.doc?.timesheetsMasterId);
-          employeeId = respone?.data?.data.doc?.AdjustEmployerEmployee.id;
+          setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
+          setDefaultSelected(respone?.doc?.timesheetsMasterId);
+          employeeId = respone?.doc?.AdjustEmployerEmployee.id;
+          console.log(respone)
         } catch (error) {
           setError(true);
           return;
@@ -61,8 +63,8 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
         timeSheetApi.getAll(),
         userApi.getUser(employeeId),
       ]);
-      setTimesheetList(timesheetlist.data.data.docs);
-      setEmployee(employeeApi.data.data.doc.employee);
+      setTimesheetList(timesheetlist?.docs);
+      setEmployee(employeeApi?.doc.employee);
       setLoading(false);
     };
     getTimeSheet();
@@ -74,13 +76,13 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
       if (timesheetSelectedId) {
         if (type !== 'add' && defaultSelected === timesheetSelectedId) {
           const respone = await employSheetApi.getAdjustDetail(timesheetId);
-          setTimeSheetTable(respone?.data?.data.doc?.adjustEmployeeTimesheets ?? []);
+          setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
         } else {
           const respone = await timeSheetApi.getMasterDetail(
             timesheetSelectedId,
             employee?.enrollNumber
           );
-          setTimeSheetTable(respone.data.data.doc.employerTimesheets);
+          setTimeSheetTable(respone?.doc.employerTimesheets);
         }
         setLoadingTable(false);
       }
