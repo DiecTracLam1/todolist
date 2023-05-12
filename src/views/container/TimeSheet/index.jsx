@@ -23,6 +23,8 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   const loading = useSelector((state) => state.timesheet.loading);
   const [page, setPage] = useState(Number(searchParams._page ?? 1));
   const [pageSize, setPageSize] = useState(Number(searchParams._limit ?? 10));
+  const [confirmDeleLoading, setConfirmDeleLoading] = useState({});
+  const [openConfirm, setOpenConfirm] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -54,7 +56,11 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   };
 
   const handleDelete = async (id) => {
-    dispatch(deleEmploySheetThunk(id));
+    setConfirmDeleLoading(true);
+    setOpenConfirm({})
+    await dispatch(deleEmploySheetThunk(id));
+    await dispatch(getEmploySheetThunk({ page: page, pageSize: pageSize }));
+    setConfirmDeleLoading(false); 
   };
 
   const handleButtonDone = async (todo) => {};
@@ -83,6 +89,9 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
           handleButtonDone,
           page,
           pageSize,
+          openConfirm,
+          confirmDeleLoading,
+          setOpenConfirm
         })}
         dataSource={TimeSheetList}
         scroll={{ x: true, y: '70vh' }}

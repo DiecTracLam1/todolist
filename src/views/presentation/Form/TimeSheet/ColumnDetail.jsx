@@ -71,6 +71,7 @@ export const columns = (props) => {
             <InputNumber
               value={timesheet?.workingHourEdit}
               key={index}
+              min={1}
               max={24}
               onChange={(values) => props.handleWorkingHour(values, index)}
               style={{ width: '100px' }}
@@ -86,6 +87,7 @@ export const columns = (props) => {
             <InputNumber
               value={timesheet?.overtimeEdit}
               key={index}
+              min={1}
               max={24}
               onChange={(values) => props.handleOvertime(values, index)}
               style={{ width: '100px' }}
