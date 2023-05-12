@@ -78,6 +78,7 @@ export const timesheetSlice = createSlice({
 
     builder.addCase(editEmploySheetThunk.fulfilled, (state, action) => {
       const data = action.payload;
+      console.log(data)
       const index = state.data.docs.findIndex((todo) => todo.id === data.id);
       state.data.docs[index] = { ...state.data.docs[index], ...data };
     });

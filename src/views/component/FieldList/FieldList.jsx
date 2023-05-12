@@ -51,6 +51,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate , defaultSelecte
     value : defaultSelected ?? "" ,
     options: timesheetDate,
     type: 'select',
+    rules : {required : true , message : "Vui lòng chọn bảng công"}
   },
   { label: 'Nội dụng', name: 'content', value: timesheetLocation?.content, type: 'input' },
   {

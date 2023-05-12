@@ -27,6 +27,7 @@ const Detail = () => {
 
   const handleSubmit = async (detailValues, type) => {
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
+    console.log(adjustTimesheet)
 
     if (type === 'add') await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
     else

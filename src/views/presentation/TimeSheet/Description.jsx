@@ -1,5 +1,5 @@
 import { Alert, Button, DatePicker, Descriptions, Form, Input, Select, Space, Spin } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import employSheetApi from '~/api/employSheetApi';
 import timeSheetApi from '~/api/timesheetApi';
@@ -11,7 +11,6 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const { timesheetId } = useParams();
   const type = useMemo(() => location.pathname.split('/')[2], [location.pathname]);
   const timesheetLocation = location.state?.timesheet;
-  const [timesheetSelectedId, setTimesheetSelectedId] = useState('');
   const [loading, setLoading] = useState(true);
   const [employee, setEmployee] = useState();
   const [timesheetList, setTimesheetList] = useState([]);
@@ -41,61 +40,31 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
 
   useEffect(() => {
     const getTimeSheet = async () => {
-      let employeeId = '';
-
       if (type === 'add') {
         const employStorage = JSON.parse(localStorage.getItem('employee'));
-        employeeId = employStorage.id;
+        const employeeApi = await userApi.getUser(employStorage.id);
+        setEmployee(employeeApi?.doc?.employee);
       } else {
         try {
           const respone = await employSheetApi.getAdjustDetail(timesheetId);
           setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           setDefaultSelected(respone?.doc?.timesheetsMasterId);
-          employeeId = respone?.doc?.AdjustEmployerEmployee.id;
+          setEmployee({...respone.doc , ...respone.doc.AdjustEmployerEmployeeCreate});
         } catch (error) {
+          console.log(error);
           setError(true);
           return;
         }
       }
 
-      const [timesheetlist, employeeApi] = await Promise.all([
-        timeSheetApi.getAll(),
-        userApi.getUser(employeeId),
-      ]);
+      const timesheetlist = await timeSheetApi.getAll();
       setTimesheetList(timesheetlist?.docs);
-      setEmployee(employeeApi?.doc.employee);
       setLoading(false);
     };
     getTimeSheet();
   }, [timesheetId, type, setTimeSheetTable]);
 
-  // action when selected timesheet
-  useEffect(() => {
-    const getDataTable = async () => {
-      if (timesheetSelectedId) {
-        if (type !== 'add' && defaultSelected === timesheetSelectedId) {
-          const respone = await employSheetApi.getAdjustDetail(timesheetId);
-          setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
-        } else {
-          const respone = await timeSheetApi.getMasterDetail(
-            timesheetSelectedId,
-            employee?.enrollNumber
-          );
-          setTimeSheetTable(respone?.doc.employerTimesheets);
-        }
-        setLoadingTable(false);
-      }
-    };
-    getDataTable();
-  }, [
-    timesheetSelectedId,
-    employee?.enrollNumber,
-    setTimeSheetTable,
-    setLoadingTable,
-    type,
-    timesheetId,
-    defaultSelected,
-  ]);
+  
 
   useEffect(() => {
     fieldList.forEach((field) => {
@@ -103,19 +72,42 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     });
   }, [form, fieldList]);
 
-  const handleSelectTimeSheet = (e) => {
-    setTimesheetSelectedId(e);
-    setLoadingTable(true);
-  };
+  // action when selected timesheet
+  const handleSelectTimeSheet = useCallback(
+    (timesheetSelectedId) => {
+      setLoadingTable(true);
+      const getDataTable = async () => {
+        if (defaultSelected === timesheetSelectedId) {
+          try {
+            const respone = await employSheetApi.getAdjustDetail(timesheetId);
+            setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
+          } catch (error) {}
+        } else {
+          try {
+            const respone = await timeSheetApi.getMasterDetail(
+              timesheetSelectedId,
+              employee?.enrollNumber
+            );
+            setTimeSheetTable(respone?.doc.employerTimesheets);
+          } catch (error) {}
+        }
+        setLoadingTable(false);
+      };
+      getDataTable();
+    },
+    [employee?.enrollNumber, setTimeSheetTable, setLoadingTable, timesheetId, defaultSelected]
+  );
 
   const handleCancle = () => {
     navigate('/timesheet');
   };
 
   const handleSubmitButton = (values) => {
+    
     const month = values.dateIn.$D;
     const year = values.dateIn.$y;
     const newValues = { ...values, month, year };
+    console.log(newValues)
     handleSubmit(newValues, type);
   };
 
@@ -156,7 +148,16 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
               } else if (field.type === 'select') {
                 return (
                   <Descriptions.Item label={field.label} key={index}>
-                    <Form.Item style={{ marginBottom: 0 }} name={field.name}>
+                    <Form.Item
+                      style={{ marginBottom: 0 }}
+                      name={field.name}
+                      rules={[
+                        {
+                          required: field?.rules?.required ?? false,
+                          message: field?.rules?.message,
+                        },
+                      ]}
+                    >
                       <Select
                         onChange={handleSelectTimeSheet}
                         style={{ width: '100%' }}
