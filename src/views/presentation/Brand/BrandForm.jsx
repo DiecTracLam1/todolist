@@ -1,9 +1,9 @@
 import { Radio, Space } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import InputField from '../../../component/InputField/InputField';
-import TextareaField from '../../../component/TextareaField/TextareaField';
-import { addBrandThunk, getDataThunk, editBrandThunk } from '../../../../features/brand/brandSlice';
+import InputField from '../../component/InputField/InputField';
+import TextareaField from '../../component/TextareaField/TextareaField';
+import { addBrandThunk, getDataThunk, editBrandThunk } from '../../../features/brand/brandSlice';
 import { getAllParams } from '~/ultis/getAllParams';
 import { useDispatch } from 'react-redux';
 import { TiTimes } from 'react-icons/ti';
