@@ -40,7 +40,9 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
   };
 
   const handleDetail = (timesheet) => {
-    navigate(`/timesheet/detail/${timesheet?.id}`, { state: { timesheet: timesheet, type: 'detail' } });
+    navigate(`/timesheet/detail/${timesheet?.id}`, {
+      state: { timesheet: timesheet, type: 'detail' },
+    });
   };
 
   const handleAdd = () => {
@@ -88,7 +90,7 @@ const TimeSheet = ({ searchParams, setSearchParams }) => {
         pagination={{
           total: total ?? 1,
           current: page,
-          pageSize: TimeSheetList.length,
+          pageSize: pageSize < TimeSheetList.length ? TimeSheetList.length : pageSize,
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '30'],
           style: { marginRight: '10px' },
