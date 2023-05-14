@@ -1,4 +1,5 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { Button, Form, Input, Typography } from 'antd';
 import { useFormik } from 'formik';
 import React from 'react';
@@ -20,7 +21,7 @@ const LoginForm = () => {
     validate,
     onSubmit: async (values, action) => {
       const resultAction = await dispatch(loginThunk(values));
-      if (resultAction.payload.status === 200) {
+      if (unwrapResult(resultAction)) {
         navigate('/');
       } else {
         action.resetForm({ values: { password: '', username: values.username } });
