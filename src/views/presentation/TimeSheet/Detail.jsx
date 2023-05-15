@@ -19,6 +19,7 @@ const Detail = () => {
     newTimeSheetTable[index]['workingHourEdit'] = values;
     setTimeSheetTable(newTimeSheetTable);
   };
+
   const handleOvertime = (values, index) => {
     const newTimeSheetTable = [...timeSheetTable];
     newTimeSheetTable[index]['overtimeEdit'] = values;
@@ -27,7 +28,6 @@ const Detail = () => {
 
   const handleSubmit = async (detailValues, type) => {
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
-    console.log(adjustTimesheet)
 
     if (type === 'add') await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
     else

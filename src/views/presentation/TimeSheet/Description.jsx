@@ -74,12 +74,12 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     (timesheetSelectedId) => {
       setLoadingTable(true);
       const getDataTable = async () => {
-        if (defaultSelected === timesheetSelectedId) {
+        if (defaultSelected === timesheetSelectedId) { // when type is edit or detail
           try {
             const respone = await employSheetApi.getAdjustDetail(timesheetId);
             setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           } catch (error) {}
-        } else {
+        } else { // type is add
           try {
             const respone = await timeSheetApi.getMasterDetail(
               timesheetSelectedId,
