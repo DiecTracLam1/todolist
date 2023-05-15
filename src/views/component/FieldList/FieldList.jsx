@@ -53,7 +53,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate , defaultSelecte
     type: 'select',
     rules : {required : true , message : "Vui lòng chọn bảng công"}
   },
-  { label: 'Nội dụng', name: 'content', value: timesheetLocation?.content, type: 'input' },
+  { label: 'Nội dụng', name: 'content', value: timesheetLocation?.content, type: 'input' , rules : {required : true , message : "Vui lòng viết nội dung"} },
   {
     label: 'Ngày lập',
     name: 'createDate',

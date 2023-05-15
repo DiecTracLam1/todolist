@@ -49,9 +49,8 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
           const respone = await employSheetApi.getAdjustDetail(timesheetId);
           setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           setDefaultSelected(respone?.doc?.timesheetsMasterId);
-          setEmployee({...respone.doc , ...respone.doc.AdjustEmployerEmployeeCreate});
+          setEmployee({ ...respone.doc, ...respone.doc.AdjustEmployerEmployeeCreate });
         } catch (error) {
-          console.log(error);
           setError(true);
           return;
         }
@@ -63,8 +62,6 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     };
     getTimeSheet();
   }, [timesheetId, type, setTimeSheetTable]);
-
-  
 
   useEffect(() => {
     fieldList.forEach((field) => {
@@ -103,11 +100,9 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   };
 
   const handleSubmitButton = (values) => {
-    
     const month = values.dateIn.$D;
     const year = values.dateIn.$y;
     const newValues = { ...values, month, year };
-    console.log(newValues)
     handleSubmit(newValues, type);
   };
 
@@ -140,7 +135,16 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
               if (field.type === 'input') {
                 return (
                   <Descriptions.Item label={field.label} key={index}>
-                    <Form.Item style={{ marginBottom: 0 }} name={field.name}>
+                    <Form.Item
+                      style={{ marginBottom: 0 }}
+                      name={field.name}
+                      rules={[
+                        {
+                          required: field?.rules?.required ?? false,
+                          message: field?.rules?.message,
+                        },
+                      ]}
+                    >
                       <Input disabled={field.disabled ?? false} />
                     </Form.Item>
                   </Descriptions.Item>
