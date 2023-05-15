@@ -14,7 +14,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const [loading, setLoading] = useState(true);
   const [employee, setEmployee] = useState();
   const [timesheetList, setTimesheetList] = useState([]);
-  const [defaultSelected, setDefaultSelected] = useState('');
+  const [defaultTableId, setDefaultTableId] = useState('');
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [error, setError] = useState(false);
@@ -33,25 +33,31 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
         timesheetLocation,
         employee,
         timesheetDate,
-        defaultSelected,
+        defaultTableId,
+        type,
       }),
-    [timesheetLocation, employee, timesheetDate, defaultSelected]
+    [timesheetLocation, employee, timesheetDate, defaultTableId, type]
   );
 
   useEffect(() => {
     const getTimeSheet = async () => {
       if (type === 'add') {
-        // get information employee to log into form
-        const employStorage = JSON.parse(localStorage.getItem('employee'));
-        const employeeApi = await userApi.getUser(employStorage.id);
-        setEmployee(employeeApi?.doc?.employee);
+        try {
+          // get information employee to log into form
+          const employStorage = JSON.parse(localStorage.getItem('employee'));
+          const employeeApi = await userApi.getUser(employStorage.id);
+          setEmployee(employeeApi?.doc?.employee);
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         try {
           // get the timesheet detail and the timesheet's id was existed
           const respone = await employSheetApi.getAdjustDetail(timesheetId);
+          const employeeApi = await userApi.getUser(respone.doc.AdjustEmployerEmployeeCreate.id);
           setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
-          setDefaultSelected(respone?.doc?.timesheetsMasterId);
-          setEmployee({ ...respone.doc, ...respone.doc.AdjustEmployerEmployeeCreate });
+          setDefaultTableId(respone?.doc?.timesheetsMasterId);
+          setEmployee(employeeApi?.doc?.employee);
         } catch (error) {
           setError(true);
           return;
@@ -73,39 +79,40 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
 
   // action when selected timesheet
   const handleSelectTimeSheet = useCallback(
-    (timesheetSelectedId) => {
+    (timeSheetSelectedId) => {
       setLoadingTable(true);
       const getDataTable = async () => {
-        if (defaultSelected === timesheetSelectedId) {
-          try {
-            const respone = await employSheetApi.getAdjustDetail(timesheetId);
-            setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
-          } catch (error) {}
-        } else {
-          try {
-            const respone = await timeSheetApi.getMasterDetail(
-              timesheetSelectedId,
-              employee?.enrollNumber
-            );
-            setTimeSheetTable(respone?.doc.employerTimesheets);
-          } catch (error) {}
+        let respone;
+        try {
+          respone =
+            defaultTableId === timeSheetSelectedId
+              ? await employSheetApi.getAdjustDetail(timesheetId)
+              : await timeSheetApi.getMasterDetail(timeSheetSelectedId, employee?.enrollNumber);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          const timesheetTable =
+            respone?.doc?.employerTimesheets ?? respone?.doc?.adjustEmployeeTimesheets;
+          setTimeSheetTable(timesheetTable);
+          setLoadingTable(false);
         }
-        setLoadingTable(false);
       };
       getDataTable();
     },
-    [employee?.enrollNumber, setTimeSheetTable, setLoadingTable, timesheetId, defaultSelected]
+    [employee?.enrollNumber, setTimeSheetTable, setLoadingTable, timesheetId, defaultTableId]
   );
 
   const handleCancle = () => {
     navigate('/timesheet');
   };
 
-  const handleSubmitButton = (values) => {
+  const handleSubmitButton = async (values) => {
+    setLoading(true);
     const month = values.dateIn.$D;
     const year = values.dateIn.$y;
     const newValues = { ...values, month, year };
-    handleSubmit(newValues, type);
+    const check = await handleSubmit(newValues, type);
+    if (check) setLoading(false);
   };
 
   return (

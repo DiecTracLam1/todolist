@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const fieldlist = ({ timesheetLocation, employee, timesheetDate , defaultSelected}) => [
+const fieldlist = ({ timesheetLocation, employee, timesheetDate, defaultTableId, type }) => [
   {
     label: 'Số phiếu',
     name: 'noteId',
@@ -48,12 +48,19 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate , defaultSelecte
   {
     label: 'Chọn bảng công',
     name: 'timesheetDate',
-    value : defaultSelected ?? "" ,
+    value: defaultTableId ?? '',
     options: timesheetDate,
     type: 'select',
-    rules : {required : true , message : "Vui lòng chọn bảng công"}
+    rules: { required: true, message: 'Vui lòng chọn bảng công' },
   },
-  { label: 'Nội dụng', name: 'content', value: timesheetLocation?.content, type: 'input' , rules : {required : true , message : "Vui lòng viết nội dung"} },
+  {
+    label: 'Nội dụng',
+    name: 'content',
+    value: timesheetLocation?.content,
+    type: 'input',
+    rules: { required: true, message: 'Vui lòng viết nội dung' },
+    disabled: type === 'detail'
+  },
   {
     label: 'Ngày lập',
     name: 'createDate',

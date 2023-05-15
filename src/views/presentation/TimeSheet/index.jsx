@@ -1,10 +1,10 @@
-import { Button, Result, Table, Typography } from 'antd';
+import { Button, Result, Table, Typography, message } from 'antd';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
 import { columns } from './ColumnDetail.jsx';
-import Description from './Description.jsx';
+import Description from './Form.jsx';
 
 const Detail = () => {
   const location = useLocation();
@@ -12,6 +12,7 @@ const Detail = () => {
   const [timeSheetTable, setTimeSheetTable] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
   const { timesheetId } = useParams();
+  const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
 
   const handleWorkingHour = (values, index) => {
@@ -27,15 +28,23 @@ const Detail = () => {
   };
 
   const handleSubmit = async (detailValues, type) => {
+    setLoadingTable(true)
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
 
-    if (type === 'add') await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
-    else
+    if (type === 'add') {
+      await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
+      navigate('/timesheet');
+    } else {
       await dispatch(
         editEmploySheetThunk({ detailValues, adjustTimesheet, id: location.state?.timesheet.id })
       );
-
-    navigate('/timesheet');
+      messageApi.open({
+        type: 'success',
+        content: 'Sửa thành công',
+      });
+      setLoadingTable(false)
+      return true;
+    }
   };
 
   if (location.pathname !== '/timesheet/add' && !timesheetId) {
@@ -54,6 +63,7 @@ const Detail = () => {
   }
   return (
     <div>
+      {contextHolder}
       <Typography.Title
         level={2}
         style={{

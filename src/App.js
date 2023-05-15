@@ -3,7 +3,7 @@ import useCustomSearchParams from '~/useCustom/useCustomSearchParams';
 import BrandList from '~/views/container/Brand/BrandPage';
 import MainPage from '~/views/container/Page';
 import TimeSheet from '~/views/container/TimeSheet';
-import Detail from '~/views/presentation/TimeSheet/Detail';
+import Detail from '~/views/presentation/TimeSheet';
 import './App.css';
 import Login from './views/container/Login/Login';
 import Error from '~/views/container/Page/Error';
