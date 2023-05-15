@@ -9,6 +9,7 @@ import fieldlist from '../../component/FieldList/FieldList';
 const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const location = useLocation();
   const { timesheetId } = useParams();
+  console.log(timesheetId);
   const type = useMemo(() => location.pathname.split('/')[2], [location.pathname]);
   const timesheetLocation = location.state?.timesheet;
   const [loading, setLoading] = useState(true);
@@ -91,8 +92,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     },
     [employee?.enrollNumber, setTimeSheetTable, setLoadingTable, timesheetId, defaultTableId]
   );
-
-
+  
   const handleCancle = () => {
     navigate('/timesheet');
   };

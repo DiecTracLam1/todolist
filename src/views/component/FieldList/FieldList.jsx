@@ -59,7 +59,7 @@ const fieldlist = ({ timesheetLocation, employee, timesheetDate, defaultTableId,
     value: timesheetLocation?.content,
     type: 'input',
     rules: { required: true, message: 'Vui lòng viết nội dung' },
-    disabled: type === 'detail'
+    disabled: type === 'detail',
   },
   {
     label: 'Ngày lập',

@@ -28,22 +28,30 @@ const Detail = () => {
   };
 
   const handleSubmit = async (detailValues, type) => {
-    setLoadingTable(true)
+    setLoadingTable(true);
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
-
-    if (type === 'add') {
-      await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }));
-      navigate('/timesheet');
-    } else {
-      await dispatch(
-        editEmploySheetThunk({ detailValues, adjustTimesheet, id: location.state?.timesheet.id })
-      );
+    try {
+      const result =
+        type === 'add'
+          ? await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }))
+          : await dispatch(
+              editEmploySheetThunk({
+                detailValues,
+                adjustTimesheet,
+                id: timesheetId,
+              })
+            );
       messageApi.open({
         type: 'success',
-        content: 'Sửa thành công',
+        content: `${type === 'add' ? 'Thêm' : 'Sửa'} thành công`,
       });
-      setLoadingTable(false)
+      navigate(`/timesheet/edit/${result.payload?.id}`, { state: { timesheet: result.payload } });
       return true;
+    } catch (error) {
+      console.error(error);
+      messageApi.open({ type: 'error', content: 'Xử lý đang bị lỗi' });
+    } finally {
+      setLoadingTable(false);
     }
   };
 
