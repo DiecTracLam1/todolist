@@ -41,32 +41,23 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
 
   useEffect(() => {
     const getTimeSheet = async () => {
-      if (type === 'add') {
-        try {
-          // get information employee to log into form
-          const employStorage = JSON.parse(localStorage.getItem('employee'));
-          const employeeApi = await userApi.getUser(employStorage.id);
-          setEmployee(employeeApi?.doc?.employee);
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        try {
-          // get the timesheet detail and the timesheet's id was existed
-          const respone = await employSheetApi.getAdjustDetail(timesheetId);
-          const employeeApi = await userApi.getUser(respone.doc.AdjustEmployerEmployeeCreate.id);
-          setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
-          setDefaultTableId(respone?.doc?.timesheetsMasterId);
-          setEmployee(employeeApi?.doc?.employee);
-        } catch (error) {
-          setError(true);
-          return;
-        }
+      try {
+        const timesheetlist = await timeSheetApi.getAll();
+        const response =
+          type === 'add'
+            ? JSON.parse(localStorage.getItem('employee'))
+            : await employSheetApi.getAdjustDetail(timesheetId);
+        const employeeApi = await userApi.getUser(response?.doc?.employeeId ?? response.id);
+        setTimesheetList(timesheetlist?.docs);
+        setEmployee(employeeApi?.doc?.employee);
+        setTimeSheetTable(response?.doc?.adjustEmployeeTimesheets ?? []);
+        setDefaultTableId(response?.doc?.timesheetsMasterId ?? '');
+      } catch (error) {
+        console.error(error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-      // get timesheet date for user selected
-      const timesheetlist = await timeSheetApi.getAll();
-      setTimesheetList(timesheetlist?.docs);
-      setLoading(false);
     };
     getTimeSheet();
   }, [timesheetId, type, setTimeSheetTable]);
@@ -82,18 +73,17 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     (timeSheetSelectedId) => {
       setLoadingTable(true);
       const getDataTable = async () => {
-        let respone;
         try {
-          respone =
+          const respone =
             defaultTableId === timeSheetSelectedId
               ? await employSheetApi.getAdjustDetail(timesheetId)
               : await timeSheetApi.getMasterDetail(timeSheetSelectedId, employee?.enrollNumber);
-        } catch (error) {
-          console.log(error);
-        } finally {
           const timesheetTable =
             respone?.doc?.employerTimesheets ?? respone?.doc?.adjustEmployeeTimesheets;
           setTimeSheetTable(timesheetTable);
+        } catch (error) {
+          console.error(error);
+        } finally {
           setLoadingTable(false);
         }
       };
@@ -101,6 +91,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     },
     [employee?.enrollNumber, setTimeSheetTable, setLoadingTable, timesheetId, defaultTableId]
   );
+
 
   const handleCancle = () => {
     navigate('/timesheet');
