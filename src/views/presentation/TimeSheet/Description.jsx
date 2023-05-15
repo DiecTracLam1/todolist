@@ -57,7 +57,7 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
           return;
         }
       }
-
+      // get timesheet date for user selected
       const timesheetlist = await timeSheetApi.getAll();
       setTimesheetList(timesheetlist?.docs);
       setLoading(false);
@@ -76,12 +76,12 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     (timesheetSelectedId) => {
       setLoadingTable(true);
       const getDataTable = async () => {
-        if (defaultSelected === timesheetSelectedId) { 
+        if (defaultSelected === timesheetSelectedId) {
           try {
             const respone = await employSheetApi.getAdjustDetail(timesheetId);
             setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           } catch (error) {}
-        } else { 
+        } else {
           try {
             const respone = await timeSheetApi.getMasterDetail(
               timesheetSelectedId,
