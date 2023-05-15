@@ -41,11 +41,13 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   useEffect(() => {
     const getTimeSheet = async () => {
       if (type === 'add') {
+        // get information employee to log into form
         const employStorage = JSON.parse(localStorage.getItem('employee'));
         const employeeApi = await userApi.getUser(employStorage.id);
         setEmployee(employeeApi?.doc?.employee);
       } else {
         try {
+          // get the timesheet detail and the timesheet's id was existed
           const respone = await employSheetApi.getAdjustDetail(timesheetId);
           setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           setDefaultSelected(respone?.doc?.timesheetsMasterId);
@@ -74,12 +76,12 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     (timesheetSelectedId) => {
       setLoadingTable(true);
       const getDataTable = async () => {
-        if (defaultSelected === timesheetSelectedId) { // when type is edit or detail
+        if (defaultSelected === timesheetSelectedId) { 
           try {
             const respone = await employSheetApi.getAdjustDetail(timesheetId);
             setTimeSheetTable(respone?.doc?.adjustEmployeeTimesheets ?? []);
           } catch (error) {}
-        } else { // type is add
+        } else { 
           try {
             const respone = await timeSheetApi.getMasterDetail(
               timesheetSelectedId,
