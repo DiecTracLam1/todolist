@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
 import { columns } from './ColumnDetail.jsx';
-import Description from './Form.jsx';
+import FormSheet from './Form.jsx';
 
 const Detail = () => {
   const location = useLocation();
@@ -86,7 +86,7 @@ const Detail = () => {
         Thời gian biểu
       </Typography.Title>
 
-      <Description
+      <FormSheet
         setTimeSheetTable={setTimeSheetTable}
         setLoadingTable={setLoadingTable}
         handleSubmit={handleSubmit}

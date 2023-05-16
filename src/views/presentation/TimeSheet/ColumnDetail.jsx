@@ -1,6 +1,6 @@
 import { InputNumber } from 'antd';
 
-export const columns = (props) => {
+export const columnsDetail = (props) => {
   const columns = [
     {
       title: 'Dữ liệu',
