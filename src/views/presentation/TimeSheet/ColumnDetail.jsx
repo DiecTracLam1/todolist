@@ -1,4 +1,4 @@
-import { InputNumber } from 'antd';
+import { Form, InputNumber } from 'antd';
 
 export const columnsDetail = (props) => {
   const columns = [
@@ -57,7 +57,6 @@ export const columnsDetail = (props) => {
       title: 'Vắng',
       dataIndex: 'holidayAnalysisChar',
       key: 'holidayAnalysisChar',
-
     },
     {
       title: 'Điểu chỉnh',
@@ -68,14 +67,16 @@ export const columnsDetail = (props) => {
           key: 'workingHourEdit',
           width: '110px',
           render: (_, timesheet, index) => (
-            <InputNumber
-              value={timesheet?.workingHourEdit}
-              key={index}
-              min={1}
-              max={24}
-              onChange={(values) => props.handleWorkingHour(values, index)}
-              style={{ width: '100px' }}
-            />
+            // <Form.Item name={`workingHourEdit${index}`}  style={{ marginBottom: 0 }}>
+              <InputNumber
+                value={timesheet?.workingHourEdit}
+                key={index}
+                min={1}
+                max={24}
+                onChange={(values) => props.handleEditTime(values, index, 'workingHourEdit')}
+                style={{ width: '100px' }}
+              />
+            // </Form.Item>
           ),
         },
         {
@@ -84,14 +85,18 @@ export const columnsDetail = (props) => {
           key: 'overtimeEdit',
           width: '110px',
           render: (_, timesheet, index) => (
-            <InputNumber
-              value={timesheet?.overtimeEdit}
-              key={index}
-              min={1}
-              max={24}
-              onChange={(values) => props.handleOvertime(values, index)}
-              style={{ width: '100px' }}
-            />
+            // <Form.Item name={`overtimeEdit${index}`}  style={{ marginBottom: 0 }}>
+              <InputNumber
+                value={timesheet?.overtimeEdit}
+                key={index}
+                min={1}
+                max={24}
+                onChange={(values) => {
+                  props.handleEditTime(values, index, 'overtimeEdit');
+                }}
+                style={{ width: '100px' }}
+              />
+            //</Form.Item>
           ),
         },
       ],

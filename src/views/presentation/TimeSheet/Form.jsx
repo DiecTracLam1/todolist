@@ -6,7 +6,7 @@ import timeSheetApi from '~/api/timesheetApi';
 import userApi from '~/api/userApi';
 import fieldlist from '../../component/FieldList/FieldList';
 
-const FormSheet = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
+const FormSheet = ({ setTimeSheetTable, setLoadingTable, form }) => {
   const location = useLocation();
   const { timesheetId } = useParams();
   const type = useMemo(() => location.pathname.split('/')[2], [location.pathname]);
@@ -15,7 +15,6 @@ const FormSheet = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const [employee, setEmployee] = useState();
   const [timesheetList, setTimesheetList] = useState([]);
   const [defaultTableId, setDefaultTableId] = useState('');
-  const [form] = Form.useForm();
   const navigate = useNavigate();
   const [error, setError] = useState(false);
 
@@ -96,14 +95,14 @@ const FormSheet = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
     navigate('/timesheet');
   };
 
-  const handleSubmitButton = async (values) => {
-    setLoading(true);
-    const month = values.dateIn.$D;
-    const year = values.dateIn.$y;
-    const newValues = { ...values, month, year };
-    const check = await handleSubmit(newValues, type);
-    if (check) setLoading(false);
-  };
+  // const handleSubmitButton = async (values) => {
+  //   setLoading(true);
+  //   const month = values.dateIn.$D;
+  //   const year = values.dateIn.$y;
+  //   const newValues = { ...values, month, year };
+  //   const check = await handleSubmit(newValues, type);
+  //   if (check) setLoading(false);
+  // };
 
   return (
     <>
@@ -128,73 +127,71 @@ const FormSheet = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
         />
       )}
       <Spin spinning={loading}>
-        <Form onFinish={handleSubmitButton} form={form}>
-          <Descriptions bordered>
-            {fieldList.map((field, index) => {
-              if (field.type === 'input') {
-                return (
-                  <Descriptions.Item label={field.label} key={index}>
-                    <Form.Item
-                      style={{ marginBottom: 0 }}
-                      name={field.name}
-                      rules={[
-                        {
-                          required: field?.rules?.required ?? false,
-                          message: field?.rules?.message,
-                        },
-                      ]}
-                    >
-                      <Input disabled={field.disabled ?? false} />
-                    </Form.Item>
-                  </Descriptions.Item>
-                );
-              } else if (field.type === 'select') {
-                return (
-                  <Descriptions.Item label={field.label} key={index}>
-                    <Form.Item
-                      style={{ marginBottom: 0 }}
-                      name={field.name}
-                      rules={[
-                        {
-                          required: field?.rules?.required ?? false,
-                          message: field?.rules?.message,
-                        },
-                      ]}
-                    >
-                      <Select
-                        onChange={handleSelectTimeSheet}
-                        style={{ width: '100%' }}
-                        options={field.options}
-                        disabled={field.disabled ?? false}
-                      />
-                    </Form.Item>
-                  </Descriptions.Item>
-                );
-              } else {
-                return (
-                  <Descriptions.Item label={field.label} key={index}>
-                    <Form.Item name={field.name} style={{ marginBottom: 0 }}>
-                      <DatePicker style={{ width: '100%' }} disabled={field.disabled ?? false} />
-                    </Form.Item>
-                  </Descriptions.Item>
-                );
-              }
-            })}
+        <Descriptions bordered>
+          {fieldList.map((field, index) => {
+            if (field.type === 'input') {
+              return (
+                <Descriptions.Item label={field.label} key={index}>
+                  <Form.Item
+                    style={{ marginBottom: 0 }}
+                    name={field.name}
+                    rules={[
+                      {
+                        required: field?.rules?.required ?? false,
+                        message: field?.rules?.message,
+                      },
+                    ]}
+                  >
+                    <Input disabled={field.disabled ?? false} />
+                  </Form.Item>
+                </Descriptions.Item>
+              );
+            } else if (field.type === 'select') {
+              return (
+                <Descriptions.Item label={field.label} key={index}>
+                  <Form.Item
+                    style={{ marginBottom: 0 }}
+                    name={field.name}
+                    rules={[
+                      {
+                        required: field?.rules?.required ?? false,
+                        message: field?.rules?.message,
+                      },
+                    ]}
+                  >
+                    <Select
+                      onChange={handleSelectTimeSheet}
+                      style={{ width: '100%' }}
+                      options={field.options}
+                      disabled={field.disabled ?? false}
+                    />
+                  </Form.Item>
+                </Descriptions.Item>
+              );
+            } else {
+              return (
+                <Descriptions.Item label={field.label} key={index}>
+                  <Form.Item name={field.name} style={{ marginBottom: 0 }}>
+                    <DatePicker style={{ width: '100%' }} disabled={field.disabled ?? false} />
+                  </Form.Item>
+                </Descriptions.Item>
+              );
+            }
+          })}
 
-            <Form.Item>
-              <div style={{ float: 'right' }}>
-                <Space>
-                  <Button onClick={handleCancle}>Trở lại</Button>
-                  {type !== 'detail' && (
-                    <Button htmlType="submit" type="primary">
-                      {type === 'add' ? 'Thêm' : 'Cập nhật'}
-                    </Button>
-                  )}
-                </Space>
-              </div>
-            </Form.Item>
-          </Descriptions>
-        </Form>
+          <Form.Item>
+            <div style={{ float: 'right' }}>
+              <Space>
+                <Button onClick={handleCancle}>Trở lại</Button>
+                {type !== 'detail' && (
+                  <Button htmlType="submit" type="primary">
+                    {type === 'add' ? 'Thêm' : 'Cập nhật'}
+                  </Button>
+                )}
+              </Space>
+            </div>
+          </Form.Item>
+        </Descriptions>
       </Spin>
     </>
   );

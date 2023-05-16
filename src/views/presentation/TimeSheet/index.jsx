@@ -1,5 +1,5 @@
-import { Button, Result, Table, Typography, message } from 'antd';
-import { useState } from 'react';
+import { Button, Form, Result, Table, Typography, message } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
@@ -8,6 +8,8 @@ import FormSheet from './Form.jsx';
 
 const Detail = () => {
   const location = useLocation();
+  const [form] = Form.useForm();
+  const type = useMemo(() => location.pathname.split('/')[2], [location.pathname]);
   const navigate = useNavigate();
   const [timeSheetTable, setTimeSheetTable] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
@@ -15,28 +17,37 @@ const Detail = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
 
-  const handleWorkingHour = (values, index) => {
+
+  const handleEditTime = (values, index, name) => {
     const newTimeSheetTable = [...timeSheetTable];
-    newTimeSheetTable[index]['workingHourEdit'] = values;
+    newTimeSheetTable[index][name] = values;
+    form.setFieldsValue({ [`${name}.${index}`]: values });
     setTimeSheetTable(newTimeSheetTable);
   };
 
-  const handleOvertime = (values, index) => {
-    const newTimeSheetTable = [...timeSheetTable];
-    newTimeSheetTable[index]['overtimeEdit'] = values;
-    setTimeSheetTable(newTimeSheetTable);
-  };
+  useEffect(() => {
+    timeSheetTable.forEach((timesheet , index) => {
+      form.setFieldsValue({[`workingHourEdit${index}`] : timesheet?.workingHourEdit})
+      form.setFieldsValue({[`overtimeEdit${index}`] : timesheet?.overtimeEdit})
+    });
+  }, [timeSheetTable , form]);
 
-  const handleSubmit = async (detailValues, type) => {
+  const handleSubmit = async (values) => {
     setLoadingTable(true);
+    const date = !values.createDate ? new Date() : values.createDate
+    console.log(date)
+    const month = date?.$d?.getFullYear()  ?? date.getFullYear() 
+    const year = date?.$d?.getFullYear()  ?? date.getFullYear() 
+    const newValues = { ...values, month, year };
+    console.log(newValues)
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
     try {
       const result =
         type === 'add'
-          ? await dispatch(addEmploySheetThunk({ detailValues, adjustTimesheet }))
+          ? await dispatch(addEmploySheetThunk({ newValues, adjustTimesheet }))
           : await dispatch(
               editEmploySheetThunk({
-                detailValues,
+                newValues,
                 adjustTimesheet,
                 id: timesheetId,
               })
@@ -85,24 +96,25 @@ const Detail = () => {
       >
         Thời gian biểu
       </Typography.Title>
-
-      <FormSheet
-        setTimeSheetTable={setTimeSheetTable}
-        setLoadingTable={setLoadingTable}
-        handleSubmit={handleSubmit}
-      />
-
-      <Table
-        size="small"
-        rowKey="timesheetsDetailDay"
-        dataSource={timeSheetTable}
-        columns={columnsDetail({ handleWorkingHour, handleOvertime })}
-        bordered
-        style={{ marginTop: '14px' }}
-        pagination={false}
-        scroll={{ x: true, y: '550px' }}
-        loading={loadingTable}
-      />
+      <Form onFinish={handleSubmit} form={form}>
+        <FormSheet
+          setTimeSheetTable={setTimeSheetTable}
+          setLoadingTable={setLoadingTable}
+          handleSubmit={handleSubmit}
+          form={form}
+        />
+        <Table
+          size="small"
+          rowKey="timesheetsDetailDay"
+          dataSource={timeSheetTable}
+          columns={columnsDetail({ handleEditTime })}
+          bordered
+          style={{ marginTop: '14px' }}
+          pagination={false}
+          scroll={{ x: true, y: '550px' }}
+          loading={loadingTable}
+        />
+      </Form>
     </div>
   );
 };
