@@ -45,7 +45,8 @@ const Detail = () => {
         type: 'success',
         content: `${type === 'add' ? 'Thêm' : 'Sửa'} thành công`,
       });
-      navigate(`/timesheet/edit/${result.payload?.id}`, { state: { timesheet: result.payload } });
+      if (type === 'add')
+        navigate(`/timesheet/edit/${result.payload?.id}`, { state: { timesheet: result.payload } });
       return true;
     } catch (error) {
       console.error(error);
