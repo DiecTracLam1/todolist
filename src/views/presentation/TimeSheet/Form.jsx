@@ -6,7 +6,7 @@ import timeSheetApi from '~/api/timesheetApi';
 import userApi from '~/api/userApi';
 import fieldlist from '../../component/FieldList/FieldList';
 
-const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
+const FormSheet = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   const location = useLocation();
   const { timesheetId } = useParams();
   const type = useMemo(() => location.pathname.split('/')[2], [location.pathname]);
@@ -200,4 +200,4 @@ const Description = ({ setTimeSheetTable, setLoadingTable, handleSubmit }) => {
   );
 };
 
-export default Description;
+export default FormSheet;
