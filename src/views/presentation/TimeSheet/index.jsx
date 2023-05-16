@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { addEmploySheetThunk, editEmploySheetThunk } from '~/features/timesheet/employSheetSlice';
-import { columns } from './ColumnDetail.jsx';
+import { columnsDetail } from './ColumnDetail.jsx';
 import FormSheet from './Form.jsx';
 
 const Detail = () => {
@@ -96,7 +96,7 @@ const Detail = () => {
         size="small"
         rowKey="timesheetsDetailDay"
         dataSource={timeSheetTable}
-        columns={columns({ handleWorkingHour, handleOvertime })}
+        columns={columnsDetail({ handleWorkingHour, handleOvertime })}
         bordered
         style={{ marginTop: '14px' }}
         pagination={false}
