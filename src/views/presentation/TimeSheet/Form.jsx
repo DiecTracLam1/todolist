@@ -95,15 +95,6 @@ const FormSheet = ({ setTimeSheetTable, setLoadingTable, form }) => {
     navigate('/timesheet');
   };
 
-  // const handleSubmitButton = async (values) => {
-  //   setLoading(true);
-  //   const month = values.dateIn.$D;
-  //   const year = values.dateIn.$y;
-  //   const newValues = { ...values, month, year };
-  //   const check = await handleSubmit(newValues, type);
-  //   if (check) setLoading(false);
-  // };
-
   return (
     <>
       {error && (

@@ -20,7 +20,6 @@ const Detail = () => {
   const handleEditTime = (values, index, name) => {
     const newTimeSheetTable = [...timeSheetTable];
     newTimeSheetTable[index][name] = values;
-    form.setFieldsValue({ [`${name}.${index}`]: values });
     setTimeSheetTable(newTimeSheetTable);
   };
 
@@ -33,9 +32,8 @@ const Detail = () => {
 
   const handleSubmit = async (values) => {
     setLoadingTable(true);
-    const date = !values.createDate ? new Date() : values.createDate;
-    const month = date?.$d?.getMonth() ?? date.getMonth();
-    const year = date?.$d?.getFullYear() ?? date.getFullYear();
+    const date = values?.createDate?.$d ?? new Date()
+    const [month, year] = [date?.getMonth(), date.getFullYear()];
     const newValues = { ...values, month, year };
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
     try {

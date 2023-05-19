@@ -67,16 +67,15 @@ export const columnsDetail = (props) => {
           key: 'workingHourEdit',
           width: '110px',
           render: (_, timesheet, index) => (
-            // <Form.Item name={`workingHourEdit${index}`}  style={{ marginBottom: 0 }}>
+            <Form.Item name={`workingHourEdit${index}`} style={{ marginBottom: 0 }}>
               <InputNumber
-                value={timesheet?.workingHourEdit}
                 key={index}
                 min={1}
                 max={24}
                 onChange={(values) => props.handleEditTime(values, index, 'workingHourEdit')}
                 style={{ width: '100px' }}
               />
-            // </Form.Item>
+            </Form.Item>
           ),
         },
         {
@@ -85,9 +84,8 @@ export const columnsDetail = (props) => {
           key: 'overtimeEdit',
           width: '110px',
           render: (_, timesheet, index) => (
-            // <Form.Item name={`overtimeEdit${index}`}  style={{ marginBottom: 0 }}>
+            <Form.Item name={`overtimeEdit${index}`} style={{ marginBottom: 0 }}>
               <InputNumber
-                value={timesheet?.overtimeEdit}
                 key={index}
                 min={1}
                 max={24}
@@ -96,7 +94,7 @@ export const columnsDetail = (props) => {
                 }}
                 style={{ width: '100px' }}
               />
-            //</Form.Item>
+            </Form.Item>
           ),
         },
       ],
