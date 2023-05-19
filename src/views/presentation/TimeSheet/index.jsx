@@ -17,7 +17,6 @@ const Detail = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
 
-
   const handleEditTime = (values, index, name) => {
     const newTimeSheetTable = [...timeSheetTable];
     newTimeSheetTable[index][name] = values;
@@ -26,20 +25,18 @@ const Detail = () => {
   };
 
   useEffect(() => {
-    timeSheetTable.forEach((timesheet , index) => {
-      form.setFieldsValue({[`workingHourEdit${index}`] : timesheet?.workingHourEdit})
-      form.setFieldsValue({[`overtimeEdit${index}`] : timesheet?.overtimeEdit})
+    timeSheetTable.forEach((timesheet, index) => {
+      form.setFieldsValue({ [`workingHourEdit${index}`]: timesheet?.workingHourEdit });
+      form.setFieldsValue({ [`overtimeEdit${index}`]: timesheet?.overtimeEdit });
     });
-  }, [timeSheetTable , form]);
+  }, [timeSheetTable, form]);
 
   const handleSubmit = async (values) => {
     setLoadingTable(true);
-    const date = !values.createDate ? new Date() : values.createDate
-    console.log(date)
-    const month = date?.$d?.getFullYear()  ?? date.getFullYear() 
-    const year = date?.$d?.getFullYear()  ?? date.getFullYear() 
+    const date = !values.createDate ? new Date() : values.createDate;
+    const month = date?.$d?.getMonth() ?? date.getMonth();
+    const year = date?.$d?.getFullYear() ?? date.getFullYear();
     const newValues = { ...values, month, year };
-    console.log(newValues)
     const adjustTimesheet = { adjustEmployeeTimesheets: [...timeSheetTable] };
     try {
       const result =
@@ -58,7 +55,6 @@ const Detail = () => {
       });
       if (type === 'add')
         navigate(`/timesheet/edit/${result.payload?.id}`, { state: { timesheet: result.payload } });
-      return true;
     } catch (error) {
       console.error(error);
       messageApi.open({ type: 'error', content: 'Xử lý đang bị lỗi' });

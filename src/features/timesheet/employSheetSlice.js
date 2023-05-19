@@ -25,11 +25,13 @@ export const getDetailEmploySheetThunk = createAsyncThunk(
 
 export const addEmploySheetThunk = createAsyncThunk(
   'employSheet/addEmploySheet',
-  async (payload) => {
+  async (payload , thunkAPI) => {
     try {
       const data = await employsheetApi.add(payload);
       return data.doc;
-    } catch (error) {}
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data)
+    }
   }
 );
 
@@ -83,7 +85,9 @@ export const timesheetSlice = createSlice({
       state.data.docs[index] = { ...state.data.docs[index], ...data };
     });
 
-    builder.addCase(addEmploySheetThunk.fulfilled, (state, action) => {});
+    builder.addCase(addEmploySheetThunk.rejected, (state, action) => {
+      throw new Error(action.payload.errorCode)
+    });
 
     builder.addCase(deleEmploySheetThunk.fulfilled, (state, action) => {
       const id = action.payload;
